@@ -1,12 +1,12 @@
 Note
 ====
 
-    Just started, there is no code, but will soon.
+Just started, there is no code, but will soon.
 
 Froum
 =====
 
-    Froum for node.js
+Froum for node.js
 
 install
 =======
@@ -16,11 +16,11 @@ install
 run
 ===
 ```js
-    var froum = require("froum");
-    froum.run();
+var froum = require("froum");
+froum.run();
 ```
 
 LICENSE
 =======
 
-    GPLv3
+GPLv3
