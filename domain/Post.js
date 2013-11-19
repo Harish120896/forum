@@ -33,7 +33,7 @@ function wrap(my){
         }
         this._title = title;
         this._body = body;
-        var fieldNames = ["name","updateTime"];
+        var fieldNames = ["title","updateTime","body"];
         if(columnId){
 
             var existColumn = my.services["existColumn"];
@@ -41,8 +41,8 @@ function wrap(my){
                 if(exist){
                     this._columnId = columnId;
                     fieldNames.push("columnId");
-                    emitUpdate(this,fieldNames);
                 }
+                emitUpdate(this,fieldNames);
             })
 
         }else{
