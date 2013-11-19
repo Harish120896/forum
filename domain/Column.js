@@ -56,7 +56,7 @@ function wrap(my){
         var fieldNames = ["name","updateTime"];
         if(des){
             this._des = des;
-            fieldNames.push(des);
+            fieldNames.push("des");
         }
         emitUpdate(this,fieldNames);
     }
