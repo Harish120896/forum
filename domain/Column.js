@@ -7,13 +7,7 @@ module.exports = wrap;
 
 function wrap(my){
 
-    function emitUpdate(aggreObj,fieldNames){
-        var data = {};
-        fieldNames.forEach(function(name){
-            data[name] = aggreObj["_"+name];
-        })
-        my.publish("Column.*.update",data);
-    }
+    var emitUpdate = require("./emitUpdate")("Column",my);
 
     function Column(name,des){
         this._name = name;
