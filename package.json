@@ -1,33 +1,34 @@
 {
-    "name": "froum",
-    "version": "0.0.1",
-    "description": "init",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/brighthas/froum.git"
-    },
-    "keywords": [
-        "froum",
-        "node.js",
-        "express",
-        "express.js",
-        "bbs"
-    ],
-    "author": "brighthas <brighthas@gmail.com>",
-    "license": "GPLv3",
-    "bugs": {
-        "url": "https://github.com/brighthas/froum/issues"
-    },
-    "homepage": "https://github.com/brighthas/froum",
-    "dependencies": {
-        "jsdm": "~0.2.4",
-        "node-uuid": "~1.4.1",
-        "validator": "~2.0.0",
-        "express": "3.4.4",
-        "ejs": "*"
-    }
+  "name": "froum",
+  "version": "0.0.1",
+  "description": "init",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/brighthas/froum.git"
+  },
+  "keywords": [
+    "froum",
+    "node.js",
+    "express",
+    "express.js",
+    "bbs"
+  ],
+  "author": "brighthas <brighthas@gmail.com>",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/brighthas/froum/issues"
+  },
+  "homepage": "https://github.com/brighthas/froum",
+  "dependencies": {
+    "jsdm": "~0.2.4",
+    "node-uuid": "~1.4.1",
+    "validator": "~2.0.0",
+    "express": "3.4.4",
+    "ejs": "*",
+    "tree-node": "0.0.8"
+  }
 }
