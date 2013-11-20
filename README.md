@@ -4,22 +4,22 @@ Note
 
 Just started, there is no code, but will soon.
 
-Froum
+Forum
 =====
 
 
-Froum for node.js
+Forum for node.js
 
 install
 =======
 
-    npm install froum
+    npm install forum
 
 run
 ===
 ```js
-var froum = require("froum");
-froum.run();
+var forum = require("forum");
+forum.run();
 ```
 
 LICENSE
