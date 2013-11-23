@@ -1,3 +1,4 @@
+var check = require('validator').check;
 
 module.exports = wrap;
 
@@ -28,7 +29,20 @@ function wrap(my){
         })
     }
 
-    return [service1,service2];
+
+    service3.serviceName = "updateColumnValidator";
+
+    function service3(name,des,callback){
+        try{
+            check(name).len(5,15);
+            check(des).len(0,200);
+            callback(true);
+        }catch(e){
+
+        }
+    }
+
+    return [service1,service2,service3];
 
 }
 

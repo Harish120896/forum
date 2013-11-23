@@ -1,6 +1,5 @@
 var uid = require("node-uuid").v1,
     Emit = require("events").EventEmitter,
-    check = require('validator').check,
     inherits = require("util").inherits;
 
 module.exports = wrap;
@@ -26,6 +25,7 @@ function wrap(my){
     proto.up = function(){
         this._updateTime = Date.now();
         emitUpdate(this,["updateTime"]);
+
     }
 
     proto.top = function(){
@@ -36,30 +36,44 @@ function wrap(my){
         }
     }
 
-    proto.access = function(readerId){
+    proto.goin = function(readerId){
         this._accessNum += 1;
         emitUpdate(this,["accessNum"]);
-        my.publish("access column",readerId);
+        my.publish("goin column",readerId);
     }
 
-    proto.uptop = function(){
+    proto.untop = function(){
         if(this._top === true){
            this._top = false;
            emitUpdate(this,["top"]);
         }
     }
 
-    proto.updateInfo = function(name,des){
-        check(name).len(2, 15);
-        this._name = name;
-        this._updateTime = Date.now();
-        var fieldNames = ["name","updateTime"];
-        if(des){
-            this._des = des;
-            fieldNames.push("des");
-        }
-        emitUpdate(this,fieldNames);
+    proto.updateInfo = function(name,des,callback){
+
+        my.services.updateColumnValidator(name,des,function(pass){
+            if(pass){
+                this._name = name;
+                this._updateTime = Date.now();
+                var fieldNames = ["name","updateTime"];
+                if(des){
+                    this._des = des;
+                    fieldNames.push("des");
+                }
+                emitUpdate(this,fieldNames);
+                callback();
+            }else{
+                callback(new Error());
+            }
+        });
+
     }
+
+    Object.defineProperty(proto,"id",{
+        value:function(){
+            return this._id;
+        }
+    })
 
     Column.className = "Column";
 

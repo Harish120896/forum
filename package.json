@@ -4,7 +4,7 @@
   "description": "init",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -24,11 +24,14 @@
   },
   "homepage": "https://github.com/brighthas/froum",
   "dependencies": {
-    "jsdm": "~0.2.4",
+    "jsdm": "0.2.6",
     "node-uuid": "~1.4.1",
     "validator": "~2.0.0",
     "express": "3.4.4",
     "ejs": "*",
-    "tree-node": "0.0.8"
+    "tree-node": "0.0.9"
+  },
+  "devDependencies": {
+    "should": "~2.1.0"
   }
 }

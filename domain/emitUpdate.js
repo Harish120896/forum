@@ -4,7 +4,7 @@ module.exports = function (AggreName,my) {
             fieldNames.forEach(function (name) {
                 data[name] = aggreObj["_" + name];
             })
-            my.publish(AggreName+".*.update", data);
+            my.publish(AggreName+".*.update", aggreObj.id,data);
     };
 }
 
