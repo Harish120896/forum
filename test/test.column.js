@@ -51,13 +51,14 @@ describe("column",function(){
             done();
         });
 
-        column.updateInfo(null,null,function(err){
-            should.exist(err);
-        })
+        (function(){
+            column.updateInfo(null,null);
+        }).should.throw();
 
-        column.updateInfo('abcde','fdfd',function(err){
-            err.should.be.eql(null);
-        })
+
+        column.updateInfo('abcde','fdfd');
+
+
     })
 
     it("#goin",function(){
