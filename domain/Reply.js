@@ -5,10 +5,10 @@ var uid = require("node-uuid").v1,
 
 function wrap(my){
 
-    var emitUpdate = require("./emitUpdate")("SubPost",my);
+    var emitUpdate = require("./emitUpdate")("Reply",my);
 
     // options:{title,body,authorId,parentId}
-    function SubPost(options){
+    function Reply(options){
         this._id = uid();
         this._title = options.title;
         this._body = options.body;
@@ -18,7 +18,7 @@ function wrap(my){
         this._createTime = Date.now();
     }
 
-    inherits(SubPost,Emit);
+    inherits(Reply,Emit);
 
     var proto = Post.prototype;
 
@@ -34,7 +34,7 @@ function wrap(my){
 
     }
 
-    SubPost.className = "SubPost";
+    Reply.className = "Reply";
 
-    return SubPost;
+    return Reply;
 }

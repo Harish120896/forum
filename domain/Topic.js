@@ -4,12 +4,14 @@ var uid = require("node-uuid").v1,
     Node = require("tree-node"),
     inherits = require("util").inherits;
 
+module.exports = wrap;
+
 function wrap(my){
 
-    var emitUpdate = require("./emitUpdate")("MainPost",my);
+    var emitUpdate = require("./emitUpdate")("Topic",my);
 
     // options:{title,body,authorId,columnId}
-    function MainPost(options){
+    function Topic(options){
         this._id = uid();
         this._title = options.title;
         this._body = options.body;
@@ -21,11 +23,11 @@ function wrap(my){
             this._createTime = Date.now();
     }
 
-    inherits(MainPost,Emit);
+    inherits(Topic,Emit);
 
-    var proto = MainPost.prototype;
+    var proto = Topic.prototype;
 
-
+    // command handle call
     proto.removeSubMark = function(subPostId){
         var postMark = this._subMarkTree.getNode(subPostId);
         if(postMark && postMark.id !== this._subMarkTree.id){
@@ -44,6 +46,7 @@ function wrap(my){
         emitUpdate(this,["accessNum"]);
     }
 
+    // command handle call
     proto.addSubMark = function(parentPostId,subPostId){
         var parent = this._subMarkTree.getNode(parentPostId);
         parent.appendChild(new Node(subPostId));
@@ -78,7 +81,7 @@ function wrap(my){
 
     }
 
-    MainPost.className = "MainPost";
+    Topic.className = "Topic";
 
-    return MainPost;
+    return Topic;
 }

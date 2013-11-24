@@ -2,7 +2,7 @@ var domain = require("jsdm")();
 
 domain.register(
     "AggreClass", require("./Column"),require("./User")
-        , //require("./Post"),
+    ,require("./Topic"),
    // "listener", require("./eventHandles"),
   //  "repository", require("./repos"),
   //  "commandHandle", require("./commandHandles"),

@@ -1,24 +1,24 @@
 module.exports = wrap;
 
-var crypto = require("crypto"),
-    md5 = crypto.createHash('md5');
+var crypto = require("crypto");
 
 function wrap(my){
 
     var emitUpdate = require("./emitUpdate")("User", my);
 
     User.roles = {
-        DEFAULT:0,
+        USER:0,
         ADMIN:1
     };
 
     Object.freeze(User.roles);
 
     function User(nickname,loginname,password,email){
-        this._role = User.roles.DEFAULT;
+        this._role = User.roles.USER;
         this._nickname = nickname;
         this._loginname = loginname;
         this._fraction = 0;
+        var md5 = crypto.createHash('md5');
         this._password = md5.update(password).digest("hex");
         this._email = email;
         this._createTime = Date.now();
@@ -28,10 +28,11 @@ function wrap(my){
 
     proto.updatePassword = function(old,npass){
         my.services.updatePasswordValidator(npass);
-
+        var md5 = crypto.createHash('md5');
         old = md5.update(old).digest("hex");
 
         if(this._password === old){
+            md5 = crypto.createHash('md5');
             this._password = md5.update(npass).digest("hex");
             emitUpdate(this,["password"]);
         }else{
