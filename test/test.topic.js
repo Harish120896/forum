@@ -27,11 +27,34 @@ describe("Topic", function () {
     })
 
     it("#addSubMark",function(){
-        topic.addSubMark(null,"id001");
-        topic.addSubMark(null,"id002");
-        topic.addSubMark("id001","id003");
-        topic._subMarkTree.childIds.length.should.eql(2);
-        topic._subMarkTree.getChild("id001").childIds.length.should.eql(1);
+        topic.addReply(null,"id001");
+        topic.addReply(null,"id002");
+        topic.addReply("id001","id003");
+        topic._replyTree.childIds.length.should.eql(2);
+        topic._replyTree.getChild("id001").childIds.length.should.eql(1);
     });
+
+    it("#removeSubMark",function(){
+        topic.removeReply("id002");
+        topic._replyTree.childIds.length.should.eql(1);
+        topic.removeReply();
+        topic._replyTree.childIds.length.should.eql(0);
+    })
+
+    it("#access",function(){
+        topic._accessNum.should.eql(0);
+        topic.access();
+        topic._accessNum.should.eql(1);
+    })
+
+    it("#updateInfo",function(){
+        var cid;
+        domain._my.repos.Column.create({name:"abc",des:"ceee"},function(err,column){
+            cid = column.id;
+        })
+        topic.updateInfo("title01","body001",cid);
+        topic._title.should.eql("title01");
+        topic._body.should.eql("body001");
+    })
 
 });

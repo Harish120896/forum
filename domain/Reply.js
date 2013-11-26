@@ -3,6 +3,8 @@ var uid = require("node-uuid").v1,
     check = require('validator').check,
     inherits = require("util").inherits;
 
+module.exports = wrap;
+
 function wrap(my){
 
     var emitUpdate = require("./emitUpdate")("Reply",my);
@@ -14,13 +16,14 @@ function wrap(my){
         this._body = options.body;
         this._authorId = options.authorId;
         this._parentId = options.parentId;
+        this._topicId = options.topicId;
         this._updateTime =
         this._createTime = Date.now();
     }
 
     inherits(Reply,Emit);
 
-    var proto = Post.prototype;
+    var proto = Reply.prototype;
 
     proto.updateInfo = function(title,body){
 

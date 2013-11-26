@@ -29,7 +29,6 @@ function wrap(my) {
         })
     }
 
-
     service3.serviceName = "updateColumnValidator";
 
     function service3(name, des) {

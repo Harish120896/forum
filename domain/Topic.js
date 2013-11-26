@@ -16,7 +16,7 @@ function wrap(my){
         this._title = options.title;
         this._body = options.body;
         this._authorId = options.authorId;
-        this._subMarkTree = new Node();
+        this._replyTree = new Node();
         this._accessNum = 0;
         this._columnId = options.columnId;
         this._updateTime =
@@ -27,16 +27,23 @@ function wrap(my){
 
     var proto = Topic.prototype;
 
-    // command handle call
-    proto.removeSubMark = function(subPostId){
-        var postMark = this._subMarkTree.getNode(subPostId);
-        if(postMark && postMark.id !== this._subMarkTree.id){
-            this._subMarkTree.removeChild(subPostId);
-            emitUpdate(this,["subMarkTree"]);
-            var ids = postMark.allChildIds;
-            ids.push(subPostId);
+    // if replayID == null , then remove all replay.
+    proto.removeReply = function(replyId){
+        var node = this._replyTree.getNode(replyId);
+        if(node){
+            var ids = node.allChildIds;
+            if(this._replyTree.id === node.id){
+                var cids = node.childIds;
+                cids.forEach(function(cid){
+                    node.removeChild(cid);
+                });
+            }else{
+                this._replyTree.removeChild(replyId);
+            }
+            emitUpdate(this,["replyTree"]);
+            ids.push(replyId);
             ids.forEach(function(id){
-                my.repos.SubPost.remove(id);
+                my.repos.Reply.remove(id);
             })
         }
     }
@@ -47,20 +54,16 @@ function wrap(my){
     }
 
     // command handle call
-    proto.addSubMark = function(parentPostId,subPostId){
-        var parent = this._subMarkTree.getNode(parentPostId);
-        parent.appendChild(new Node(subPostId));
+    proto.addReply = function(parentId,replyId){
+        var parent = this._replyTree.getNode(parentId);
+        parent.appendChild(new Node(replyId));
         emitUpdate(this,["subMarkTree"]);
     }
 
     proto.updateInfo = function(title,body,columnId){
-
         check(title).len(3, 18);
         check(body).len(5,2000);
 
-        if(this._parentId){
-            columnId = null;
-        }
         this._title = title;
         this._body = body;
         var fieldNames = ["title","updateTime","body"];
@@ -78,7 +81,6 @@ function wrap(my){
         }else{
             emitUpdate(this,fieldNames);
         }
-
     }
 
     Topic.className = "Topic";
