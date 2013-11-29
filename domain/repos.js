@@ -74,7 +74,6 @@ function wrap(my) {
     }
 
 
-
     var columnRepo = new my.Repository("Column");
 
     columnRepo._create = function (args, callback) {
@@ -105,5 +104,5 @@ function wrap(my) {
         return aggre;
     }
 
-    return [replyRepo, columnRepo];
+    return [replyRepo, columnRepo, topicRepo];
 }
