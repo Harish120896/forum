@@ -1,18 +1,20 @@
-var Node = require("tree-node");
+var Node = require("tree-node")
+    ,check = require('validator').check
+    ,crypto = require("crypto");
+
 module.exports = wrap;
 
 function wrap(my) {
 
-
     var topicRepo = new my.Repository("Topic");
 
-    topicRepo._create = function(args,callback){
+    topicRepo._create = function (args, callback) {
         var Topic = my.Aggres.Topic;
         var topic = new Topic(args);
-        callback(null,topic);
+        callback(null, topic);
     }
 
-    topicRepo._data2aggre = function(data){
+    topicRepo._data2aggre = function (data) {
         var Topic = my.Aggres.Topic;
         var topic = new Topic(data);
         topic._id = data.id;
@@ -24,18 +26,18 @@ function wrap(my) {
         return topic;
     }
 
-    topicRepo._aggre2data = function(aggre){
+    topicRepo._aggre2data = function (aggre) {
 
         return {
-            id:aggre.id,
-            title:aggre._title,
-            body:aggre._body,
-            authorId:aggre._authorId,
-            replyTree:aggre._replyTree,
-            accessNum:aggre._accessNum,
-            columnId:aggre._columnId,
-            updateTime:aggre._updateTime,
-            createTime:aggre._createTime
+            id: aggre.id,
+            title: aggre._title,
+            body: aggre._body,
+            authorId: aggre._authorId,
+            replyTree: aggre._replyTree,
+            accessNum: aggre._accessNum,
+            columnId: aggre._columnId,
+            updateTime: aggre._updateTime,
+            createTime: aggre._createTime
         }
 
     }
@@ -104,5 +106,41 @@ function wrap(my) {
         return aggre;
     }
 
-    return [replyRepo, columnRepo, topicRepo];
+    var userRepo = new my.Repository("User");
+
+    userRepo._create = function (args, callback) {
+        my.services.userUnique(args,function(err){
+            if(err){
+                callback(err);
+            }else{
+                var md5 = crypto.createHash('md5');
+                args.password = md5.update(args.password).digest("hex");
+                var user = new my.Aggres.User(args.nickname, args.loginname, args.password, args.email);
+                callback(null, user);
+            }
+        });
+    }
+
+    userRepo._aggre2data = function (aggre) {
+        return {
+            role: aggre._role,
+            nickname: aggre._nickname,
+            loginname: aggre._loginname,
+            fraction: aggre._fraction,
+            password: aggre._password,
+            email: aggre._email,
+            createTime: aggre._createTime
+        }
+    }
+
+    userRepo._data2aggre = function (data) {
+        var user = new my.Aggres.User(data.nickname, data.loginname, "default", data.email);
+        user._id = data.id;
+        user._role = data.role;
+        user._fraction = data.fraction;
+        user._createTime = data.createTime;
+        return user;
+    }
+
+    return [replyRepo, columnRepo, topicRepo, userRepo];
 }

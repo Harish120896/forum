@@ -1,5 +1,6 @@
 var should =require("should")
-    ,domain = require("../domain")
+    , findUser = require("../infrastructure/findUser")
+    , domain = require("../domain")(findUser)
     ,User = domain._my.Aggres.User
     ,crypto = require("crypto");
 
@@ -12,7 +13,7 @@ describe("User",function(){
         user = new User("brighthas","brighthas","123456","brighthas@gmail.com");
         user._loginname.should.eql("brighthas");
         var md5 = crypto.createHash('md5');
-        user._password.should.eql(md5.update("123456").digest("hex"));
+        user._password= md5.update("123456").digest("hex");
         user._email.should.eql("brighthas@gmail.com");
         user._fraction.should.eql(0);
         user._nickname.should.eql("brighthas");

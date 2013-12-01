@@ -1,5 +1,6 @@
 var should = require("should")
-    , domain = require("../domain")
+    , findUser = require("../infrastructure/findUser")
+    , domain = require("../domain")(findUser)
     , Topic = domain._my.Aggres.Topic;
 
 describe("Topic", function () {

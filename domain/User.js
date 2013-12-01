@@ -18,8 +18,8 @@ function wrap(my){
         this._nickname = nickname;
         this._loginname = loginname;
         this._fraction = 0;
-        var md5 = crypto.createHash('md5');
-        this._password = md5.update(password).digest("hex");
+        // password must md5 handle.
+        this._password = password;
         this._email = email;
         this._createTime = Date.now();
     }

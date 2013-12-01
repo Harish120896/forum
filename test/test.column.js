@@ -1,5 +1,6 @@
 var should =require("should")
-   ,domain = require("../domain")
+    , findUser = require("../infrastructure/findUser")
+    , domain = require("../domain")(findUser)
    ,Column = domain._my.Aggres.Column;
 
 describe("column",function(){
