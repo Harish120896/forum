@@ -23,7 +23,7 @@ describe("repos", function () {
             email: "brighthas@gmail.com"}, function (err,userAggre) {
             should.not.exist(userAggre)
         })
-    })
+    });
 
 
 })
