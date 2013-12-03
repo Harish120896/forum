@@ -11,7 +11,7 @@ function wrap(my){
 
     // options:{title,body,authorId,parentId,topicId}
     function Reply(options){
-        this._updateTimeout = 1000 * 60 * 60; // 1 hourse default
+        this._updateTimeout = 1000 * 60 * 60; // 1 hour default
         this._id = uid();
         this._title = options.title;
         this._body = options.body;
@@ -27,7 +27,7 @@ function wrap(my){
     var proto = Reply.prototype;
 
     proto.updateInfo = function(title,body){
-        
+
         // update timeout.
         if(Date.now - this._updateTime > this._updateTime) return;
         check(title).len(3, 18);
