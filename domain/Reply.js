@@ -9,8 +9,9 @@ function wrap(my){
 
     var emitUpdate = require("./emitUpdate")("Reply",my);
 
-    // options:{title,body,authorId,parentId}
+    // options:{title,body,authorId,parentId,topicId}
     function Reply(options){
+        this._updateTimeout = 1000 * 60 * 60; // 1 hourse default
         this._id = uid();
         this._title = options.title;
         this._body = options.body;
@@ -26,7 +27,9 @@ function wrap(my){
     var proto = Reply.prototype;
 
     proto.updateInfo = function(title,body){
-
+        
+        // update timeout.
+        if(Date.now - this._updateTime > this._updateTime) return;
         check(title).len(3, 18);
         check(body).len(5,1000);
 
