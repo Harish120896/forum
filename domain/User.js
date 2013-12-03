@@ -8,7 +8,8 @@ function wrap(my){
 
     User.roles = {
         USER:0,
-        ADMIN:1
+        ADMIN:1,
+        MODERATOR:2
     };
 
     Object.freeze(User.roles);
@@ -49,6 +50,15 @@ function wrap(my){
     proto.authorizeAdmin = function(){
         this._authorize(User.roles.ADMIN);
     }
+
+    proto.authorizeModerator = function(){
+        this._authorize(User.roles.MODERATOR);
+    }
+
+    proto.authorizeUser = function(){
+        this._authorize(User.roles.USER);
+    }
+
 
     proto.plus = function(num){
         this._fraction += num;

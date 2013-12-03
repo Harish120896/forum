@@ -32,6 +32,16 @@ describe("User",function(){
         user._role.should.eql(User.roles.ADMIN);
     });
 
+    it("#authorizeModerator",function(){
+        user.authorizeModerator();
+        user._role.should.eql(User.roles.MODERATOR);
+    });
+
+    it("#authorizeUser",function(){
+        user.authorizeUser();
+        user._role.should.eql(User.roles.USER);
+    });
+
     it("#plus",function(){
         user.plus(12);
         user.plus(3);
