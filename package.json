@@ -29,7 +29,8 @@
     "validator": "~2.0.0",
     "express": "3.4.4",
     "ejs": "*",
-    "tree-node": "0.0.9"
+    "tree-node": "0.0.9",
+    "mongoose": "~3.8.1"
   },
   "devDependencies": {
     "should": "~2.1.0"

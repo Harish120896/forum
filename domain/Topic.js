@@ -6,12 +6,12 @@ var uid = require("node-uuid").v1,
 
 module.exports = wrap;
 
-function wrap(my){
+function wrap(my) {
 
-    var emitUpdate = require("./emitUpdate")("Topic",my);
+    var emitUpdate = require("./emitUpdate")("Topic", my);
 
     // options:{title,body,authorId,columnId}
-    function Topic(options){
+    function Topic(options) {
         this._id = uid();
         this._title = options.title;
         this._body = options.body;
@@ -23,63 +23,63 @@ function wrap(my){
             this._createTime = Date.now();
     }
 
-    inherits(Topic,Emit);
+    inherits(Topic, Emit);
 
     var proto = Topic.prototype;
 
     // if replayID == null , then remove all replay.
-    proto.removeReply = function(replyId){
+    proto.removeReply = function (replyId) {
         var node = this._replyTree.getNode(replyId);
-        if(node){
+        if (node) {
             var ids = node.allChildIds;
-            if(this._replyTree.id === node.id){
+            if (this._replyTree.id === node.id) {
                 var cids = node.childIds;
-                cids.forEach(function(cid){
+                cids.forEach(function (cid) {
                     node.removeChild(cid);
                 });
-            }else{
+            } else {
                 this._replyTree.removeChild(replyId);
             }
-            emitUpdate(this,["replyTree"]);
+            emitUpdate(this, ["replyTree"]);
             ids.push(replyId);
-            ids.forEach(function(id){
+            ids.forEach(function (id) {
                 my.repos.Reply.remove(id);
             })
         }
     }
 
-    proto.access = function(){
+    proto.access = function () {
         this._accessNum += 1;
-        emitUpdate(this,["accessNum"]);
+        emitUpdate(this, ["accessNum"]);
     }
 
     // command handle call
-    proto.addReply = function(parentId,replyId){
+    proto.addReply = function (parentId, replyId) {
         var parent = this._replyTree.getNode(parentId);
         parent.appendChild(new Node(replyId));
-        emitUpdate(this,["subMarkTree"]);
+        emitUpdate(this, ["subMarkTree"]);
     }
 
-    proto.updateInfo = function(title,body,columnId){
+    proto.updateInfo = function (title, body, columnId) {
         check(title).len(3, 18);
-        check(body).len(5,2000);
+        check(body).len(5, 2000);
 
         this._title = title;
         this._body = body;
-        var fieldNames = ["title","updateTime","body"];
-        if(columnId){
+        var fieldNames = ["title", "updateTime", "body"];
+        if (columnId) {
 
             var existColumn = my.services["existColumn"];
-            existColumn(columnId,function(exist){
-                if(exist){
+            existColumn(columnId, function (exist) {
+                if (exist) {
                     this._columnId = columnId;
                     fieldNames.push("columnId");
                 }
-                emitUpdate(this,fieldNames);
+                emitUpdate(this, fieldNames);
             })
 
-        }else{
-            emitUpdate(this,fieldNames);
+        } else {
+            emitUpdate(this, fieldNames);
         }
     }
 
