@@ -2,6 +2,8 @@ module.exports = wrap;
 
 function wrap(my){
 
+
+
     //////////////////////  command handle for Topic  ////////////////////
     // create a topic.
     handle1.commandName = "create a topic";
@@ -33,5 +35,13 @@ function wrap(my){
         })
     }
 
-    return [handle1,handle2,handle3]
+
+    //////////////////////  command handle for User  ////////////////////
+    handle4.commandName = "create a user";
+    function handle4(args,callback){
+
+        my.repos.User.create(args,callback);
+    }
+
+    return [handle1,handle2,handle3,handle4]
 }

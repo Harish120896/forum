@@ -1,6 +1,5 @@
 var should =require("should")
-    , findUser = require("../infrastructure/findUser")
-    , domain = require("../domain")(findUser)
+    , domain = require("../domain")
     ,User = domain._my.Aggres.User
     ,crypto = require("crypto");
 

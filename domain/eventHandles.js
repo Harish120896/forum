@@ -3,12 +3,11 @@ module.exports = wrap;
 
 function wrap(my){
 
-    handle1.eventName = "removeSubMark";
+    handle1.eventName = "User.*.create";
 
-    function handle1(ids){
-        ids.forEach(function(id){
-            my.repos.SubPost.remove(id);
-        })
+    function handle1(user){
+        console.log("====");
+        console.log(user);
     }
 
     return [hande1];

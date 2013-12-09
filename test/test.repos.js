@@ -1,9 +1,6 @@
 var should = require("should")
-    , findUser = require("../infrastructure/findUser")
-    , domain = require("../domain")(findUser)
+    , domain = require("../domain")
     , userRepo = domain._my.repos.User
-    , topicRepo = domain._my.repos.Topic
-    , replyRepo = domain._my.repos.Reply;
 
 describe("repos", function () {
 
