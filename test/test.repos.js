@@ -5,12 +5,13 @@ var should = require("should")
 describe("repos", function () {
 
     it("#user repository create", function () {
+
         userRepo.create({
             nickname: "leo",
             loginname: "brighthas",
             password: "brighthas",
             email: "brighthas@gmail.com"}, function (err,userAggre) {
-            should.exist(userAggre)
+                should.exist(userAggre)
         })
 
         userRepo.create({
@@ -18,7 +19,7 @@ describe("repos", function () {
             loginname: "brighthas",
             password: "brighthas",
             email: "brighthas@gmail.com"}, function (err,userAggre) {
-            should.not.exist(userAggre)
+                should.not.exist(userAggre)
         })
     });
 

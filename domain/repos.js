@@ -109,7 +109,6 @@ function wrap(my) {
     var userRepo = new my.Repository("User");
 
     userRepo._create = function (args, callback) {
-
         my.services.userUnique(args,function(err){
             if(err){
                 callback(err);

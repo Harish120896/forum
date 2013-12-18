@@ -4,8 +4,11 @@ var should =require("should")
 
 describe("commandHandles",function(){
     it("#create a user",function(){
-        domain.exec("create a user",{password:"pass"},function(){
+        (function(){
+            domain.exec("create a user",{password:"pass"},function(){
 
-        })
+            })
+        }).should.throw();
+
     })
 })
