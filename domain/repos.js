@@ -134,7 +134,7 @@ function wrap(my) {
     }
 
     userRepo._data2aggre = function (data) {
-        var user = new my.Aggres.User(data.nickname, data.loginname, "default", data.email);
+        var user = new my.Aggres.User(data.nickname, data.loginname, data.password, data.email);
         user._id = data.id;
         user._role = data.role;
         user._fraction = data.fraction;
