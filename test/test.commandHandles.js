@@ -9,6 +9,5 @@ describe("commandHandles",function(){
 
             })
         }).should.throw();
-
-    })
+    });
 })

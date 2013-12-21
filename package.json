@@ -30,7 +30,7 @@
     "express": "3.4.4",
     "ejs": "*",
     "tree-node": "0.0.9",
-    "mongoose": "~3.8.1"
+    "mongoose": "~3.8.3"
   },
   "devDependencies": {
     "should": "~2.1.0"
