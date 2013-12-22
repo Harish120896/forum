@@ -10,6 +10,4 @@ domain.register(
     "commandHandle", require("./commandHandles"),
     "service", require("./services")
 )//.closeMethod()
-    .seal();
-
 module.exports = domain;

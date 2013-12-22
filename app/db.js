@@ -2,7 +2,7 @@ var mongoose = require("mongoose"),
     Schema = mongoose.Schema;
 
 // test connection
-mongoose.connect("mongodb://localhost/test");
+mongoose.connect("mongodb://localhost/testdb");
 
 var Column = mongoose.model("Column", new Schema({
     name: String,
@@ -56,7 +56,25 @@ var dbs = {
 }
 
 module.exports = {
-    getDB:function(name){
-        return dbs[name];
+    get: function(type, id, cb) {
+        dbs[type].findOne({
+            "id": id
+        }, cb);
+    },
+    save: function(type, data, cb) {
+        dbs[type].create(data, cb);
+    },
+    update: function(type, id, data, cb) {
+        dbs[type].update({
+            "id": id
+        }, data, cb);
+    },
+    remove: function(type, id, cb) {
+        dbs[type].remove({
+            "id": id
+        }, cb);
+    },
+    getDB: function(type) {
+        return dbs[type];
     }
 }

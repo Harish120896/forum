@@ -1,11 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <form method="post" action="/user/create">
+        <label>loginname:</label>
+        <input name="loginname" type="text"/>
+        <label>nickname:</label>
+        <input name="nickname" type="text"/>
+        <label>password:</label>
+        <input name="password" type="password"/>
+        <label>email</label>
+        <input name="email" type="email"/>
+        <input type="submit" />
+    </form>
   </body>
 </html>
