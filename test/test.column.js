@@ -1,5 +1,5 @@
 var should =require("should")
-    , domain = require("../domain")
+    , domain = require("../domain").seal()
    ,Column = domain._my.Aggres.Column;
 
 describe("column",function(){
