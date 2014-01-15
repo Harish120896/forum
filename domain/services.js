@@ -32,18 +32,6 @@ function wrap(my) {
         })
     }
 
-    service3.serviceName = "updateColumnValidator";
-
-    function service3(name, des) {
-
-        if (name === name.trim() && des === des.trim()) {
-            check(name).len(5, 15);
-            check(des).len(0, 200);
-        } else {
-            throw new Error();
-        }
-    }
-
     service4.serviceName = "updatePasswordValidator";
 
     function service4(password) {
@@ -82,7 +70,7 @@ function wrap(my) {
     }).use(lock);
     service5.serviceName = "userUnique";
 
-    return [service1, service2, service3, service4, service5];
+    return [service1, service2, service4, service5];
 
 }
 

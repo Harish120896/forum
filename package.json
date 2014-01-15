@@ -30,7 +30,9 @@
     "express": "3.4.4",
     "ejs": "*",
     "tree-node": "0.0.9",
-    "mongoose": "~3.8.3"
+    "mongoose": "~3.8.3",
+    "modella": "~0.2.6",
+    "modella-validators": "0.0.9"
   },
   "devDependencies": {
     "should": "~2.1.0"

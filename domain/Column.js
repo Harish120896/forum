@@ -1,6 +1,20 @@
 var uid = require("node-uuid").v1,
-    Emit = require("events").EventEmitter,
+	Model = require("modella"),
+	Validators = require("modella-validators"),
+	ColumnModel = new Model("Column"),
     inherits = require("util").inherits;
+
+	ColumnModel.use(Validators);
+
+	// DOTO  , add validator
+	ColumnModel
+		.attr('id')
+		.attr("name",{type:"string",required: true})
+		.attr("top",{type:"boolean"})
+		.attr("accessNum",{type:"number"})
+		.attr("updateTime",{type:"number"})
+		.attr("createTime",{type:"number"})
+		.attr("des",{type:"string"})
 
 module.exports = wrap;
 
@@ -8,65 +22,56 @@ function wrap(my) {
 
     var emitUpdate = require("./emitUpdate")("Column", my);
 
-    function Column(name, des) {
-        this._name = name;
-        this._id = uid();
-        this._top = false;
-        this._accessNum = 0;
-        this._updateTime =
-            this._createTime = Date.now();
-        this._des = des || "";
+    function Column(name,des) {
+		des = des || "";
+		var time = Date.now();
+		var model = this.model = new ColumnModel(
+			{id:uid(),name:name,des:des,top:false,accessNum:0,updateTime:time,createTime:time}
+		);
+		this.model.on("setting",function(data){
+			my.publish("Column.*.update", model.id,data);
+		});
+		this.model.on("change",function(k,v){
+			var o = {};
+			o[k] = v;
+			my.publish("Column.*.update", model.id,o);
+		});
     }
-
-    inherits(Column, Emit);
-
+	
     var proto = Column.prototype;
 
     proto.up = function () {
-        this._updateTime = Date.now();
-        emitUpdate(this, ["updateTime"]);
-
+        this.model.updateTime( Date.now());
     }
 
     proto.top = function () {
-        if (this._top === false) {
-            this._top = true;
-            this._updateTime = Date.now();
-            emitUpdate(this, ["top", "updateTime"]);
+        if (this.model.top() === false) {
+			this.model.set({
+				top:true,
+				updateTime:Date.now()
+			})
         }
     }
 
     proto.goin = function (readerId) {
-        this._accessNum += 1;
-        emitUpdate(this, ["accessNum"]);
+		var accessNum = this.model.accessNum();
+		this.model.accessNum(accessNum+1);
         my.publish("goin column", readerId);
     }
 
     proto.untop = function () {
-        if (this._top === true) {
-            this._top = false;
-            emitUpdate(this, ["top"]);
+        if (this.model.top() === true) {
+			this.model.top(false);
         }
     }
 
     proto.updateInfo = function (name, des) {
-
-        my.services.updateColumnValidator(name, des);
-
-        this._name = name;
-        this._updateTime = Date.now();
-        var fieldNames = ["name", "updateTime"];
-        if (des) {
-            this._des = des;
-            fieldNames.push("des");
-        }
-        emitUpdate(this, fieldNames);
-
+		this.model.set({name:name,des:des,updateTime:Date.now()})
     }
 
     Object.defineProperty(proto, "id", {
         value: function () {
-            return this._id;
+            return this.model.id();
         }
     })
 

@@ -8,17 +8,20 @@ describe("column",function(){
 
     it("#create",function(){
         column = new Column("column name","column des");
-        column._name.should.eql("column name");
-        column._des.should.eql("column des");
-        column._createTime.should.eql(column._updateTime);
-        (column._createTime <= Date.now()).should.be.true;
-        column._accessNum.should.eql(0);
-        column._top.should.eql(false);
+		
+		
+		
+        column.model.name().should.eql("column name");
+        column.model.des().should.eql("column des");
+        column.model.updateTime().should.eql(column.model.updateTime());
+        (column.model.createTime() <= Date.now()).should.be.true;
+        column.model.accessNum().should.eql(0);
+        column.model.top().should.eql(false);
     })
 
     it("#up",function(done){
 
-        var ut = column._updateTime;
+        var ut = column.model.updateTime();
         domain.once("Column.*.update",function(id,data){
             (data.updateTime > ut).should.be.true;
             done();
@@ -51,19 +54,13 @@ describe("column",function(){
             done();
         });
 
-        (function(){
-            column.updateInfo(null,null);
-        }).should.throw();
-
-
         column.updateInfo('abcde','fdfd');
-
 
     })
 
     it("#goin",function(){
 
-        column._accessNum.should.eql(0);
+        column.model.accessNum().should.eql(0);
         domain.once("Column.*.update",function(id,data){
             data.accessNum.should.eql(1);
         });

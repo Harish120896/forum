@@ -45,8 +45,8 @@ describe("repos", function () {
             name: "node.js",
             des: "my node.js column"
         }, function (err, rs) {
-            rs._name.should.eql("node.js");
-            rs._des.should.eql("my node.js column");
+            rs.model.name().should.eql("node.js");
+            rs.model.des().should.eql("my node.js column");
         });
 
     });
