@@ -1,46 +1,56 @@
 var uid = require("node-uuid").v1,
-    Emit = require("events").EventEmitter,
-    check = require('validator').check,
-    inherits = require("util").inherits;
+	Emit = require("events").EventEmitter,
+	check = require('validator').check,
+	inherits = require("util").inherits;
+
+var createModel = require("model-brighthas");
 
 module.exports = wrap;
 
-function wrap(my){
+function wrap(my) {
 
-    var emitUpdate = require("./emitUpdate")("Reply",my);
+	var Reply = createModel("Reply")
+		.attr("updateTimeout", {
+			type: "number",
+			default: 1000 * 60 * 60
+		})
+		.attr("id")
+		.attr("title")
+		.attr("body")
+		.attr("authorId")
+		.attr("parentId")
+		.attr("topicId")
+		.attr("updateTime", {
+			type: "date"
+		})
+		.attr("createTime", {
+			type: "date"
+		})
+		.on("changed",function(reply,attrs){
+			my.publish("*.*.update","Reply",reply.id,this.toJSON(reply,Object.keys(attrs)));
+		})
+		// update timeout
+		.on("changing",function(reply){
+			if(Date.now() - reply.updateTime.getTime() > reply.updateTimeout){
+				reply.error("timeout","timeout");
+			}
+		})
+		
+		
+		.on("creating",function(reply){
+			reply.attrs.createTime = reply.attrs.updateTime = new Date();
+		})
+		.method("updateInfo",function(title,body){
+			this.begin();
+			this.updateTime = new Date();
+			this.title = title;
+			this.body = body;
+			this.end();
+			return this.errors;
+		})
 
-    // options:{title,body,authorId,parentId,topicId}
-    function Reply(options){
-        this._updateTimeout = 1000 * 60 * 60; // 1 hour default
-        this._id = uid();
-        this._title = options.title;
-        this._body = options.body;
-        this._authorId = options.authorId;
-        this._parentId = options.parentId;
-        this._topicId = options.topicId;
-        this._updateTime =
-        this._createTime = Date.now();
-    }
+	Reply.className = "Reply";
 
-    inherits(Reply,Emit);
-
-    var proto = Reply.prototype;
-
-    proto.updateInfo = function(title,body){
-
-        // update timeout.
-        if(Date.now - this._updateTime > this._updateTime) return;
-        check(title).len(3, 18);
-        check(body).len(5,1000);
-
-        this._title = title;
-        this._body = body;
-        var fieldNames = ["title","updateTime","body"];
-        emitUpdate(this,fieldNames);
-
-    }
-
-    Reply.className = "Reply";
-
-    return Reply;
+	return Reply;
+	
 }

@@ -1,81 +1,66 @@
 var uid = require("node-uuid").v1,
-	Model = require("modella"),
-	Validators = require("modella-validators"),
-	ColumnModel = new Model("Column"),
-    inherits = require("util").inherits;
+	createModel = require("model-brighthas");
 
-	ColumnModel.use(Validators);
-
-	// DOTO  , add validator
-	ColumnModel
-		.attr('id')
-		.attr("name",{type:"string",required: true})
-		.attr("top",{type:"boolean"})
-		.attr("accessNum",{type:"number"})
-		.attr("updateTime",{type:"number"})
-		.attr("createTime",{type:"number"})
-		.attr("des",{type:"string"})
 
 module.exports = wrap;
 
 function wrap(my) {
 
-    var emitUpdate = require("./emitUpdate")("Column", my);
+	var Column = createModel("Column")
+		.attr('id')
+		.attr("name", {
+			type: "string",
+			required: true
+		})
+		.attr("top_", {
+			type: "boolean",
+			default: false
+		})
+		.attr("accessNum", {
+			type: "number",
+		default:0
+		})
+		.attr("updateTime", {
+			type: "date"
+		})
+		.attr("createTime", {
+			type: "date"
+		})
+		.attr("des")
 
-    function Column(name,des) {
-		des = des || "";
-		var time = Date.now();
-		var model = this.model = new ColumnModel(
-			{id:uid(),name:name,des:des,top:false,accessNum:0,updateTime:time,createTime:time}
-		);
-		this.model.on("setting",function(data){
-			my.publish("Column.*.update", model.id,data);
+	.on("creating", function(column) {
+		column.attrs.createTime = column.attrs.updateTime = new Date();
+	})
+
+	.on("changed", function(column, attrs) {
+		my.publish("*.*.update", "Column", column.id, this.toJSON(column, Object.keys(attrs)));
+	})
+
+	.method("up", function() {
+		this.updateTime = new Date;
+	})
+
+	.method("top", function() {
+		this.top_ = true;
+	})
+
+	.method("untop", function() {
+		this.top_ = false;
+	})
+
+	.method("access", function(readerId) {
+		this.accessNum = this.accessNum + 1;
+	})
+
+	.method("updateInfo", function(name, des) {
+		this.set({
+			name: name,
+			des: des
 		});
-		this.model.on("change",function(k,v){
-			var o = {};
-			o[k] = v;
-			my.publish("Column.*.update", model.id,o);
-		});
-    }
-	
-    var proto = Column.prototype;
+		return this.errors;
+	})
 
-    proto.up = function () {
-        this.model.updateTime( Date.now());
-    }
+	Column.className = "Column";
 
-    proto.top = function () {
-        if (this.model.top() === false) {
-			this.model.set({
-				top:true,
-				updateTime:Date.now()
-			})
-        }
-    }
-
-    proto.goin = function (readerId) {
-		var accessNum = this.model.accessNum();
-		this.model.accessNum(accessNum+1);
-        my.publish("goin column", readerId);
-    }
-
-    proto.untop = function () {
-        if (this.model.top() === true) {
-			this.model.top(false);
-        }
-    }
-
-    proto.updateInfo = function (name, des) {
-		this.model.set({name:name,des:des,updateTime:Date.now()})
-    }
-
-    Object.defineProperty(proto, "id", {
-        value: function () {
-            return this.model.id();
-        }
-    })
-
-    Column.className = "Column";
-
-    return Column;
+	return Column;
 }

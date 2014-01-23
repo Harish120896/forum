@@ -10,35 +10,31 @@ function wrap(my) {
 
     topicRepo._create = function (args, callback) {
         var Topic = my.Aggres.Topic;
-        var topic = new Topic(args);
+        var topic = new Topic(args.title,args.body,args.authorId,args.columnId);
         callback(null, topic);
     }
 
     topicRepo._data2aggre = function (data) {
+		
         var Topic = my.Aggres.Topic;
-        var topic = new Topic(data);
-        topic._id = data.id;
+        var topic = new Topic(data.title,data.body,data.authorId,data.columnId);
+		var model = topic.model;
+        
         var tree = new Node();
         tree.reborn(data.replyTree);
-        topic._replyTree = tree;
-        topic._updateTime = data.updateTime;
-        topic._createTime = data.createTime;
+		
+		for(var k in data){
+			model.attrs[k] = model.dirty[k] = data[k];
+		}
+		
         return topic;
     }
 
     topicRepo._aggre2data = function (aggre) {
 
-        return {
-            id: aggre.id,
-            title: aggre._title,
-            body: aggre._body,
-            authorId: aggre._authorId,
-            replyTree: aggre._replyTree,
-            accessNum: aggre._accessNum,
-            columnId: aggre._columnId,
-            updateTime: aggre._updateTime,
-            createTime: aggre._createTime
-        }
+        var o = aggre.model.toJSON();
+		o.replyTree = aggre.model.replyTree().json;
+		return o;
 
     }
 
@@ -103,31 +99,22 @@ function wrap(my) {
             }else{
                 var md5 = crypto.createHash('md5');
                 args.password = md5.update(args.password).digest("hex");
-                var user = new my.Aggres.User(args.nickname, args.loginname, args.password, args.email);
-                callback(null, user);
+                var user = new my.Aggres.User({nickname:args.nickname, loginname:args.loginname, password:args.password, email:args.email});
+                if(user.hasError()){
+                	callback(user.errors);
+                }else{
+					callback(null, user);
+                }
             }
         });
     }
 
     userRepo._aggre2data = function (aggre) {
-        return {
-            role: aggre._role,
-            nickname: aggre._nickname,
-            loginname: aggre._loginname,
-            fraction: aggre._fraction,
-            password: aggre._password,
-            email: aggre._email,
-            createTime: aggre._createTime
-        }
+        return aggre.toJSON();
     }
 
     userRepo._data2aggre = function (data) {
-        var user = new my.Aggres.User(data.nickname, data.loginname, data.password, data.email);
-        user._id = data.id;
-        user._role = data.role;
-        user._fraction = data.fraction;
-        user._createTime = data.createTime;
-        return user;
+        return my.Aggres.User.reborn(data);
     }
 
     return [replyRepo, columnRepo, topicRepo, userRepo];

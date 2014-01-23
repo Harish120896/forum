@@ -1,72 +1,89 @@
 module.exports = wrap;
 
-var crypto = require("crypto");
 
-function wrap(my){
+var crypto = require("crypto"),
+	createModel = require("model-brighthas"),
+	attr = require("./plugin/attr");
 
-    var emitUpdate = require("./emitUpdate")("User", my);
-
-    User.roles = {
-        USER:0,
-        ADMIN:1,
-        MODERATOR:2
-    };
-
-    Object.freeze(User.roles);
-
-    function User(nickname,loginname,password,email){
-        this._role = User.roles.USER;
-        this._nickname = nickname;
-        this._loginname = loginname;
-        this._fraction = 0;
-        // password must md5 handle.
-        this._password = password;
-        this._email = email;
-        this._createTime = Date.now();
-    }
-
-    var proto = User.prototype;
-
-    proto.updatePassword = function(old,npass){
-        my.services.updatePasswordValidator(npass);
-        var md5 = crypto.createHash('md5');
-        old = md5.update(old).digest("hex");
-
-        if(this._password === old){
-            md5 = crypto.createHash('md5');
-            this._password = md5.update(npass).digest("hex");
-            emitUpdate(this,["password"]);
-        }else{
-            throw new Error();
-        }
-    }
-
-    proto._authorize = function(role){
-        this._role = role;
-        emitUpdate(this,["role"]);
-        my.publish("authorize",this);
-    }
-
-    proto.authorizeAdmin = function(){
-        this._authorize(User.roles.ADMIN);
-    }
-
-    proto.authorizeModerator = function(){
-        this._authorize(User.roles.MODERATOR);
-    }
-
-    proto.authorizeUser = function(){
-        this._authorize(User.roles.USER);
-    }
+function wrap(my) {
 
 
-    proto.plus = function(num){
-        this._fraction += num;
-        emitUpdate(this,["fraction"]);
-    }
+	var User = createModel("User");
 
-    User.className = "User";
+	User.roles = {
+		USER: 0,
+		ADMIN: 1,
+		MODERATOR: 2
+	};
 
-    return User;
+	User
+		.attr("id")
+		.attr("nickname", {
+			required: true
+		})
+		.attr("loginname", {
+			required: true
+		})
+		.attr("role", {
+			required: true,
+			type: "number",
+			default: User.roles.USER
+		})
+		.attr("password", {
+			required: true
+		})
+		.attr("email", {
+			required: true
+		})
+		.attr("fraction", {
+			default: 0,
+			type: "number"
+		})
+		.attr("createTime", {
+			type: "date"
+		})
+		.method("updatePassword", function(old,npass) {
+
+			var md5 = crypto.createHash('md5');
+			old = md5.update(old).digest("hex");
+
+			if (this.password === old) {
+				md5 = crypto.createHash('md5');
+				this.password = md5.update(npass).digest("hex");
+			}
+			return this.errors;
+
+		})
+		.method("plus", function(num) {
+			this.fraction = this.fraction + num;
+			return this.errors;
+		})
+		.use(attr)
+		.on("creating",function(u){
+			// password transform
+			if(u.attrs.password){
+				var md5 = crypto.createHash('md5');
+				u.attrs.password = md5.update(u.attrs.password).digest("hex");
+			}
+		})
+		.on("changed",function(u,attrs){
+			my.publish("*.*.update","User",u.id,this.toJSON(u,Object.keys(attrs)));
+		})
+		.validate(function(user, keys) {
+			if (keys.indexOf("role") !== -1) {
+				var role = user.attrs["role"];
+				if ([0, 1, 2].indexOf(role) === -1) {
+					user.error("role", "no the role");
+				}
+			}
+		})
+
+	User.on("creating", function(user) {
+		user.attrs.createTime = new Date();
+	})
+
+	User.className = "User";
+
+	return User;
 
 }

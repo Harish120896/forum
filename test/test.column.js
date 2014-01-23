@@ -1,73 +1,52 @@
 var should =require("should")
     , domain = require("../domain").seal()
-   ,Column = domain._my.Aggres.Column;
+   
+   var Column = domain._my.Aggres.Column;
 
 describe("column",function(){
 
     var column;
 
     it("#create",function(){
-        column = new Column("column name","column des");
-		
-		
-		
-        column.model.name().should.eql("column name");
-        column.model.des().should.eql("column des");
-        column.model.updateTime().should.eql(column.model.updateTime());
-        (column.model.createTime() <= Date.now()).should.be.true;
-        column.model.accessNum().should.eql(0);
-        column.model.top().should.eql(false);
+        column = new Column({name:"column name",des:"column des"});
+        column.name.should.eql("column name");
+        column.des.should.eql("column des");
+        column.updateTime.should.eql(column.updateTime);
+        column.accessNum.should.eql(0);
+        column.top_.should.eql(false);
     })
 
-    it("#up",function(done){
-
-        var ut = column.model.updateTime();
-        domain.once("Column.*.update",function(id,data){
-            (data.updateTime > ut).should.be.true;
-            done();
-        });
-        column.up();
+    it("#up",function(){
+		var uptime = column.updateTime;
+		column.up();
+		(column.updateTime > uptime ).should.be.true;
 
     })
-
-    it("#top",function(done){
-        domain.once("Column.*.update",function(id,data){
-            data.top.should.be.true;
-            done();
-        });
+	
+    it("#top",function(){
         column.top();
+        column.top_.should.eql(true);
+		
     })
 
-    it("#untop",function(done){
-        domain.once("Column.*.update",function(id,data){
-            data.top.should.be.false;
-            done();
-        });
+    it("#untop",function(){
         column.untop();
+        column.top_.should.eql(false);
+		
     })
 
-    it("#updateInfo",function(done){
+    it("#updateInfo",function(){
 
-        domain.once("Column.*.update",function(id,data){
-            data.name.should.eql("abcde");
-            data.des.should.eql("fdfd");
-            done();
-        });
-
-        column.updateInfo('abcde','fdfd');
-
+		column.updateInfo('abcde','fdfd');
+        column .name.should.eql("abcde");
+        column.des.should.eql("fdfd");
+        
     })
 
-    it("#goin",function(){
+    it("#access",function(){
 
-        column.model.accessNum().should.eql(0);
-        domain.once("Column.*.update",function(id,data){
-            data.accessNum.should.eql(1);
-        });
-        domain.once("goin column",function(rid){
-            rid.should.eql("reader001")
-        })
-        column.goin("reader001");
+		column.access();
+		column.accessNum.should.eql(1);
 
     })
 

@@ -1,49 +1,47 @@
 var should =require("should")
     , domain = require("../domain")
-    ,User = domain._my.Aggres.User
     ,crypto = require("crypto");
 
+domain.seal();
+
+var User = domain._my.Aggres.User;
 
 describe("User",function(){
 
     var user;
 
     it("#new",function(){
-        user = new User("brighthas","brighthas","123456","brighthas@gmail.com");
-        user._loginname.should.eql("brighthas");
+        user = new User({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"});
+        user.loginname.should.eql("brighthas");
+		
         var md5 = crypto.createHash('md5');
-        user._password= md5.update("123456").digest("hex");
-        user._email.should.eql("brighthas@gmail.com");
-        user._fraction.should.eql(0);
-        user._nickname.should.eql("brighthas");
-        user._role.should.eql(User.roles.USER);
+        user.password.should.eql(md5.update("123456").digest("hex"));
+		
+        user.email.should.eql("brighthas@gmail.com");
+        user.fraction.should.eql(0);
+        user.nickname.should.eql("brighthas");
+        user.role.should.eql(User.roles.USER);
     });
 
     it("#updatePassword",function(){
-        (function(){
-            user.updatePassword("1222222","55555555");
-        }).should.throw();
-        user.updatePassword("123456","rrrrrr");
+		var old = user.password;
+        user.updatePassword("1222j222","55555555");
+		user.password.should.eql(old);
+		user.updatePassword("123456","rrrrrr");
+		(user.password === old).should.be.false;
     });
 
     it("#authorizeAdmin",function(){
-        user.authorizeAdmin();
-        user._role.should.eql(User.roles.ADMIN);
-    });
-
-    it("#authorizeModerator",function(){
-        user.authorizeModerator();
-        user._role.should.eql(User.roles.MODERATOR);
-    });
-
-    it("#authorizeUser",function(){
-        user.authorizeUser();
-        user._role.should.eql(User.roles.USER);
+		user.role = 4;
+        user.role.should.eql(User.roles.USER);
+		user.role = 1;
+        user.role.should.eql(User.roles.ADMIN);
+		
     });
 
     it("#plus",function(){
         user.plus(12);
         user.plus(3);
-        user._fraction.should.eql(15);
+        user.fraction.should.eql(15);
     });
 })

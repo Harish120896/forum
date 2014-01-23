@@ -1,7 +1,10 @@
 var should = require("should")
-    , domain = require("../domain")
-    , userRepo = domain._my.repos.User
-    , columnRepo = domain._my.repos.Column;
+    , domain = require("../domain");
+	
+	domain.seal();
+	
+	
+    var userRepo = domain._my.repos.User;
 
 describe("repos", function () {
 
@@ -24,21 +27,36 @@ describe("repos", function () {
         })
     });
 
+	var aggre;
+
     it("user repository _data2aggre",function(){
-        var aggre = userRepo._data2aggre({
+        aggre = userRepo._data2aggre({
             id:"id001",
             nickname: "leo",
             loginname: "brighthas",
             password: "111111",
-            email: "brighthas@gmail.com"});
-        aggre._id.should.eql("id001");
-        aggre._nickname.should.eql("leo");
-        aggre._loginname.should.eql("brighthas");
-        aggre._password.should.eql("111111");
-        aggre._email.should.eql("brighthas@gmail.com");
+            email: "brighthas@gmail.com",
+			createTime:new Date(),
+			fraction:0
+		});
+        aggre.id.should.eql("id001");
+        aggre.nickname.should.eql("leo");
+        aggre.loginname.should.eql("brighthas");
+        aggre.password.should.eql("111111");
+        aggre.email.should.eql("brighthas@gmail.com");
 
     })
+	
+	it("user repository _aggre2data",function(){
+		var data = userRepo._aggre2data(aggre);
+        aggre.id.should.eql("id001");
+        aggre.nickname.should.eql("leo");
+        aggre.loginname.should.eql("brighthas");
+        aggre.password.should.eql("111111");
+        aggre.email.should.eql("brighthas@gmail.com");
+	})
 
+	/**
     it("cloumn repository create", function () {
 
         columnRepo.create({
@@ -50,6 +68,7 @@ describe("repos", function () {
         });
 
     });
+	*/
 
 
 
