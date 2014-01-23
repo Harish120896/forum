@@ -24,7 +24,7 @@ var Reply = mongoose.model("Reply", new Schema({
     topicId: String,
     updateTime: Number,
     createTime: Number
-}))
+}));
 
 var Topic = mongoose.model("Topic", new Schema({
     id: String,
@@ -36,7 +36,7 @@ var Topic = mongoose.model("Topic", new Schema({
     columnId: String,
     updateTime: Number,
     createTime: Number
-}))
+}));
 
 var User = mongoose.model("User",new Schema({
     role : Number,
@@ -46,7 +46,7 @@ var User = mongoose.model("User",new Schema({
     password : String,
     email : String,
     createTime : Number
-}))
+}));
 
 var dbs = {
     User:User,

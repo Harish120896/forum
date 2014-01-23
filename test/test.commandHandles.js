@@ -1,5 +1,5 @@
 var should =require("should")
-    , domain = require("../domain")
+    , domain = require("../domain").seal
     , my = domain._my;
 
 describe("commandHandles",function(){

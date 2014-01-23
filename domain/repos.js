@@ -1,5 +1,4 @@
 var Node = require("tree-node")
-    ,check = require('validator').check
     ,crypto = require("crypto");
 
 module.exports = wrap;
@@ -10,32 +9,21 @@ function wrap(my) {
 
     topicRepo._create = function (args, callback) {
         var Topic = my.Aggres.Topic;
-        var topic = new Topic(args.title,args.body,args.authorId,args.columnId);
-        callback(null, topic);
+		var topic = new Topic(args);
+		if(topic.hasError()){
+			callback(topic.errors);
+		}else{
+	        callback(null, topic);
+		}
     }
 
     topicRepo._data2aggre = function (data) {
-		
         var Topic = my.Aggres.Topic;
-        var topic = new Topic(data.title,data.body,data.authorId,data.columnId);
-		var model = topic.model;
-        
-        var tree = new Node();
-        tree.reborn(data.replyTree);
-		
-		for(var k in data){
-			model.attrs[k] = model.dirty[k] = data[k];
-		}
-		
-        return topic;
+        return Topic.reborn(data);
     }
 
     topicRepo._aggre2data = function (aggre) {
-
-        var o = aggre.model.toJSON();
-		o.replyTree = aggre.model.replyTree().json;
-		return o;
-
+		return aggre.toJSON();
     }
 
 
@@ -44,31 +32,21 @@ function wrap(my) {
     replyRepo._create = function (args, callback) {
         var Reply = my.Aggres.Reply;
         var reply = new Reply(args);
-        callback(null, reply);
+		if(reply.hasError()){
+			callback(reply.errors);
+		}else{
+	        callback(null, reply);
+		}
     }
 
     replyRepo._data2aggre = function (data) {
 
         var Reply = my.Aggres.Reply;
-        var reply = new Reply(data);
-        reply._id = data.id;
-        reply._updateTime = data.updateTime;
-        reply._createTime = data.createTime;
-
-        return reply;
+		return Reply.reborn(data);
     }
 
     replyRepo._aggre2data = function (aggre) {
-        return {
-            id: aggre.id,
-            title: aggre._title,
-            body: aggre._body,
-            authorId: aggre._authorId,
-            parentId: aggre._parentId,
-            topicId: aggre._topicId,
-            updateTime: aggre._updateTime,
-            createTime: aggre._createTime
-        }
+        return aggre.toJSON();
     }
 
 
@@ -76,18 +54,22 @@ function wrap(my) {
 
     columnRepo._create = function (args, callback) {
         var Column = my.Aggres.Column;
-        var column = new Column(args.name, args.des);
-        callback(null, column);
+        var column = new Column(args);
+		if(column.hasError()){
+	        callback(column.errors);
+			
+		}else{
+			callback(null,column)
+		}
     }
 
     columnRepo._aggre2data = function (aggre) {
-		return aggre.model.toJSON();
+		return aggre.toJSON();
     }
 
     columnRepo._data2aggre = function (data) {
-        var aggre = new my.Aggres.Column(data.name, data.des);
-		aggre.model.set(data);
-        return aggre;
+        var Column = my.Aggres.Column;
+        return Column.reborn(data);
     }
 
     var userRepo = new my.Repository("User");

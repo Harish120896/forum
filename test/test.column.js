@@ -38,7 +38,7 @@ describe("column",function(){
     it("#updateInfo",function(){
 
 		column.updateInfo('abcde','fdfd');
-        column .name.should.eql("abcde");
+
         column.des.should.eql("fdfd");
         
     })
