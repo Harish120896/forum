@@ -6,9 +6,10 @@ domain.register(
 	require("./User"),
     require("./Topic"), 
 	require("./Reply"),
+	require("./Message"),
     "get", function () {
     },
-    // "listener", require("./eventHandles"),
+    "listener", require("./eventHandles"),
     "repository", require("./repos"),
     "commandHandle", require("./commandHandles"),
     "service", require("./services")

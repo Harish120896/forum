@@ -9,5 +9,5 @@ function wrap(my){
 
     }
 
-    return [hande1];
+    return [handle1];
 }

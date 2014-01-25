@@ -2,7 +2,7 @@ var mongoose = require("mongoose"),
     Schema = mongoose.Schema;
 
 // test connection
-mongoose.connect("mongodb://localhost/testdb");
+mongoose.connect("mongodb://localhost/testdb2");
 
 var Column = mongoose.model("Column", new Schema({
     name: String,
@@ -48,11 +48,21 @@ var User = mongoose.model("User",new Schema({
     createTime : Number
 }));
 
+var Message = mongoose.model("Message",new Schema({
+	authorId:String,
+	title:String,
+	body:String,
+	targetId:String,
+	createTime:Number,
+	havesee:Boolean
+}));
+
 var dbs = {
     User:User,
     Topic:Topic,
     Column:Column,
-    Reply:Reply
+    Reply:Reply,
+	Message:Message
 }
 
 module.exports = {

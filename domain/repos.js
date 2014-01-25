@@ -98,6 +98,26 @@ function wrap(my) {
     userRepo._data2aggre = function (data) {
         return my.Aggres.User.reborn(data);
     }
+	
+	var messageRepo = new my.Repository("Message");
+	
+	
+	messageRepo._create = function(args,callback){
+		var msg = new my.Aggres.Message(args);
+		if(msg.hasError()){
+			callback(msg.errors);
+		}else{
+			callback(null,msg);
+		}
+	}
+	
+	messageRepo._data2aggre = function(data){
+		return my.Aggre.Message.reborn(data);
+	}
 
-    return [replyRepo, columnRepo, topicRepo, userRepo];
+	messageRepo._aggre2data = function(aggre){
+		return aggre.toJSON();	
+	}
+
+    return [replyRepo, columnRepo, topicRepo, userRepo,messageRepo];
 }

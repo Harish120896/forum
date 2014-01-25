@@ -18,6 +18,8 @@ function wrap(my) {
 
 	User
 		.attr("id")
+		.attr("follows",{type:"array",default:[]})
+		.attr("watchers",{type:"array",default:[]})
 		.attr("nickname", {
 			required: true
 		})
@@ -58,6 +60,56 @@ function wrap(my) {
 			this.fraction = this.fraction + num;
 			return this.errors;
 		})
+		.method("report",function(){
+			this.plus(5);
+		})
+		.method("follow",function(uid){
+			var self = this;
+			
+			my.repos.User.get(uid,function(user){
+				if(user){
+					
+					var follows = self.follows;
+			
+					if(follows.indexOf(uid) === -1){
+						follows.push(uid);
+						self.follows = follows;
+					}
+					
+					var watchers = user.watchers;
+					if(watchers.indexOf(self.id) === -1){
+						watchers.push(self.id);	
+						user.watchers = watchers;
+					}
+					
+				}
+			})
+		})
+		.method("unfollow",function(uid){
+			
+			var self = this;
+			
+			my.repos.User.get(uid,function(user){
+				
+				var follows = self.follows;
+		
+				var findex = follows.indexOf(uid);
+				
+				if(findex !== -1){
+					follows.slice(findex,1);
+					self.follows = follows;
+				}
+				
+				if(user){
+					var watchers = user.watchers;
+					var windex = watchers.indexOf(self.id);
+					if(windex !== -1){
+						watchers.slice(windex,1);	
+						user.watchers = watchers;
+					}
+				}
+			})
+		})
 		.use(attr)
 		.on("creating",function(u){
 			// password transform
@@ -65,6 +117,7 @@ function wrap(my) {
 				var md5 = crypto.createHash('md5');
 				u.attrs.password = md5.update(u.attrs.password).digest("hex");
 			}
+			u.attrs.mailbox = new MailBox;
 		})
 		.on("changed",function(u,attrs){
 			my.publish("*.*.update","User",u.id,this.toJSON(u,Object.keys(attrs)));

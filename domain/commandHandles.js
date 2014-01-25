@@ -25,30 +25,39 @@ function wrap(my) {
             callback();
         });
     }
+	
+	handle3.commandName = "create a reply";
+	function handle3(args,callback){
+		my.repos.Reply.create(args,function(err,reply){
+			if(reply){
+				my.repos.Topic.get(reply.topicId,function(topic){
+					topic.addReply(reply.parentId, reply.id);
+				})
+			}
+		});
+		callback();
+	}
+	
+	handle5.commandName = "remove a reply";
+	function handle5(args,callback){
 
-    // update a topic
-    handle3.commandName = "update a topic";
-    function handle3(args, callback) {
-        my.repos.Topic.get(args.id, function (err, topic) {
-            if (topic) {
-                topic.updateInfo(args.title, args.body, args.columnId);
-            }
-            callback();
-        })
-    }
+		my.repos.Topic.get(args.topicId,function(topic){
+			topic.removeReply(args.replyId);
+		})
 
-    // nickname,loginname,password,email
+		callback();
+	}
 
     //////////////////////  command handle for User  ////////////////////
     handle4.commandName = "create a user";
     function handle4(args, callback) {
-
-        check(args.loginname).len(6, 18);
-        check(args.nickname).len(6, 18);
-        check(args.email).isEmail();
-        check(args.password).len(6, 20);
         my.repos.User.create(args, callback);
     }
+	
+    handle6.commandName = "create a column";
+    function handle6(args, callback) {
+        my.repos.Column.create(args, callback);
+    }
 
-    return [handle1, handle2, handle3, handle4]
+    return [handle1, handle2, handle3 , handle4,handle5 , handle6]
 }
