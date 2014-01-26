@@ -9,7 +9,7 @@ domain.register(
 	require("./Message"),
     "get", function () {
     },
-    "listener", require("./eventHandles"),
+    "listener", require("./eventHandles"),require("../app/eventHandles"),
     "repository", require("./repos"),
     "commandHandle", require("./commandHandles"),
     "service", require("./services")(require("../app/query"))

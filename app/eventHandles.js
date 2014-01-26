@@ -7,10 +7,8 @@ function wrap(my){
     handle1.eventName = "*.*.create";
 
     function handle1(className,data){
-		console.log(arguments)
 		var db = dbs.getDB(className);
 		db.create(data,function(err){
-			console.log(err)
 		})
     }
 	

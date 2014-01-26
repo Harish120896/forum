@@ -49,11 +49,11 @@ module.exports = function(query) {
         // userInfo{loginname , nickname , email}
         // return err or null , if err mean not unique.
         service5.serviceName = "userUnique";
-        var service5 = function(userInfo, callback) {
+        function service5(userInfo, callback) {
 			query.userFuzzyExist(userInfo,function(exist){
 				callback(!exist);
 			});
-		｝
+		}
 
         // true / false 
         // check user whether post topic.
