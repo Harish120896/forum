@@ -44,4 +44,28 @@ describe("User",function(){
         user.plus(3);
         user.fraction.should.eql(15);
     });
+	
+	var u1,u2;
+	
+	it("#follow",function(){
+        
+		domain._my.repos.User.create({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"},function(err,user){
+			u1 = user;
+		});
+        domain._my.repos.User.create({nickname:"leo",loginname:"leo",password:"123456",email:"leoddd@gmail.com"},function(err,user){
+			u2 = user;
+		});
+		
+		u1.follow(u2.id);
+		
+		u1.follows[0].should.eql(u2.id);
+		u2.watchers[0].should.eql(u1.id)
+		
+	})
+	
+	it("#unfollow",function(){
+		u1.unfollow(u2.id);
+		u1.follows.should.eql([]);
+		u2.watchers.should.eql([]);
+	})
 })

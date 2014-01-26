@@ -66,7 +66,7 @@ function wrap(my) {
 		.method("follow",function(uid){
 			var self = this;
 			
-			my.repos.User.get(uid,function(user){
+			my.repos.User.get(uid,function(err,user){
 				if(user){
 					
 					var follows = self.follows;
@@ -89,14 +89,13 @@ function wrap(my) {
 			
 			var self = this;
 			
-			my.repos.User.get(uid,function(user){
+			my.repos.User.get(uid,function(err,user){
 				
 				var follows = self.follows;
 		
 				var findex = follows.indexOf(uid);
-				
 				if(findex !== -1){
-					follows.slice(findex,1);
+					follows.splice(findex,1);
 					self.follows = follows;
 				}
 				
@@ -104,7 +103,7 @@ function wrap(my) {
 					var watchers = user.watchers;
 					var windex = watchers.indexOf(self.id);
 					if(windex !== -1){
-						watchers.slice(windex,1);	
+						watchers.splice(windex,1);	
 						user.watchers = watchers;
 					}
 				}
@@ -117,7 +116,6 @@ function wrap(my) {
 				var md5 = crypto.createHash('md5');
 				u.attrs.password = md5.update(u.attrs.password).digest("hex");
 			}
-			u.attrs.mailbox = new MailBox;
 		})
 		.on("changed",function(u,attrs){
 			my.publish("*.*.update","User",u.id,this.toJSON(u,Object.keys(attrs)));

@@ -81,7 +81,7 @@ function wrap(my) {
             }else{
                 var md5 = crypto.createHash('md5');
                 args.password = md5.update(args.password).digest("hex");
-                var user = new my.Aggres.User({nickname:args.nickname, loginname:args.loginname, password:args.password, email:args.email});
+                var user = new my.Aggres.User(args);
                 if(user.hasError()){
                 	callback(user.errors);
                 }else{
