@@ -44,6 +44,7 @@ function wrap(my) {
 		.attr("createTime", {
 			type: "date"
 		})
+		.attr("reportTime",{type:"date"})
 		.method("updatePassword", function(old,npass) {
 
 			var md5 = crypto.createHash('md5');
@@ -61,7 +62,11 @@ function wrap(my) {
 			return this.errors;
 		})
 		.method("report",function(){
-			this.plus(5);
+			var reportTime = this.reportTime;
+			var nowTime = new Date();
+			if(""+reportTime.getFullYear() + reportTime.getMonth() + reportTime.getDate() === ""+nowTime.getFullYear() + nowTime.getMonth() + nowTime.getDate() ){
+				this.plus(2);
+			}
 		})
 		.method("follow",function(uid){
 			var self = this;
@@ -116,6 +121,9 @@ function wrap(my) {
 				var md5 = crypto.createHash('md5');
 				u.attrs.password = md5.update(u.attrs.password).digest("hex");
 			}
+			
+			
+			
 		})
 		.on("changed",function(u,attrs){
 			my.publish("*.*.update","User",u.id,this.toJSON(u,Object.keys(attrs)));
@@ -130,7 +138,7 @@ function wrap(my) {
 		})
 
 	User.on("creating", function(user) {
-		user.attrs.createTime = new Date();
+		user.attrs.createTime = user.attrs.reportTime = new Date();
 	})
 
 	User.className = "User";

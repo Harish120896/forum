@@ -65,7 +65,14 @@ describe("User",function(){
 	
 	it("#unfollow",function(){
 		u1.unfollow(u2.id);
+		console.log(u1)
 		u1.follows.should.eql([]);
 		u2.watchers.should.eql([]);
 	})
+	
+	
+	it("#report",function(){
+		
+	})
+	
 })
