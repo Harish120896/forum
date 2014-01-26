@@ -59,19 +59,24 @@ describe("User",function(){
 		u1.follow(u2.id);
 		
 		u1.follows[0].should.eql(u2.id);
-		u2.watchers[0].should.eql(u1.id)
+		
+		u2.watchers[0].should.eql(u1.id);
 		
 	})
 	
 	it("#unfollow",function(){
 		u1.unfollow(u2.id);
-		console.log(u1)
 		u1.follows.should.eql([]);
 		u2.watchers.should.eql([]);
 	})
 	
 	
 	it("#report",function(){
+		u1.fraction.should.eql(0);
+		u1.report();
+		u1.report();
+		u1.report();
+		u1.fraction.should.eql(2);
 		
 	})
 	

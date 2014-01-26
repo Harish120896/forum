@@ -64,8 +64,9 @@ function wrap(my) {
 		.method("report",function(){
 			var reportTime = this.reportTime;
 			var nowTime = new Date();
-			if(""+reportTime.getFullYear() + reportTime.getMonth() + reportTime.getDate() === ""+nowTime.getFullYear() + nowTime.getMonth() + nowTime.getDate() ){
+			if(""+reportTime.getFullYear() + reportTime.getMonth() + reportTime.getDate() !== ""+nowTime.getFullYear() + nowTime.getMonth() + nowTime.getDate() ){
 				this.plus(2);
+				this.reportTime = new Date();
 			}
 		})
 		.method("follow",function(uid){
@@ -138,7 +139,8 @@ function wrap(my) {
 		})
 
 	User.on("creating", function(user) {
-		user.attrs.createTime = user.attrs.reportTime = new Date();
+		user.attrs.createTime = new Date();
+		user.attrs.reportTime = new Date(0);
 	})
 
 	User.className = "User";
