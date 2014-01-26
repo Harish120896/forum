@@ -12,7 +12,7 @@ domain.register(
     "listener", require("./eventHandles"),
     "repository", require("./repos"),
     "commandHandle", require("./commandHandles"),
-    "service", require("./services")
+    "service", require("./services")(require("../app/db"))
 ).openMethod(
 	"User.plus",
 	"User.attr",

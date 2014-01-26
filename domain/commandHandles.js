@@ -10,7 +10,13 @@ function wrap(my) {
     // create a topic.
     handle1.commandName = "create a topic";
     function handle1(args, callback) {
-        my.repos.Topic.create(args, callback);
+		my.services.postTopicCheck(args.authorId,function(pass){
+			if(pass){
+				my.repos.Topic.create(args, callback);
+			}else{
+				callback("have error");
+			}
+		})
     }
 
 
@@ -28,14 +34,22 @@ function wrap(my) {
 	
 	handle3.commandName = "create a reply";
 	function handle3(args,callback){
-		my.repos.Reply.create(args,function(err,reply){
-			if(reply){
-				my.repos.Topic.get(reply.topicId,function(topic){
-					topic.addReply(reply.parentId, reply.id);
-				})
+	
+		my.services.postReplyCheck(args.authorId,function(pass){
+			if(pass){
+				my.repos.Reply.create(args,function(err,reply){
+					if(reply){
+						my.repos.Topic.get(reply.topicId,function(topic){
+							topic.addReply(reply.parentId, reply.id);
+						})
+					}
+				});
 			}
+
 		});
+		
 		callback();
+		
 	}
 	
 	handle5.commandName = "remove a reply";
