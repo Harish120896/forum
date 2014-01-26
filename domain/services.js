@@ -1,12 +1,11 @@
 var check = require('validator').check,
     huskies = require("huskies"),
     lock = require("huskies-lock"),
-	oneday = require("./util/oneday"),
     findUser = require("./findUser"),
     step = require("step");
 
 
-module.exports = function(dbs) {
+module.exports = function(query) {
 
 
     return function wrap(my) {
@@ -49,49 +48,19 @@ module.exports = function(dbs) {
 
         // userInfo{loginname , nickname , email}
         // return err or null , if err mean not unique.
-        var service5 = huskies(function(userInfo, callback) {
-
-            step(
-                function() {
-                    findUser({
-                        loginname: userInfo.loginname
-                    }, this)
-                },
-                function(have) {
-                    if (have) throw new Error("loginname not unique");
-                    findUser({
-                        nickname: userInfo.nickname
-                    }, this);
-                },
-                function(have) {
-                    if (have) throw new Error("nickname not unique");
-                    findUser({
-                        nickname: userInfo.email
-                    }, this);
-                },
-                function(have) {
-                    if (have) throw new Error("email not unique");
-                    return null;
-                },
-                function(err) {
-                    callback(err);
-                }
-            )
-        }).use(lock);
         service5.serviceName = "userUnique";
-
+        var service5 = function(userInfo, callback) {
+			query.userFuzzyExist(userInfo,function(exist){
+				callback(!exist);
+			});
+		｝
 
         // true / false 
         // check user whether post topic.
         service6.serviceName = "postTopicCheck";
 
         function service6(userId, callback) {
-			
-			var date = new oneday();
-			
-			var db = dbs.getDB("Reply");
-			db.find().where({authorId:userId}).where('createTime').gt(date.startTime).lt(date.endTime)
-			.count(function(err,num){
+			query.topicCountByToday(userId,function(count){
 				if(num > 10){
 					callback(false);
 				}else{
@@ -105,17 +74,15 @@ module.exports = function(dbs) {
         service7.serviceName = "postReplyCheck";
 
         function service7(userId, callback) {
-			var date = new oneday();
 			
-			var db = dbs.getDB("Reply");
-			db.find().where({authorId:userId}).where('createTime').gt(date.startTime).lt(date.endTime)
-			.count(function(err,num){
+			query.replyCountByToday(userId,function(count){
 				if(num > 10){
 					callback(false);
 				}else{
 					callback(true);
 				}
 			})
+			
         }
 
         return [service1, service2, service4, service5, service6, service7];

@@ -75,9 +75,9 @@ function wrap(my) {
     var userRepo = new my.Repository("User");
 
     userRepo._create = function (args, callback) {
-        my.services.userUnique(args,function(err){
-            if(err){
-                callback(err);
+        my.services.userUnique(args,function(unique){
+            if(!unique){
+                callback("no unique");
             }else{
                 var md5 = crypto.createHash('md5');
                 args.password = md5.update(args.password).digest("hex");

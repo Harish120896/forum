@@ -1,4 +1,5 @@
 var dbs = require("./db");
+var oneday = require("./util/oneday");
 
 
 module.exports = {
@@ -24,16 +25,36 @@ module.exports = {
 		})
 	},
 	
-	topics:function(args,callback){
-		
+	userFuzzyExist:function(userInfo,callback){
+		var db = dbs.getDB("User");
+		var orq = [];
+	    for(var k in userInfo){
+			var kv = {};
+			kv[k] = userInfo[k];
+	    	orq.push(kv);
+	    }
+		db.find().or(orq).count(function(err,num){
+			callback(num ? true : false);
+		})
 	},
 	
-	topic:function(){
-		
+	replyCountByToday:function(authorId,callback){
+		var date = new oneday();
+		var db = dbs.getDB("Reply");
+		db.find().where({authorId:authorId}).where('createTime').gt(date.startTime).lt(date.endTime)
+		.count(function(err,num){
+			callback(num || 0);
+		})
 	},
 	
-	replys:function(){
-		
+	topicCountByToday:function(authorId,callack){
+		var date = new oneday();
+		var db = dbs.getDB("Topic");
+		db.find().where({authorId:authorId}).where('createTime').gt(date.startTime).lt(date.endTime)
+		.count(function(err,num){
+			callback(num || 0);
+		})
 	}
+	
 	
 }

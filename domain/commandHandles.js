@@ -73,5 +73,10 @@ function wrap(my) {
         my.repos.Column.create(args, callback);
     }
 
-    return [handle1, handle2, handle3 , handle4,handle5 , handle6]
+	handle7.commandName = "create a message";
+	function handle7(args,callback){
+		my.repos.Message.create(args,callback);
+	}
+	
+    return [ handle1, handle2, handle3 , handle4 ,handle5 , handle6, handle7 ]
 }

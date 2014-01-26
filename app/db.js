@@ -45,7 +45,8 @@ var User = mongoose.model("User",new Schema({
     fraction : Number,
     password : String,
     email : String,
-    createTime : Number
+    createTime : Number,
+	reportTime : Number
 }));
 
 var Message = mongoose.model("Message",new Schema({
