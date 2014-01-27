@@ -13,7 +13,7 @@ describe("User",function(){
     it("#new",function(){
         user = new User({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"});
         user.loginname.should.eql("brighthas");
-		
+				
         var md5 = crypto.createHash('md5');
         user.password.should.eql(md5.update("123456").digest("hex"));
 		
@@ -47,7 +47,7 @@ describe("User",function(){
 	
 	var u1,u2;
 	
-	it("#follow",function(done){
+	/*it("#follow",function(done){
         
 		domain._my.repos.User.create({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"},function(err,user){
 			u1 = user;        
@@ -68,7 +68,7 @@ describe("User",function(){
 
 		
 	})
-	
+		
 	it("#unfollow",function(){
 		u1.unfollow(u2.id);
 		u1.follows.should.eql([]);
@@ -84,5 +84,5 @@ describe("User",function(){
 		u1.fraction.should.eql(2);
 		
 	})
-	
+	*/
 })
