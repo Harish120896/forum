@@ -38,9 +38,13 @@ app.get("/",function(req,res){
     res.render("index")
 })
 
+app.get("/user",function(req,res){
+    res.render("user")
+})
+
 app.post("/user/create",function(req,res){
     domain.exec("create a user",req.body,function(){
-
+		
     })
 });
 

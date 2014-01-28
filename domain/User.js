@@ -30,6 +30,17 @@ function wrap(my) {
         .attr("nickname", {
             required: true
         })
+		.attr("sex",{
+			type:"boolean",
+			default:true
+		})
+		.attr("address",{
+			max:35
+		})
+		.attr("des",{
+			max:200,
+			default:""
+		})
         .attr("loginname", {
             min: 4,
             max: 16,
@@ -52,6 +63,8 @@ function wrap(my) {
             required: true,
             readonly: true
         })
+		// base64 image data  must < 150KB .
+		.attr("logo")
         .attr("fraction", {
             default: 0,
             type: "number"
@@ -62,6 +75,32 @@ function wrap(my) {
         .attr("reportTime", {
             type: "date"
         })
+		.method("updateInfo",function(data){
+			
+			var self = this;
+			
+			if(is.type(data) === "object"){
+				
+				var attrs = ["address","des","sex"];
+				
+				var keys = Object.keys(data);
+				keys = keys.filter(function(key){
+					return attrs.indexOf(key) !== -1;
+				});
+				
+				self.begin();
+				keys.forEach(function(key){
+					self[key] = data[key];
+				})
+				self.end();
+				
+			}else{
+				this.error("updateInfo","error");
+			}
+			
+			
+			return this.errors;
+		})
         .method("updatePassword", function(old, npass) {
 
             if (is.string(old) && is.string(npass)) {
@@ -151,6 +190,25 @@ function wrap(my) {
                 }
             }
         })
+		// logo validat
+		//  image base64 must cut base64 type head
+		.validate(function(user, keys){
+			
+			if(keys.indexOf("logo") !== -1){
+				
+				var logo = user.attrs["logo"];
+				if(is.string(logo) && logo.length > 0){
+					var buf = new Buffer(logo,"base64")
+					if(buf.length > 1024 * 150){
+						user.error("logo","error");
+					}
+				}else{
+					user.error("logo","error");
+				}
+				
+			}
+			
+		})
 
     User.on("creating", function(user) {
         user.attrs.createTime = new Date();
