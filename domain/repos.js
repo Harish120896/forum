@@ -118,6 +118,25 @@ function wrap(my) {
 	messageRepo._aggre2data = function(aggre){
 		return aggre.toJSON();	
 	}
+	
+	var infoRepo = new my.Repository("Info");
+	
+	infoRepo._create = function(args,callback){
+		var info = new my.Aggres.Info(args);
+		if(info.hasError()){
+			callback(info.errors);
+		}else{
+			callback(null,info);
+		}
+	}
+	
+	infoRepo._data2aggre = function(data){
+		return my.Aggre.Info.reborn(data);
+	}
 
-    return [replyRepo, columnRepo, topicRepo, userRepo,messageRepo];
+	infoRepo._aggre2data = function(aggre){
+		return aggre.toJSON();	
+	}
+
+    return [replyRepo, columnRepo, topicRepo, userRepo,messageRepo , infoRepo];
 }

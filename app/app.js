@@ -42,6 +42,14 @@ app.get("/user",function(req,res){
     res.render("user")
 })
 
+app.get("/topic",function(req,res){
+    res.render("topic")
+})
+
+app.get("/column",function(req,res){
+    res.render("column")
+})
+
 app.post("/user/create",function(req,res){
     domain.exec("create a user",req.body,function(){
 		

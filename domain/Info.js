@@ -5,25 +5,18 @@ var createModel = require("model-brighthas");
 
 function wrap(my) {
 
-    var Message = createModel("Message");
+    var Info = createModel("Info");
 
-    Message
+    Info
         .attr("id")
-        .attr("authorId", {
-            required: true
-        })
-        .attr("title", {
+        .attr("targetId", {
             required: true,
-            min: 2,
-            max: 20
+			readonly:true
         })
         .attr("body", {
             required: true,
-            min: 2,
-            max: 200
-        })
-        .attr("targetId", {
-            required: true
+            max: 500,
+			readonly:true
         })
         .attr("createTime", {
             type: "date"
@@ -38,12 +31,12 @@ function wrap(my) {
             }
         })
 
-    Message.on("creating", function(msg) {
-        msg.attrs.createTime = new Date();
+    Info.on("creating", function(info) {
+        info.attrs.createTime = new Date();
     })
 
-    Message.className = "Message";
+    Info.className = "Info";
 
-    return Message;
+    return Info;
 
 }
