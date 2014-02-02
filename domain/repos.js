@@ -75,12 +75,10 @@ function wrap(my) {
     var userRepo = new my.Repository("User");
 
     userRepo._create = function (args, callback) {
-        my.services.userUnique(args,function(unique){
+        my.services.userUnique({email:args.email},function(unique){
             if(!unique){
                 callback("no unique");
             }else{
-                var md5 = crypto.createHash('md5');
-                args.password = md5.update(args.password).digest("hex");
                 var user = new my.Aggres.User(args);
                 if(user.hasError()){
                 	callback(user.errors);

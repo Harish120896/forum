@@ -9,6 +9,7 @@ function wrap(my){
     function handle1(className,data){
 		var db = dbs.getDB(className);
 		db.create(data,function(err){
+			
 		})
     }
 	

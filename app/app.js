@@ -9,7 +9,12 @@ var ehs = require('./eventHandles');
 var domain = require("../domain");
 var path = require('path');
 
-domain.register("get",db.get,"listener",ehs).seal();
+var pw = require("png-word")();
+var r = require("random-word")("0123456789");
+
+
+
+domain.register("get",db.get).seal();
 
 
 
@@ -34,27 +39,43 @@ app.use(express.static(path.join(__dirname, 'public')));
 var middle = new Jsdm_middle(domain, query);
 app.use("/domain",middle.middle);
 
-app.get("/",function(req,res){
-    res.render("index")
-})
 
-app.get("/user",function(req,res){
-    res.render("user")
-})
+// refresh png number.
+app.get('/refresh',function(req,res){
 
-app.get("/topic",function(req,res){
-    res.render("topic")
-})
-
-app.get("/column",function(req,res){
-    res.render("column")
-})
-
-app.post("/user/create",function(req,res){
-    domain.exec("create a user",req.body,function(){
-		
-    })
+ var numtxt = req.session.validat_num = r.random(4);
+ pw.createPNG(numtxt,function(pngnum){
+  res.send(pngnum);	
+ });
+  
 });
+
+function validat_num(req,res,next){
+	if(req.body.validat_num && req.session.validat_num === req.body.validat_num){
+		req.validat_success = true;
+	}else{
+		req.validat_success = false;
+	}
+	next()
+}
+
+app.get("/reg",function(req,res){
+	var errors = req.session.errors;
+	delete req.session.errors;
+	
+    res.render("reg",{errors:errors || []})
+})
+
+app.post("/reg",validat_num,function(req,res){
+	if(req.validat_success){
+		domain.exec("create a user",req.body,function(){
+			console.log(arguments);
+		})
+	}else{
+		req.session.errors  = ["验证码错误！"]
+		res.redirect("/reg");
+	}
+})
 
 
 http.createServer(app).listen(app.get('port'), function(){

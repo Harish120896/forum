@@ -28,7 +28,9 @@ function wrap(my) {
             default: []
         })
         .attr("nickname", {
-            required: true
+			min:4,
+			max:16,
+            readonly: true
         })
 		.attr("sex",{
 			type:"boolean",
@@ -41,12 +43,6 @@ function wrap(my) {
 			max:200,
 			default:""
 		})
-        .attr("loginname", {
-            min: 4,
-            max: 16,
-            required: true,
-            readonly: true
-        })
         .attr("role", {
             required: true,
             type: "number",
@@ -81,7 +77,7 @@ function wrap(my) {
 			
 			if(is.type(data) === "object"){
 				
-				var attrs = ["address","des","sex"];
+				var attrs = ["nickname","address","des","sex"];
 				
 				var keys = Object.keys(data);
 				keys = keys.filter(function(key){
@@ -194,6 +190,8 @@ function wrap(my) {
 		//  image base64 must cut base64 type head
 		.validate(function(user, keys){
 			
+			var keys = []
+			
 			if(keys.indexOf("logo") !== -1){
 				
 				var logo = user.attrs["logo"];
@@ -215,9 +213,6 @@ function wrap(my) {
         user.attrs.reportTime = new Date(0);
     })
 	
-	User.on("created",function(user){
-		passTransform(user);
-	})
 	
 	function passTransform(u){
         // password transform
