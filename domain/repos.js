@@ -77,7 +77,7 @@ function wrap(my) {
     userRepo._create = function (args, callback) {
         my.services.userUnique({email:args.email},function(unique){
             if(!unique){
-                callback("no unique");
+                callback({"email":"邮箱已被注册"});
             }else{
                 var user = new my.Aggres.User(args);
                 if(user.hasError()){

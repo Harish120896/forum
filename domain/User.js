@@ -51,6 +51,7 @@ function wrap(my) {
         .attr("password", {
             min: 6,
             max: 25,
+			message:"密码长度 6~25 ",
             required: true
         })
         .attr("email", {
@@ -208,6 +209,10 @@ function wrap(my) {
 			
 		})
 
+	User.on("created",function(user){
+		passTransform(user);
+	})
+		
     User.on("creating", function(user) {
         user.attrs.createTime = new Date();
         user.attrs.reportTime = new Date(0);

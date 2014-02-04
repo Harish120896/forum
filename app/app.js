@@ -8,7 +8,8 @@ var query = require("./query");
 var ehs = require('./eventHandles');
 var domain = require("../domain");
 var path = require('path');
-
+var _ = require("underscore");
+var crypto = require("crypto");
 var pw = require("png-word")();
 var r = require("random-word")("0123456789");
 
@@ -60,20 +61,47 @@ function validat_num(req,res,next){
 }
 
 app.get("/reg",function(req,res){
-	var errors = req.session.errors;
-	delete req.session.errors;
-	
-    res.render("reg",{errors:errors || []})
+    res.render("reg",{errors:[]})
 })
 
 app.post("/reg",validat_num,function(req,res){
 	if(req.validat_success){
-		domain.exec("create a user",req.body,function(){
-			console.log(arguments);
+		domain.exec("create a user",req.body,function(err,user){
+			if(err){
+				res.render("reg",{errors:_.values(err)});
+			}else{
+				res.send(user);
+			}
 		})
 	}else{
-		req.session.errors  = ["验证码错误！"]
-		res.redirect("/reg");
+		res.render("reg",{errors:["验证码错误"]});
+	}
+})
+
+app.get("/login",function(req,res){
+    res.render("login",{errors:[]})
+})
+
+app.post("/login",validat_num,function(req,res){
+	if(req.body.password){
+		if(req.validat_success){
+            var md5 = crypto.createHash('md5');
+			var pwd = md5.update(req.body.password).digest("hex");
+			query.userByEmail(req.body.email,function(user){
+				console.log(pwd)
+				console.log(user)
+				if(user && user.password === pwd){
+					//doto
+					res.send("login ok!")
+				}else{
+					res.render("login",{errors:["邮箱或密码错误"]})
+				}
+			})
+		}else{
+			res.render("login",{errors:["验证码错误"]});
+		}
+	}else{
+		res.render("login",{errros:["邮箱或密码错误"]})
 	}
 })
 

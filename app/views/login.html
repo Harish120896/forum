@@ -5,7 +5,7 @@
 	<div class="alert alert-danger"><%=err%></div>
 <%  }) %>
 
-<form role="form" action="/reg" method="post" class="col-sm-5" ng-controller="regCtrl">
+<form role="form" action="/login" method="post" class="col-sm-5" ng-controller="loginCtrl">
   <div class="form-group">
     <input type="email" class="form-control" name="email" placeholder="输入邮箱">
   </div>
@@ -20,7 +20,7 @@
 		   <a href="#" ng-click="refresh()"><span class="glyphicon glyphicon-repeat"></span></a></label>
   </div>
   <div class="form-group">
-    <button type="submit" class="btn btn-default">注册</button>
+    <button type="submit" class="btn btn-default">登录</button>
   </div>
 </form>
 
@@ -28,7 +28,7 @@
 
 <script>
 var app = angular.module("forumapp",[]);
-app.controller("regCtrl",function($scope){
+app.controller("loginCtrl",function($scope){
 	$scope.refresh = function(){
 		this.time = Date.now();
 	}

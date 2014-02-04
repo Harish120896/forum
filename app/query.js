@@ -25,6 +25,13 @@ module.exports = {
 		})
 	},
 	
+	userByEmail:function(email,callback){
+		var db = dbs.getDB("User");
+		db.findOne().where({email:email}).select("password").exec(function(err,rs){
+			callback(rs);
+		})
+	},
+	
 	userFuzzyExist:function(userInfo,callback){
 		var db = dbs.getDB("User");
 		var orq = [];
@@ -55,6 +62,5 @@ module.exports = {
 			callback(num || 0);
 		})
 	}
-	
 	
 }

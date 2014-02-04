@@ -70,7 +70,13 @@ function wrap(my) {
 	
     handle6.commandName = "create a column";
     function handle6(args, callback) {
-        my.repos.Column.create(args, callback);
+        my.repos.Column.create(args, function(err,user){
+        	if(user){
+        		callback(err,user.toJSON());
+        	}else{
+        		callback(err);
+        	}
+        });
     }
 
 	handle7.commandName = "create a message";
