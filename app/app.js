@@ -11,15 +11,25 @@ var path = require('path');
 var _ = require("underscore");
 var crypto = require("crypto");
 var pw = require("png-word")();
+var nodemailer = require("nodemailer");
+var validator = require("node-validator");
+var config = require("./config");
 var r = require("random-word")("0123456789");
-
-
 
 domain.register("get",db.get).seal();
 
-
+// test email push
+var transport = nodemailer.createTransport("SMTP", {
+    service: "QQ",
+    auth: {
+        user: config.sys_email,
+        pass: config.sys_email_pwd
+    }
+});
 
 var app = express();
+
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);
@@ -40,7 +50,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 var middle = new Jsdm_middle(domain, query);
 app.use("/domain",middle.middle);
 
-
 // refresh png number.
 app.get('/refresh',function(req,res){
 
@@ -60,8 +69,36 @@ function validat_num(req,res,next){
 	next()
 }
 
-app.get("/reg",function(req,res){
-    res.render("reg",{errors:[]})
+function cookieLogin(req,res,next){
+	if(req.session.user){
+		next();
+	}else{
+		if(req.cookies.user){
+			try{
+				var u = JSON.parse(req.cookies.user);
+				query.userByEmail(u.email,function(user){
+					if(user && user.password === u.password){
+						req.session.user = user;
+						next();
+					}else{
+						next();
+					}
+				})
+			}catch(e){
+				next();
+			}
+		}else{
+			next();
+		}
+	}
+}
+
+app.get("/reg",cookieLogin,function(req,res){
+	if(req.session.user){
+		res.redirect("/user");
+	}else{
+    	res.render("reg",{errors:[]});
+	}
 })
 
 app.post("/reg",validat_num,function(req,res){
@@ -70,7 +107,20 @@ app.post("/reg",validat_num,function(req,res){
 			if(err){
 				res.render("reg",{errors:_.values(err)});
 			}else{
-				res.send(user);
+				if(user.email === config.admin){
+					setTimeout(function(){
+						domain.call("User.becomeAdmin",user.id);
+						res.cookie('user', JSON.stringify({email:user.email,password:user.password}) , { maxAge: 1000*60*60*24*90 });
+						req.session.user = user.toJSON();
+						res.redirect("/user");
+					},1000);
+				}else{
+					res.cookie('user', JSON.stringify({email:user.email,password:user.password}) , { maxAge: 1000*60*60*24*90 });
+					req.session.user = user.toJSON();
+					res.redirect("/user");
+				}
+				
+				
 			}
 		})
 	}else{
@@ -78,8 +128,12 @@ app.post("/reg",validat_num,function(req,res){
 	}
 })
 
-app.get("/login",function(req,res){
-    res.render("login",{errors:[]})
+app.get("/login",cookieLogin,function(req,res){	
+	if(req.session.user){
+		res.redirect("back");
+	}else{
+    	res.render("login",{errors:[]});
+	}
 })
 
 app.post("/login",validat_num,function(req,res){
@@ -88,11 +142,10 @@ app.post("/login",validat_num,function(req,res){
             var md5 = crypto.createHash('md5');
 			var pwd = md5.update(req.body.password).digest("hex");
 			query.userByEmail(req.body.email,function(user){
-				console.log(pwd)
-				console.log(user)
 				if(user && user.password === pwd){
-					//doto
-					res.send("login ok!")
+					res.cookie('user', JSON.stringify({email:user.email,password:user.password}) , { maxAge: 1000*60*60*24*90 });
+					req.session.user = user;
+					res.redirect("/user");
 				}else{
 					res.render("login",{errors:["邮箱或密码错误"]})
 				}
@@ -105,6 +158,89 @@ app.post("/login",validat_num,function(req,res){
 	}
 })
 
+app.get("/fpwd_apply",function(req,res){
+	res.render("fpwd_apply");
+})
+
+app.post("/fpwd_apply",function(req,res){
+	
+	query.userByEmail(req.body.email,function(user){
+		if(user){
+			transport.sendMail({
+			    from: "xxxq <1405491181@qq.com>",
+			    to: "qqq <brighthas@gmail.com>",
+			    // Subject of the message
+			      subject: '更改密码', 
+
+			      // plaintext body
+			      text: '更改密码',
+
+			      // HTML body
+			      html:'<a href="http://localhost:3000/fpwd/'+user.email+"/"+user.password+'">点击更改密码</a>'
+   
+			},function(err){
+				res.render("fpwd_apply_success");
+			});
+		}else{
+			res.render("fpwd_apply");
+		}
+	});
+
+})
+
+app.get("/fpwd/:email/:code",cookieLogin,function(req,res){	
+	if(req.session.user){
+		res.redirect("back");
+	}else{
+    	res.render("fpwd",{errors:[],email:req.param("email"),code:req.param("code")});
+	}
+})
+
+app.post("/fpwd",validat_num,function(req,res){
+		
+	if(req.body.password){
+		if(req.validat_success){
+            var md5 = crypto.createHash('md5');
+			var pwd = md5.update(req.body.password).digest("hex");
+			query.userByEmail(req.body.email,function(user){
+				console.log(req.body.code);
+				console.log(user.password);
+				if(user && user.password === req.body.code){
+					domain.call("User.updatePassword",user.id,[req.body.password],function(err){
+						domain.call("User.hasError",user.id,[],function(has){
+							
+							if(has){
+								console.log(has);
+								console.log(err);
+								res.render("fpwd",{errors:["邮箱或验证信息错误，请重新申请。"]})
+							}else{
+								res.render("fpwd_success");
+							}
+						})
+					});
+				}else{
+					res.render("fpwd",{errors:["邮箱或验证信息错误"]})
+				}
+			})
+		}else{
+			res.render("fpwd",{errors:["验证码错误"]});
+		}
+	}else{
+		res.render("fpwd",{errros:["密码范围在 6～18 个字符"]})
+	}
+	
+})
+
+app.get("/user",function(req,res){
+	console.log(req.session.user);
+	res.render("user",{user:req.session.user});
+})
+
+app.get("/logout",function(req,res){
+	res.clearCookie("user");
+	req.session.user = null;
+	res.redirect("/");
+})
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

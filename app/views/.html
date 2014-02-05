@@ -1,0 +1,41 @@
+<% include header.html %>
+
+
+<% errors.forEach(function(err){ %>
+	<div class="alert alert-danger"><%=err%></div>
+<%  }) %>
+
+<form role="form" action="/reg" method="post" class="col-sm-5" ng-controller="regCtrl">
+  <div class="form-group">
+    <input type="email" class="form-control" name="email" placeholder="输入邮箱">
+  </div>
+  <div class="form-group">
+    <input type="password" class="form-control" name="password" placeholder="输入密码">
+  </div>
+  <div class="form-group row">
+      <div class="col-sm-7">
+        <input type="text" class="form-control" name="validat_num" placeholder="输入验证码">
+      </div>
+	  <label class="col-sm-5 control-label"><img ng-src="/refresh?{{time}}" />
+	  <a href="#" ng-click="refresh()"><span class="glyphicon glyphicon-repeat"></span></a></label>
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-default">注册</button>
+  </div>
+</form>
+
+<script>
+var app = angular.module("forumapp",[]);
+app.controller("regCtrl",function($scope){
+	$scope.refresh = function(){
+		this.time = Date.now();
+	}
+	$scope.refresh();
+})
+</script>
+
+<script>
+	
+</script>
+
+<% include footer.html %>

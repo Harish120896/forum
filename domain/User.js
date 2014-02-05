@@ -98,23 +98,9 @@ function wrap(my) {
 			
 			return this.errors;
 		})
-        .method("updatePassword", function(old, npass) {
-
-            if (is.string(old) && is.string(npass)) {
-                var md5 = crypto.createHash('md5');
-                var old2 = md5.update(old).digest("hex");
-
-                if (this.password === old2 && old !== npass) {
-                    this.password = npass;
-                } else {
-                    this.error("password", "update error");
-                }
-            } else {
-                this.error("password", "update error");
-            }
-
-            return this.errors;
-
+        .method("updatePassword", function(npass) {
+			this.password = npass;
+			return this.errors;
         })
         .method("plus", function(num) {
             this.fraction = this.fraction + num;
@@ -151,9 +137,7 @@ function wrap(my) {
             })
         })
         .method("unfollow", function(uid) {
-
             var self = this;
-
             my.repos.User.get(uid, function(err, user) {
 
                 var follows = self.follows;
@@ -174,7 +158,16 @@ function wrap(my) {
                 }
             })
         })
-		
+		.method("becomeModerator",function(){
+			this.role = User.roles.MODERATOR;
+		})
+		.method("becomeAdmin",function(){
+			
+			this.role = User.roles.ADMIN;
+		})
+		.method("becomeUser",function(){
+			this.role = User.roles.USER;
+		})
         .on("changed", function(u, attrs) {
 			passTransform(u);
             my.publish("*.*.update", "User", u.id, this.toJSON(u, Object.keys(attrs)));

@@ -27,7 +27,7 @@ module.exports = {
 	
 	userByEmail:function(email,callback){
 		var db = dbs.getDB("User");
-		db.findOne().where({email:email}).select("password").exec(function(err,rs){
+		db.findOne().where({email:email}).exec(function(err,rs){
 			callback(rs);
 		})
 	},
