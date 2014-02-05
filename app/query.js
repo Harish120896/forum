@@ -20,7 +20,7 @@ module.exports = {
 	
 	userById:function(id,callback){
 		var db = dbs.getDB("User");
-		db.find().exec(function(err,rs){
+		db.findOne({id:id}).exec(function(err,rs){
 			callback(rs);
 		})
 	},

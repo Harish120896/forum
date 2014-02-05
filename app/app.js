@@ -210,8 +210,6 @@ app.post("/fpwd",validat_num,function(req,res){
 						domain.call("User.hasError",user.id,[],function(has){
 							
 							if(has){
-								console.log(has);
-								console.log(err);
 								res.render("fpwd",{errors:["邮箱或验证信息错误，请重新申请。"]})
 							}else{
 								res.render("fpwd_success");
@@ -240,6 +238,48 @@ app.get("/logout",function(req,res){
 	res.clearCookie("user");
 	req.session.user = null;
 	res.redirect("/");
+})
+
+app.get("/upwd",function(req,res){
+	if(req.session.user){
+    	res.render("upwd",{errors:[]});
+	}else{
+		res.redirect("/login");
+	}
+})
+
+app.post("/upwd",validat_num,function(req,res){
+		
+	if(req.session.user){
+		if(req.validat_success){
+            var md5 = crypto.createHash('md5');
+			var oldpwd = md5.update(req.body.oldpassword).digest("hex");
+			query.userById(req.session.user.id,function(user){
+				if(user){
+					if(user.password === oldpwd){
+						domain.call("User.updatePassword",user.id,[req.body.password],function(err){
+							domain.call("User.hasError",user.id,[],function(has){
+								if(has){
+									res.render("upwd",{errors:_.values(err)});
+								}else{
+									res.render("upwd_success");
+								}
+							})
+						})
+					}else{
+						res.render("upwd",{errors:["密码输入错误！"]})
+					}
+				}else{
+					res.render("upwd",{errors:["不明错误！"]})
+				}
+			});
+		}else{
+			res.render("upwd",{errors:["验证码错误"]});
+		}
+	}else{
+		res.redirect("/login");
+	}
+	
 })
 
 http.createServer(app).listen(app.get('port'), function(){
