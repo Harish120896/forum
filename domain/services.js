@@ -45,7 +45,6 @@ module.exports = function(query) {
             }
         }
 
-
         // userInfo{loginname , nickname , email}
         // return err or null , if err mean not unique.
         service5.serviceName = "userUnique";

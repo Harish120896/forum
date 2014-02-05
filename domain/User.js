@@ -4,6 +4,7 @@ module.exports = wrap;
 var crypto = require("crypto"),
     createModel = require("model-brighthas"),
     is = require("istype"),
+	q = require("q"),
     attr = require("./plugin/attr");
 
 function wrap(my) {
@@ -28,10 +29,9 @@ function wrap(my) {
             default: []
         })
         .attr("nickname", {
-			min:4,
-			max:16,
-            readonly: true
-        })
+			min:2,
+			max:15
+	        })
 		.attr("sex",{
 			type:"boolean",
 			default:true
@@ -78,7 +78,7 @@ function wrap(my) {
 			
 			if(is.type(data) === "object"){
 				
-				var attrs = ["nickname","address","des","sex"];
+				var attrs = ["address","des","sex"];
 				
 				var keys = Object.keys(data);
 				keys = keys.filter(function(key){
@@ -95,8 +95,24 @@ function wrap(my) {
 				this.error("updateInfo","error");
 			}
 			
-			
 			return this.errors;
+		})
+		.method("updateNickname",function(nickname){
+			var deferred = q.defer();
+			var self = this;
+			my.services.userUnique(nickname,function(unique){
+				if(unique){
+					self.nickname = nickname;
+					if(self.hasError()){
+						deferred.resolve(self.errors);
+					}else{
+						deferred.resolve();
+					}
+				}else{
+					deferred.resolve();
+				}
+			})
+			return deferred.promise;
 		})
         .method("updatePassword", function(npass) {
 			this.password = npass;

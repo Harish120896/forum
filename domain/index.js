@@ -19,6 +19,8 @@ domain.register(
 	"User.becomeAdmin",
 	"User.becomeModerator",
 	"User.hasError",
-	"User.becomeUser"
+	"User.becomeUser",
+	"User.updateInfo",
+	"User.updateNickname"
 )
 module.exports = domain;

@@ -7,7 +7,7 @@ module.exports = {
 	columns:function(args,callback){
 		var db = dbs.getDB("Column");
 		db.find().exec(function(err,rs){
-			callback(rs);
+			callback(rs || []);
 		})
 	},
 	
@@ -31,6 +31,15 @@ module.exports = {
 			callback(rs);
 		})
 	},
+	
+	
+	userByNick:function(nick,callback){
+		var db = dbs.getDB("User");
+		db.findOne().where({nickname:nick}).exec(function(err,rs){
+			callback(rs);
+		})
+	},
+	
 	
 	userFuzzyExist:function(userInfo,callback){
 		var db = dbs.getDB("User");

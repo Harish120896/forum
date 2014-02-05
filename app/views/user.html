@@ -3,7 +3,7 @@
 <% include breadcrumbs.html %>
 
 <ul class="nav nav-tabs">
-  <li><a href="#home" data-toggle="tab">基本资料</a></li>
+  <li><a href="#info" data-toggle="tab">基本资料</a></li>
   <li><a href="#profile" data-toggle="tab">主题帖</a></li>
   <li><a href="#messages" data-toggle="tab">回复帖</a></li>
   <li><a href="#settings" data-toggle="tab">私信</a></li>
@@ -12,10 +12,46 @@
 </ul>
 
 <!-- Tab panes -->
-<div class="tab-content">
-  <div class="tab-pane active" id="home">
+<div class="tab-content"> 
+  <div class="tab-pane active" id="info" ng-controller="infoCtrl">
 	  
-	  
+	  <table class="table table-striped">
+		  <tr>
+			  <td>昵称</td>
+			  <td>
+				  <div ng-show="nickEditErrorShow" class="alert">2～16个字符</div>
+				  <div ng-show="nickEditShow"><input type="text" ng-model="nickname" /><button ng-click="nickEditOk()">确定</button></div>
+				  <div ng-click="edit()" ng-show="!nickEditShow">{{nickname || '<%=user.nickname%>'}}</div>
+			  </td>
+		  </tr>
+		  <tr>
+			  <td>个人描述</td>
+			  <td><%=user.des%></td>
+		  </tr>
+		  <tr>
+			  <td>性别</td>
+			  <td>
+				  <%=user.sex?"男":"女"%>
+				  <select ng-model="role" ng-options="c.name for c in colors">
+				      <option value="">-- choose color --</option>
+				  </select>
+			  </td>
+		  </tr>
+		  <tr>
+			  <td>身份</td>
+			  <td>
+				  <%if(user.role === 0){%>
+					  用户
+				  <%}%>
+				  <%if(user.role === 1){%>
+					  终极管理员
+				  <%}%>
+				  <%if(user.role === 0){%>
+					  版主
+				  <%}%>
+			  </td>
+		  </tr>
+	  </table>
 	  
   </div>
   <div class="tab-pane" id="profile">
@@ -34,5 +70,35 @@
 	  settings
   </div>
 </div>
+
+
+<script>
+var app = angular.module("forumapp",[]);
+
+app.controller("infoCtrl",function($scope,$http){
+	
+	$scope.nickEditShow = false;
+	
+	$scope.edit = function(){
+		this.nickEditShow = true;
+	}
+	
+	$scope.nickEditOk = function(){
+		var oldnick = this.nickname;
+		$http.post("/user/updateNickname",{nickname:$scope.nickname}).success(function(err){
+			if(err){
+				$scope.nickEditErrorShow = true;
+			}else{
+				$scope.nickEditShow = false;
+				$scope.nickEditErrorShow = false;
+				
+			}
+		})
+		
+	}
+});
+
+
+</script>
 
 <% include footer.html %>

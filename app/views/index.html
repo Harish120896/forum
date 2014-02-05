@@ -1,83 +1,57 @@
 <% include header.html %>
 
-	  <div class="panel panel-success">
-		  <div class="panel-heading"> HTML5 讨论 </div>
-		  	 
-			  <ul class="list-group">
-    			    <a href="#" class="list-group-item">
-    			      <span class="badge pull-left">14 / 3 </span>
-    			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-    			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-    			    </a>   			   
-	  			    <a href="#" class="list-group-item">
-	  			      <span class="badge pull-left">14 / 3 </span>
-	  			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-	  			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-	  			    </a>   			   
-	  			    <a href="#" class="list-group-item">
-	  			      <span class="badge pull-left">14 / 3 </span>
-	  			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-	  			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-	  			    </a>   			   
-	  			    <a href="#" class="list-group-item">
-	  			      <span class="badge pull-left">14 / 3 </span>
-	  			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-	  			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-	  			    </a>   			   
-	  			    <a href="#" class="list-group-item">
-	  			      <span class="badge pull-left">14 / 3 </span>
-	  			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-	  			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-	  			    </a>   			   
-	  			    <a href="#" class="list-group-item">
-	  			      <span class="badge pull-left ">14 / 3 </span>
-	  			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-	  			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-	  			    </a>   			   
-	  			    <a href="#" class="list-group-item">
-	  			      <span class="badge pull-left">14 / 3 </span>
-	  			      <span class="badge pull-right"> brighthas </span>
-				  
-				  
-	  			      Cras justo odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odiojusto odio
-	  			    </a>   			   
-  		
-			
-		    
-			  </ul>		  
-	  </div>
-	  <div class="panel panel-default">
-		  <div class="panel-heading"> title </div>
+<div ng-controller="ctrl">
+	
+	<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createColumnDialog">
+		创建新栏目
+	</button>
+	
+	<% columns.forEach(function(col){ %>
+		<div class="panel panel-default">
+		  <div class="panel-heading"><%=col.name%></div>
 		  <div class="panel-body">
-			  
+	  		  <%=col.des%>
 		  </div>
-		  
+  
+		</div>		
+	<% }) %>
+	
+	<!-- Modal -->
+	<div class="modal fade" id="createColumnDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title" id="myModalLabel">创建新栏目</h4>
+	      </div>
+	      <div class="modal-body">
+			  <input type="text" placeholder="栏目名称" ng-model="name" />
+			  <textarea ng-model="des"></textarea>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" ng-click="createColumn()" class="btn btn-primary">创建</button>
+	      </div>
+	    </div>
 	  </div>
-	  <div class="panel panel-default">
-		  <div class="panel-heading"> title </div>
-		  <div class="panel-body">
-			  
-		  </div>
-		  
-	  </div>
-	  <div class="panel panel-default">
-		  <div class="panel-heading"> title </div>
-		  <div class="panel-body">
-			  
-		  </div>
-		  
-	  </div>
+	</div>
+		
+</div>	  
+
+
+
+<script>
+  var app = angular.module("forumapp",[]);
+  app.controller("ctrl",function($scope,$http){
+	  $scope.createColumn = function(){
+	  	  $http.post("/column/create",{name:$scope.name,des:$scope.des})
+		  .success(function(data){
+			  setTimeout(function(){
+				  window.localhost.href= "/";
+			  },1000)
+		  })
+	  }
+  });
+</script>
 
 <% include footer.html %>
