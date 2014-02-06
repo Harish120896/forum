@@ -21,6 +21,8 @@ domain.register(
 	"User.hasError",
 	"User.becomeUser",
 	"User.updateInfo",
-	"User.updateNickname"
+	"User.updateNickname",
+	"Column.updateName",
+	"Column.updateDes"
 )
 module.exports = domain;

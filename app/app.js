@@ -402,10 +402,33 @@ app.post("/upwd", validat_num, function(req, res) {
 })
 
 app.post("/column/create", function(req, res) {
+	if(req.session.user && req.session.user.role === 1){
+		domain.exec("create a column", req.body, function(err) {
+
+		})
+	}
     res.send();
-    domain.exec("create a column", req.body, function(err) {
+})
+
+app.post("/column/:id/updateName",function(req,res){
+	if(req.session.user && req.session.user.role === 1){
 		
-    })
+		domain.call("Column.updateName", req.param("id"), [req.body.name],function(err) {
+		})
+	}
+    res.send();
+})
+
+
+app.post("/column/:id/updateDes",function(req,res){
+
+	if(req.session.user && req.session.user.role === 1){
+		console.log(222)
+		domain.call("Column.updateDes", req.param("id"), [req.body.des],function(err) {
+
+		})
+	}
+    res.send();
 })
 
 http.createServer(app).listen(app.get('port'), function() {

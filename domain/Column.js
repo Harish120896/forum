@@ -7,7 +7,7 @@ module.exports = wrap;
 function wrap(my) {
 
     var Column = createModel("Column")
-        .attr('id')
+        .attr('id',{default:uid(),readonly:true})
         .attr("name", {
             type: "string",
             required: true
@@ -31,9 +31,13 @@ function wrap(my) {
     .on("creating", function(column) {
         column.attrs.createTime = column.attrs.updateTime = new Date();
     })
+	
+	.on("changing",function(column,attrs){
+		attrs.updateTime = new Date;
+	})
 
     .on("changed", function(column, attrs) {
-        my.publish("*.*.update", "Column", column.id, this.toJSON(column, Object.keys(attrs)));
+        my.publish("*.*.update", "Column", column.id, column.toJSON());
     })
 
     .method("up", function() {
@@ -50,6 +54,16 @@ function wrap(my) {
 
     .method("access", function(readerId) {
         this.accessNum = this.accessNum + 1;
+    })
+
+    .method("updateName", function(name) {
+        this.name = name;
+        return this.errors;
+    })
+	
+    .method("updateDes", function(des) {
+        this.des = des;
+        return this.errors;
     })
 
     .method("updateInfo", function(name, des) {
