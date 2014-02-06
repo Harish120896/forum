@@ -2,7 +2,7 @@ module.exports = function OneDay(date){
 	
 	var date = date || new Date();
 		
-	date = new Date(date.getFullYear(), date.getMonth(), date.Date());
+	date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 	
 	this.startTime = date.getTime();
 	

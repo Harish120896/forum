@@ -11,6 +11,20 @@ module.exports = {
 		})
 	},
 	
+	column:function(args,callback){
+		var db = dbs.getDB("Column");
+		db.findOne({id:args.id}).exec(function(err,rs){
+			callback(rs);
+		})
+	},
+	
+	topicsByColumn:function(args,callback){
+		var db = dbs.getDB("Topic");
+		db.find({columnId:args.columnId}).exec(function(err,rs){
+			callback(rs || []);
+		})
+	},
+	
 	users:function(args,callback){
 		var db = dbs.getDB("User");
 		db.find().exec(function(err,rs){
@@ -63,7 +77,7 @@ module.exports = {
 		})
 	},
 	
-	topicCountByToday:function(authorId,callack){
+	topicCountByToday:function(authorId,callback){
 		var date = new oneday();
 		var db = dbs.getDB("Topic");
 		db.find().where({authorId:authorId}).where('createTime').gt(date.startTime).lt(date.endTime)

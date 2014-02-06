@@ -431,6 +431,41 @@ app.post("/column/:id/updateDes",function(req,res){
     res.send();
 })
 
+app.get("/column/:id",function(req,res){
+	query.column({id:req.param("id")},function(col){
+		if(col){
+			query.topicsByColumn({columnId:col.id},function(rs){
+				res.render("column",{column:col,topics:rs});			
+			});	
+		}else{
+			res.send(404);
+		}
+	})
+})
+
+app.get("/topic/create",validat_num, cookieLogin,function(req,res){
+	if(req.session.user){
+		query.columns({},function(cols){
+			res.render("editTopic",{columns:cols});
+		})
+	}else{
+		res.redirect("/login");
+	}
+})
+
+app.post("/topic/create",function(req,res){
+	if(req.session.user){
+		req.body.authorId = req.session.user.id;
+		domain.exec("create a topic",req.body);
+		// doto
+		setTimeout(function(){
+			res.redirect("/column/"+req.body.columnId);
+		});
+	}else{
+		res.redirect("/login");
+	}
+})
+
 http.createServer(app).listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));
 });

@@ -2,13 +2,13 @@
 <% include breadcrumbs.html %>
 
 <div class="panel panel-info">
-	<div class="panel-heading"> Nodejs 技术 </div>
+	<div class="panel-heading"> <%=column.name%> </div>
     <table class="table">
-		<tr>
-			<td>1/20</td>
-			<td>主题主题主题主题主题主题主题主题主题主题</td>
-			<td></td>
-		</tr>
+		<% topics.forEach(function(topic){ %>
+			<tr>
+				<td><%=topic.title%></td>
+			</tr>
+		<% }) %>
     </table>
 </div>
 

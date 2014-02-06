@@ -60,7 +60,8 @@ module.exports = function(query) {
 
         function service6(userId, callback) {
 			query.topicCountByToday(userId,function(count){
-				if(num > 10){
+				console.log(count)
+				if(count > 10){
 					callback(false);
 				}else{
 					callback(true);
