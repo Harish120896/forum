@@ -8,11 +8,11 @@
 	
 	<% columns.forEach(function(col){ %>
 		<div class="panel panel-default">
-		  <div class="panel-heading" columnid="<%=col.id%>" coledit="name">
-			 <%=col.name%> 
+		  <div class="panel-heading">
+			 <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a>
 		  </div>
-		  <div class="panel-body"  columnid="<%=col.id%>" coledit="des">
-	  		  <%=col.des%>
+		  <div class="panel-body">
+			  <a href="/column/<%=col.id%>"><div columnid="<%=col.id%>" coledit="des"><%=col.name%></div></a>
 		  </div>
   
 		</div>		

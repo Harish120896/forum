@@ -1,6 +1,7 @@
 var domain = require("jsdm")();
 
 domain.register(
+	"get":require("../app/db"),
     "AggreClass", 
 	require("./Column"), 
 	require("./User"),
@@ -22,7 +23,11 @@ domain.register(
 	"User.becomeUser",
 	"User.updateInfo",
 	"User.updateNickname",
+	
 	"Column.updateName",
-	"Column.updateDes"
-)
+	"Column.updateDes",
+	
+	"Topic.updateInfo"
+).seal();
+
 module.exports = domain;

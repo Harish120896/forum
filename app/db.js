@@ -31,7 +31,7 @@ var Topic = mongoose.model("Topic", new Schema({
     title: String,
     body: String,
     authorId: String,
-    replyTree: String,
+    replyTree: {},
     accessNum: Number,
     columnId: String,
     updateTime: Number,

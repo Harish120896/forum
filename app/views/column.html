@@ -6,7 +6,7 @@
     <table class="table">
 		<% topics.forEach(function(topic){ %>
 			<tr>
-				<td><%=topic.title%></td>
+				<td><%=topic.title%> <a class="button" href="/topic/update/<%=topic.id%>">update</a> </td>
 			</tr>
 		<% }) %>
     </table>
