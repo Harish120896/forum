@@ -4,7 +4,6 @@ var path = require('path');
 
 var _ = require("underscore");
 var crypto = require("crypto");
-var pw = require("png-word")();
 var nodemailer = require("nodemailer");
 var validator = require("node-validator");
 
@@ -15,7 +14,7 @@ var topicCtrl = require("./controller/topic");
 var validator = require("./validator");
 
 var config = require("./config");
-var r = require("random-word")("0123456789");
+
 var data = require("./data");
 
 // test email push

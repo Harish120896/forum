@@ -1,4 +1,6 @@
 var query = require("./query");
+var r = require("random-word")("0123456789");
+var pw = require("png-word")();
 
 module.exports = {
 	cookieLogin:function(req, res, next) {
@@ -23,5 +25,11 @@ module.exports = {
 	            next();
 	        }
 	    }
-	}		
+	},
+	refreshValidatNum:function(req,res){
+	    var numtxt = req.session.validat_num = r.random(4);
+	    pw.createPNG(numtxt, function(pngnum) {
+	        res.send(pngnum);
+	    });		
+	}
 }

@@ -2,22 +2,32 @@ var db = require("./db");
 
 module.exports = {
 	user:function(){
-		var keys = [].concat.apply(arguments);
+
+		var keys = arguments;
+		
 		var udb = db.getDB("User");
+		
 		return function(req,res,next){
+			
 			var qs = {};
-			for(var i=0,len = keys.length ; i<len ; i++){
-				var k = keys[i];
-				qs[k] = req.param(k);
-				if(qs[k] === undefined){
+			
+			try{
+				for(var i=0,len = keys.length ; i<len ; i++){
+					var k = keys[i];
+					v = req.param(k);
+					if(v === undefined){
+						throw new Error();
+					}
+					qs[k] = v;
+				}		
+				udb.findOne(qs).exec(function(err,rs){
+					req.user = rs;
 					next();
-					break;
-				}
-			}
-			udb.findOne(qs).exec(function(err,rs){
-				req.user = rs;
+				})			
+			}catch(e){			
 				next();
-			})
+			}
+
 		}
 	}
 }
