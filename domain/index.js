@@ -1,7 +1,7 @@
 var domain = require("jsdm")();
 
 domain.register(
-	"get":require("../app/db"),
+	"get",require("../app/db"),
     "AggreClass", 
 	require("./Column"), 
 	require("./User"),

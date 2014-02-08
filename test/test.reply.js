@@ -32,13 +32,13 @@ describe("Topic", function() {
 
 	it("#updateInfo",function(done){
 		reply.updateInfo("tttt","bobbobod");
-		reply.errors.should.eql([]);
+		reply.errors.should.eql({});
 		
 		reply.updateTimeout = 1;
 		
 		setTimeout(function(){
 			reply.updateInfo("title1","body1");
-			reply.errors.should.eql([{ attr: 'timeout', message: 'timeout' }]);
+			reply.errors.should.eql({'timeout':['timeout']});
 			reply.title.should.eql("tttt")
 			reply.body.should.eql("bobbobod")
 			done()

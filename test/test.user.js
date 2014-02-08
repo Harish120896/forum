@@ -11,9 +11,7 @@ describe("User",function(){
     var user;
 
     it("#new",function(){
-        user = new User({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"});
-        user.loginname.should.eql("brighthas");
-				
+        user = new User({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"});				
         var md5 = crypto.createHash('md5');
         user.password.should.eql(md5.update("123456").digest("hex"));
 		
@@ -24,11 +22,10 @@ describe("User",function(){
     });
 
     it("#updatePassword",function(){
-		var old = user.password;
-        user.updatePassword("1222j222","55555555");
-		user.password.should.eql(old);
-		user.updatePassword("123456","rrrrrr");
-		(user.password === old).should.be.false;
+        var md5 = crypto.createHash('md5');
+		user.password = "ahhahhaah";
+		user.password.should.eql(md5.update("ahhahhaah").digest("hex"));
+		
     });
 
     it("#authorizeAdmin",function(){

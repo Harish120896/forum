@@ -41,7 +41,6 @@ describe("repos", function () {
 		});
         aggre.id.should.eql("id001");
         aggre.nickname.should.eql("leo");
-        aggre.loginname.should.eql("brighthas");
         aggre.password.should.eql("111111");
         aggre.email.should.eql("brighthas@gmail.com");
 
@@ -51,7 +50,6 @@ describe("repos", function () {
 		var data = userRepo._aggre2data(aggre);
         aggre.id.should.eql("id001");
         aggre.nickname.should.eql("leo");
-        aggre.loginname.should.eql("brighthas");
         aggre.password.should.eql("111111");
         aggre.email.should.eql("brighthas@gmail.com");
 	})

@@ -10,7 +10,6 @@ describe("Message",function(){
 		
 		msg = new Message({id:"id001",targetId:"001",authorId:"002",title:"tttt",body:"bobby"});
 		msg.errors.should.eql([]);
-		(msg.createTime.getTime() < Date.now()).should.be.true;
 		
 	})
 		
