@@ -25,6 +25,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // user controller
 app.post("/user/login", validator.validat_num, data.user("email"), userCtrl.login);
 
+
+
+
+module.exports = app;
 /**
 app.post("/user/logout",userCtrl.logout);
 app.post("/user/create",userCtrl.create);
@@ -65,7 +69,10 @@ app.post("/message/send",messageCtrl.create);
 app.get("/message/view",messageCtrl.view);
 app.get("/message/list",messageCtrl.list);
 */
+/*
 
 http.createServer(app).listen(app.get('port'), function() {
     console.log('Express server listening on port ' + app.get('port'));
 });
+
+*/
