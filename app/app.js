@@ -23,12 +23,17 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // user controller
-app.post("/user/login", validator.validat_num, data.user("email"), userCtrl.login,function(req,res){
-	req.send(req.result);
-});
+app.post("/user/login", 
+	validator.validat_num,
+	data.user("email"),
+	validator.hasReqUser,
+	userCtrl.login,
+	function(req,res){
+		res.send(req.result);
+	});
 
 app.post("/user/logout",userCtrl.logout,function(req,res){
-	req.send();
+	res.send();
 });
 
 app.post("/user/create",validator.isLogin,validator.validat_num, userCtrl.create,function(req,res){

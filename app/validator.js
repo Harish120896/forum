@@ -12,5 +12,12 @@ module.exports = {
 	    } else {
 			res.send(["验证码错误！"]);
 	    }
+	},
+	hasReqUser:function(req,res,next){
+		if(req.user){
+			next();
+		}else{
+			res.send("error");
+		}
 	}
 }

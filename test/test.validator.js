@@ -18,6 +18,23 @@ describe("validator",function(){
 		
 	})
 	
+	it("#hasReqUser",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/hasReqUser",DATA.user("email"),validator.hasReqUser,function(req,res){
+			res.send("success")
+		});
+		request(app).post("/hasReqUser").send({email:"leo@leo.leo"}).expect("success",done);
+		
+	})
+		
 	it("#isLogin",function(done){
 		
 		var app = express();

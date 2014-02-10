@@ -5,32 +5,26 @@ var _ = require("underscore");
 
 module.exports = {
 	
+	// must have req.user & req.body.password
 	login:function(req,res,next){
-		
-		if(req.user && req.body.password){
-	        var md5 = crypto.createHash('md5');
-	        var pwd = md5.update(req.body.password).digest("hex");
-			if(req.user.password === pwd){
-				
-				req.session.user = req.user;
-				
-                res.cookie('user', JSON.stringify({
-                    email: req.user.email,
-                    password: req.user.password
-                }), {
-                    maxAge: 1000 * 60 * 60 * 24 * 90
-                });
-				
-				req.result = "success";
-				next();
-			}else{
-				req.result = "error";
-				next();
-			}
+        var md5 = crypto.createHash('md5');
+        var pwd = md5.update(req.body.password).digest("hex");
+		if(req.user.password === pwd){
+			
+			req.session.user = req.user;
+			
+            res.cookie('user', JSON.stringify({
+                email: req.user.email,
+                password: req.user.password
+            }), {
+                maxAge: 1000 * 60 * 60 * 24 * 90
+            });
+			
+			req.result = "success";
+			next();
 		}else{
 			req.result = "error";
 			next();
-			//res.send(["邮箱或密码错误!"]);
 		}
 	},
 	
@@ -77,4 +71,6 @@ module.exports = {
 			next();
 	    });
 	}
+	
+	
 }

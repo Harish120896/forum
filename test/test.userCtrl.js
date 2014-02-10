@@ -93,7 +93,11 @@ describe("app",function(){
 
 		request(app).post("/update")
 		.send({email:"leo@leo.leo",password:"123456",address:"ddddd"})
-		.expect("success",done);
+		.expect("success",function(){
+			request(app).post("/update")
+			.send({email:"leo@leo.leo",password:"123456",address:"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"})
+			.expect("error",done);			
+		});
 	})
 	
 	
