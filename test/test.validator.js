@@ -1,8 +1,10 @@
 var request = require("supertest");
 var express = require("express");
 var util = require("../app/util");
+var userCtrl = require("../app/controller/user");
 var validator = require("../app/validator");
 var assert = require("assert");
+var DATA = require("../app/data");
 
 describe("validator",function(){
 	
@@ -15,6 +17,23 @@ describe("validator",function(){
 		request(app).get("/refresh").expect(/[0~9]*/g,done);
 		
 	})
+	
+	it("#isLogin",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+
+		app.post("/isLogin",DATA.user("email"),userCtrl.login,validator.isLogin,function(req,res){
+			res.send("success");
+		});
+		request(app).post("/isLogin").send({email:"leo@leo.leo",password:"123456"}).expect("success",done);		
+	})
+	
 	
 	
 	

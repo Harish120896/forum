@@ -23,16 +23,30 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // user controller
-app.post("/user/login", validator.validat_num, data.user("email"), userCtrl.login);
+app.post("/user/login", validator.validat_num, data.user("email"), userCtrl.login,function(req,res){
+	req.send(req.result);
+});
 
+app.post("/user/logout",userCtrl.logout,function(req,res){
+	req.send();
+});
 
+app.post("/user/create",validator.isLogin,validator.validat_num, userCtrl.create,function(req,res){
+	if(req.result === "success"){
+		res.send("success");
+	}else{
+		res.send(["密码或登录信箱有误！"]);
+	}
+});
+
+app.post("/user/update",validator.isLogin,validator.validat_num,userCtrl.update);
 
 
 module.exports = app;
-/**
-app.post("/user/logout",userCtrl.logout);
-app.post("/user/create",userCtrl.create);
-app.post("/user/update",userCtrl.update);
+
+
+
+/*
 app.post("/user/:userId/seal",userCtrl.seal);
 app.get("/user/:userId/view",userCtrl.view);
 

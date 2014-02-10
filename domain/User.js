@@ -73,7 +73,6 @@ function wrap(my) {
             type: "date"
         })
 		.method("updateInfo",function(data){
-			
 			var self = this;
 			
 			if(is.type(data) === "object"){
@@ -95,7 +94,9 @@ function wrap(my) {
 				this.error("updateInfo","error");
 			}
 			
-			return this.errors;
+			if(this.hasError()){
+				return this.errors;
+			}
 		})
 		.method("updateNickname",function(nickname){
 			var deferred = q.defer();
