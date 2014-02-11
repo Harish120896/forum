@@ -19,5 +19,14 @@ module.exports = {
 		}else{
 			res.send("error");
 		}
+	},
+	
+	// dev hasReqUser
+	userNoSelf:function(req,res,next){	 
+		if(req.user.id !== req.session.user.id){
+			res.send("error");
+		}else{
+			next();
+		}
 	}
 }

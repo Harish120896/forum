@@ -51,7 +51,47 @@ describe("validator",function(){
 		request(app).post("/isLogin").send({email:"leo@leo.leo",password:"123456"}).expect("success",done);		
 	})
 	
-	
+	it("#userNoSelf",function(done){
+
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/noself",function(req,res,next){
+			req.user = {id:"001"};
+			req.session.user = {id:"002"};
+			next();
+		},validator.userNoSelf),function(req,res){
+			res.send("success");
+		};
+		
+		request(app).post("/noself").expect("error",function(){
+			
+			var app = express();
+			app.use(express.favicon());
+			app.use(express.json());
+			app.use(express.methodOverride());
+			app.use(express.cookieParser('your secret here'));
+			app.use(express.session());
+			app.use(app.router);
+			
+			app.post("/noself",function(req,res,next){
+				req.user = {id:"001"};
+				req.session.user = {id:"001"};
+				next();
+			},validator.userNoSelf,function(req,res){
+				res.send("success");
+			});
+		
+			request(app).post("/noself").expect("success",done);
+				
+		});		
+		
+	})
 	
 	
 })

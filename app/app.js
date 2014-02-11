@@ -32,27 +32,41 @@ app.post("/user/login",
 		res.send(req.result);
 	});
 
-app.post("/user/logout",userCtrl.logout,function(req,res){
-	res.send();
-});
+app.post("/user/logout",
+	userCtrl.logout,
+	function(req,res){
+		res.send();
+	});
 
-app.post("/user/create",validator.isLogin,validator.validat_num, userCtrl.create,function(req,res){
-	if(req.result === "success"){
-		res.send("success");
-	}else{
-		res.send(["密码或登录信箱有误！"]);
-	}
-});
+app.post("/user/create",
+	validator.isLogin,
+	validator.validat_num, 
+	userCtrl.create,
+	function(req,res){
+		if(req.result === "success"){
+			res.send("success");
+		}else{
+			res.send(["密码或登录信箱有误！"]);
+		}
+	});
 
-app.post("/user/update",validator.isLogin,validator.validat_num,userCtrl.update);
+app.post("/user/update",
+	validator.isLogin,
+	validator.validat_num,
+	userCtrl.update);
 
+app.post("/user/:id/seal",
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	validator.userNoSelf,
+	userCtrl.seal);
 
 module.exports = app;
 
 
 
 /*
-app.post("/user/:userId/seal",userCtrl.seal);
 app.get("/user/:userId/view",userCtrl.view);
 
 app.post("/user/:userId/remove",userCtrl.remove);
