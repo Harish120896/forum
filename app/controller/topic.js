@@ -33,6 +33,15 @@ module.exports = {
 		})
 	},
 	
+	// isLogin / isTopicManager
+	seal:function(req,res){
+		var id = req.param("id");
+		domain.call("Topic.toseal",{id:id},function(err){
+			res.result = err;
+			next();
+		})		
+	},
+	
 	view:function(req,res){
 		query.topic({id:req.param("id")},function(rs){
 			if(rs){

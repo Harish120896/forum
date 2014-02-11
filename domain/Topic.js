@@ -20,6 +20,7 @@ function wrap(my) {
 		.attr("body")
 		.attr("authorId")
 		.attr("columnId")
+		.attr("seal",{type:"boolean",default:false})
 		.attr("accessNum", {
 			type: "number"
 			,default:0
@@ -90,6 +91,12 @@ function wrap(my) {
 				}
 			});
 			return deferred.promise;
+		})
+		.method("toseal",function(){
+			this.seal = true;
+		})
+		.method("unseal",function(){
+			this.seal = false;
 		})
 
 	Topic.className = "Topic";

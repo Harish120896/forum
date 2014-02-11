@@ -26,6 +26,7 @@ function wrap(my) {
         .attr("createTime", {
             type: "date"
         })
+		.attr("managerId")
         .attr("des")
 
     .on("creating", function(column) {
@@ -65,6 +66,10 @@ function wrap(my) {
         this.des = des;
         return this.errors;
     })
+	
+	.method("setManager",function(id){
+		this.managerId = id;
+	})
 
     .method("updateInfo", function(name, des) {
         this.set({

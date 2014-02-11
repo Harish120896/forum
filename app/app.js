@@ -169,21 +169,23 @@ app.post("/topic/:id/remove",
 	validator.isLogin,
 	data.topic,
 	validator.hasTopic,
-	validator.isAuthor,
-	validator.isAdmin,
+	validator.isTopicManager
 	topicCtrl.remove);
 	
 app.post("/topic/:id/seal",
 	validator.isLogin,
+	data.topic,
+	validator.hasTopic,
+	validator.isTopicAuthor,
 	validator.isAdmin,
-	topicCtrl.remove);
+	topicCtrl.seal);
+
 			
 module.exports = app;
 
 
 /*
 // topic controller
-app.post("/topic/:topicId/seal",validator.isLogin,validator.isAuthor,topicCtrl.remove);
 app.get("/topic/:topicId/view", topicCtrl.view);
 
 // column controller

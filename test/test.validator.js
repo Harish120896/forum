@@ -1,5 +1,6 @@
 var request = require("supertest");
 var express = require("express");
+var dbs = require("../app/db");
 var util = require("../app/util");
 var userCtrl = require("../app/controller/user");
 var validator = require("../app/validator");
@@ -166,12 +167,46 @@ describe("validator",function(){
 		app.use(app.router);
 		
 		app.post("/topic/:id",DATA.topic,validator.hasTopic,function(req,res){
-			res.send(req.result);
+			res.send("success");
 		});
 	
 		request(app).post("/topic/001").expect("success",done);
 			
 	})
 	
+	it("#isTopicManager",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/author/:id",
+			function(req,res,next){
+				req.session.user = {id:"u001"};
+				next();
+			},
+			DATA.topic,
+			validator.hasTopic,
+			validator.isTopicManager,
+			function(req,res){
+			res.send("success");
+		});
+		
+		var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+		
+		cdb.create({managerId:"u001",id:"c001"},function(err,rs){
+		
+			tdb.create({authorId:"u001",id:"t001",columnId:"c001"},function(err,rs){
+				request(app).post("/author/t001").expect("success",done);
+			});				
+		})
+
+		
+	})
 	
 })

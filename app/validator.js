@@ -1,3 +1,5 @@
+var query = require("./query");
+
 module.exports = {
 	
 	isLogin:function(req,res,next){
@@ -56,16 +58,25 @@ module.exports = {
 	
 	hasTopic:function(req,res,next){
 		if(req.topic){
-			req.result = "success";
+			next();
 		}else{
-			req.result = "error";
+			res.send("error");
 		}
-		next();
 	},
 	
 	// dev isLogin / hasTopic
-	isTopicAuthor:function(req,res,next){
-		
+	isTopicManager:function(req,res,next){
+		query.column(req.topic.columnId,function(col){
+			if(
+				req.topic.authorId === req.session.user.id || 
+				col.managerId === req.session.user.id || 
+				req.session.user.role === 1 ){
+					
+					next();
+			}else{
+				res.send("error");
+			}			
+		});
 	}
 	
 	
