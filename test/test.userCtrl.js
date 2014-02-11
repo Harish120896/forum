@@ -5,7 +5,7 @@ var assert = require("assert");
 var should = require("should");
 var DATA = require("../app/data");
 
-describe("app",function(){
+describe("userCtrl",function(){
 	
 
 	
@@ -99,7 +99,7 @@ describe("app",function(){
 			.expect("error",done);			
 		});
 	})
-	
+
 	
 	
 })

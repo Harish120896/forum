@@ -29,5 +29,13 @@ module.exports = {
 			}
 
 		}
+	},
+	
+	topic:function(req,res,next){
+		var tdb = db.getDB("Topic");
+		tdb.findOne({id:req.param("id")}).exec(function(err,rs){
+			req.topic = rs;
+			next();
+		})	
 	}
 }

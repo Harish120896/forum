@@ -59,12 +59,17 @@ module.exports = function(query) {
         service6.serviceName = "postTopicCheck";
 
         function service6(userId, callback) {
-			query.topicCountByToday(userId,function(count){
-				console.log(count)
-				if(count > 10){
-					callback(false);
+			query.userById(userId,function(user){
+				if(user){
+					query.topicCountByToday(userId,function(count){
+						if(count > 10000){
+							callback(false);
+						}else{
+							callback(true);
+						}
+					})					
 				}else{
-					callback(true);
+					callback(false);
 				}
 			})
         }
@@ -74,9 +79,9 @@ module.exports = function(query) {
         service7.serviceName = "postReplyCheck";
 
         function service7(userId, callback) {
-			
+		
 			query.replyCountByToday(userId,function(count){
-				if(num > 10){
+				if(num > 10000){ //doto
 					callback(false);
 				}else{
 					callback(true);

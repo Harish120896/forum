@@ -51,10 +51,14 @@ describe("Topic", function() {
 		topic.accessNum.should.eql(1);
 	})
 
-	it("#updateInfo", function() {
-		topic.updateInfo("title01", "body001", "00001");
-		topic.title.should.eql("title01");
-		topic.body.should.eql("body001");
+	it("#updateInfo", function(done) {
+		var result = topic.updateInfo("title01", "body001", "00001");
+		result.then(function(err){
+			topic.title.should.eql("title01");
+			topic.body.should.eql("body001");
+			done();
+		})
+
 	})
 
 });

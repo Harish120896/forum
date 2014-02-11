@@ -66,7 +66,69 @@ describe("validator",function(){
 			req.session.user = {id:"002"};
 			next();
 		},validator.userNoSelf),function(req,res){
-			res.send("success");
+			res.send("error");
+		};
+		
+		request(app).post("/noself").expect("success",function(){
+			
+			var app = express();
+			app.use(express.favicon());
+			app.use(express.json());
+			app.use(express.methodOverride());
+			app.use(express.cookieParser('your secret here'));
+			app.use(express.session());
+			app.use(app.router);
+			
+			app.post("/noself",function(req,res,next){
+				req.user = {id:"001"};
+				req.session.user = {id:"001"};
+				next();
+			},validator.userNoSelf,function(req,res){
+				res.send("error");
+			});
+		
+			request(app).post("/noself").expect("error",done);
+				
+		});		
+		
+	})
+	
+	it("#isAdmin",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);		
+		
+		app.post("/isAdmin",DATA.user("email"),userCtrl.login,validator.isLogin,validator.isAdmin,function(req,res){
+			res.send(req.result);
+		});
+		request(app).post("/isAdmin")
+			.send({email:"brighthas@gmail.com",
+			password:"zshying"}).expect("success",function(){
+				done();
+			});				
+	})
+	
+	it("#userSelf",function(done){
+
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/noself",function(req,res,next){
+			req.user = {id:"001"};
+			req.session.user = {id:"002"};
+			next();
+		},validator.userSelf),function(req,res){
+			res.send("error");
 		};
 		
 		request(app).post("/noself").expect("error",function(){
@@ -83,14 +145,32 @@ describe("validator",function(){
 				req.user = {id:"001"};
 				req.session.user = {id:"001"};
 				next();
-			},validator.userNoSelf,function(req,res){
-				res.send("success");
+			},validator.userSelf,function(req,res){
+				res.send("error");
 			});
 		
 			request(app).post("/noself").expect("success",done);
 				
 		});		
 		
+	});
+	
+	it("#hasTopic",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/topic/:id",DATA.topic,validator.hasTopic,function(req,res){
+			res.send(req.result);
+		});
+	
+		request(app).post("/topic/001").expect("success",done);
+			
 	})
 	
 	

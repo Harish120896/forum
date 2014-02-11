@@ -3,6 +3,8 @@ var uid = require("node-uuid").v1,
 	check = require('validator').check,
 	Node = require("tree-node"),
 	Model = require("model-brighthas"),
+	Q = require("q"),
+	_ = require("underscore");
 	attr = require("./plugin/attr");
 
 
@@ -69,12 +71,25 @@ function wrap(my) {
 			parent.appendChild(new Node(replyId));
 		})
 		.method("updateInfo", function(title, body, columnId) {
-			this.begin();
-			this.title = title;
-			this.body = body;
-			this.columnId = columnId;
-			this.end();
-			return this.errors;
+			var deferred = Q.defer();
+			var self = this;
+			my.services.existColumn(columnId,function(has){
+				if(has){
+					self.begin();
+					self.title = title;
+					self.body = body;
+					self.columnId = columnId;
+					self.end();
+					if(self.hasError()){
+						deferred.resolve(_.values(self.errors));
+					}else{
+						deferred.resolve();
+					}
+				}else{
+					deferred.resolve(["no have column"]);
+				}
+			});
+			return deferred.promise;
 		})
 
 	Topic.className = "Topic";

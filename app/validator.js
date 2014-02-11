@@ -1,4 +1,5 @@
 module.exports = {
+	
 	isLogin:function(req,res,next){
 		if(req.session.user){
 			next();
@@ -21,12 +22,51 @@ module.exports = {
 		}
 	},
 	
-	// dev hasReqUser
+	// dev hasReqUser / isLogin 芳草地
 	userNoSelf:function(req,res,next){	 
 		if(req.user.id !== req.session.user.id){
-			res.send("error");
+			res.send("success");
 		}else{
 			next();
 		}
+	},
+	
+	// dev hasReqUser / isLogin
+	userSelf:function(req,res,next){	 
+		if(req.user.id === req.session.user.id){
+			res.send("success");
+		}else{
+			next();
+		}
+	},
+	
+	// dev isLogin
+	isAdmin:function(req,res,next){
+		if(req.result === "success"){
+			next();
+		}else{
+			if(req.session.user.role === 1){
+				req.result = "success";
+			}else{
+				req.result = "error";
+			}
+			next();			
+		}
+	},
+	
+	hasTopic:function(req,res,next){
+		if(req.topic){
+			req.result = "success";
+		}else{
+			req.result = "error";
+		}
+		next();
+	},
+	
+	// dev isLogin / hasTopic
+	isTopicAuthor:function(req,res,next){
+		
 	}
+	
+	
 }

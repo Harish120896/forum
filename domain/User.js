@@ -5,6 +5,7 @@ var crypto = require("crypto"),
     createModel = require("model-brighthas"),
     is = require("istype"),
 	q = require("q"),
+	_ = require("underscore");
     attr = require("./plugin/attr");
 
 function wrap(my) {
@@ -118,7 +119,11 @@ function wrap(my) {
 		})
         .method("updatePassword", function(npass) {
 			this.password = npass;
-			return this.errors;
+			if(this.hasError()){
+				return _.values(this.errors);
+			}else{
+				return null;
+			}
         })
         .method("plus", function(num) {
             this.fraction = this.fraction + num;

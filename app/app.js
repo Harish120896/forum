@@ -38,7 +38,7 @@ app.post("/user/logout",
 		res.send();
 	});
 
-app.post("/user/create",
+app.post("/user/reg",
 	validator.isLogin,
 	validator.validat_num, 
 	userCtrl.create,
@@ -56,29 +56,133 @@ app.post("/user/update",
 	userCtrl.update);
 
 app.post("/user/:id/seal",
+	validator.isLogin,
 	validator.isAdmin,
 	data.user("id"),
 	validator.hasReqUser,
 	validator.userNoSelf,
-	userCtrl.seal);
+	userCtrl.seal,
+	function(req,res){
+		res.send();
+	});
 
+
+app.get("/user/:id/view",
+	data.user("id"),
+	function(req,res){
+		res.send(req.user);
+	});
+
+app.post("/user/:id/remove",
+	validator.isLogin,
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	validator.userNoSelf,
+	userCtrl.remove,
+	function(req,res){
+		res.send();
+	});
+
+app.post("/user/:id/follow",
+	validator.isLogin,
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	validator.userNoSelf,
+	userCtrl.follow,
+	function(req,res){
+		res.send();
+	});
+
+app.post("/user/:id/unfollow",
+	validator.isLogin,
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	validator.userNoSelf,
+	userCtrl.unfollow,
+	function(req,res){
+		res.send();
+	});
+
+
+app.post("/user/:id/becomeModerator",
+	validator.isLogin,
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	validator.userNoSelf,
+	userCtrl.becomeModerator,
+	function(req,res){
+		res.send();
+	});
+
+app.post("/user/:id/becomeUser",
+	validator.isLogin,
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	validator.userNoSelf,
+	userCtrl.becomeUser,
+	function(req,res){
+		res.send();
+	});
+
+app.post("/user/updatePassword",
+	validator.isLogin,
+	validator.validat_num,
+	userCtrl.updatePassword,
+	function(req,res){
+		res.send(req.result);
+	});
+
+app.post("/user/:id/plus",
+	validator.isLogin,
+	validator.isAdmin,
+	data.user("id"),
+	validator.hasReqUser,
+	userCtrl.plus,
+	function(req,res){
+		res.send();
+	});
+
+
+// Topic controller
+app.post("/topic/create",
+	validator.isLogin,
+	validator.validat_num,
+	topicCtrl.create,
+	function(req,res){
+		res.send({result:req.result,topic:req.topic});
+	});
+
+app.post("/topic/:id/update",
+	validator.isLogin,
+	validator.validat_num,
+	topicCtrl.update,
+	function(req,res){
+		res.send(req.result);
+	});
+	
+app.post("/topic/:id/remove",
+	validator.isLogin,
+	data.topic,
+	validator.hasTopic,
+	validator.isAuthor,
+	validator.isAdmin,
+	topicCtrl.remove);
+	
+app.post("/topic/:id/seal",
+	validator.isLogin,
+	validator.isAdmin,
+	topicCtrl.remove);
+			
 module.exports = app;
 
 
-
-/*
-app.get("/user/:userId/view",userCtrl.view);
-
-app.post("/user/:userId/remove",userCtrl.remove);
-app.post("/user/:userId/follow",userCtrl.follow);
-app.post("/user/:userId/unfollow",userCtrl.unfollow);
-app.post("/user/:userId/seal",userCtrl.seal);
-
 /*
 // topic controller
-app.post("/topic/create",validator.isLogin,validator.validat_num,topicCtrl.create);
-app.post("/topic/update",validator.isLogin,validator.validat_num,topicCtrl.update);
-app.post("/topic/:topicId/remove",validator.isLogin,validator.isAuthor,topicCtrl.remove);
 app.post("/topic/:topicId/seal",validator.isLogin,validator.isAuthor,topicCtrl.remove);
 app.get("/topic/:topicId/view", topicCtrl.view);
 

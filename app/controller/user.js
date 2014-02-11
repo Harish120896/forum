@@ -73,8 +73,41 @@ module.exports = {
 	},
 	
 	seal:function(req,res,next){
-		domain.call("User.sealUser" , )
-	}
+		domain.call("User.sealUser" , req.user.id , []);
+		next();
+	},
 	
+	follow:function(req,res,next){
+		domain.call("User.follow",req.session.id , [req.user.id]);
+		next();
+	},
+	
+	unfollow:function(req,res,next){
+		domain.call("User.unfollow",req.session.id , [req.user.id]);
+		next();
+	},
+	
+	becomeModerator:function(req,res,next){
+		domain.call("User.becomeModerator",req.user.id,[]);
+		next();
+	},
+	
+	becomeUser:function(req,res,next){
+		domain.call("User.becomeUser",req.user.id,[]);
+		next();
+	},
+	
+	// return "success" or [error]
+	updatePassword:function(req,res,next){
+		domain.call("User.updatePassword",req.session.id,[req.param("password")],function(err){
+			req.result = err || "success";
+			next();
+		})
+	},
+	
+	plus:function(req,res,next){
+		domain.call("User.plus",req.user.id,[req.param["fraction"]])
+		next();
+	}
 	
 }
