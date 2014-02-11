@@ -15,7 +15,8 @@ function wrap(my) {
     User.roles = {
         USER: 0,
         ADMIN: 1,
-        MODERATOR: 2
+        MODERATOR: 2,
+		SEAL:3
     };
 
     User
@@ -185,6 +186,9 @@ function wrap(my) {
 		.method("becomeUser",function(){
 			this.role = User.roles.USER;
 		})
+		.method("sealUser",function(){
+			this.role = User.roles.SEAL;
+		})
         .on("changed", function(u, attrs) {
 			passTransform(u);
             my.publish("*.*.update", "User", u.id, this.toJSON(u, Object.keys(attrs)));
@@ -192,7 +196,7 @@ function wrap(my) {
         .validate(function(user, keys) {
             if (keys.indexOf("role") !== -1) {
                 var role = user.attrs["role"];
-                if ([0, 1, 2].indexOf(role) === -1) {
+                if ([0, 1, 2,3].indexOf(role) === -1) {
                     user.error("role", "no the role");
                 }
             }

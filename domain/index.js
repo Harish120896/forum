@@ -21,6 +21,7 @@ domain.register(
 	"User.becomeModerator",
 	"User.hasError",
 	"User.becomeUser",
+	"User.sealUser",
 	"User.updateInfo",
 	"User.updateNickname",
 	

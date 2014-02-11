@@ -70,6 +70,10 @@ module.exports = {
 			}
 			next();
 	    });
+	},
+	
+	seal:function(req,res,next){
+		domain.call("User.sealUser" , )
 	}
 	
 	
