@@ -209,4 +209,228 @@ describe("validator",function(){
 		
 	})
 	
+	
+	it("#isReplyManager1",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply/:id",
+			function(req,res,next){
+				req.session.user = {id:"u006"};
+				next();
+			},
+			DATA.reply,
+			validator.hasReply,
+			validator.isReplyManager,
+			function(req,res){
+			res.send("success");
+		});
+		
+		var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+		var rdb = dbs.getDB("Reply");
+		
+		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
+			tdb.create({authorId:"u006",id:"t007",columnId:"c007"},function(err,rs){
+				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
+					request(app).post("/reply/r007").expect("success",done);
+				});
+			});				
+		});
+		
+	});	
+	
+	it("#isReplyManager2",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply/:id",
+			function(req,res,next){
+				req.session.user = {id:"u006"};
+				next();
+			},
+			DATA.reply,
+			validator.hasReply,
+			validator.isReplyManager,
+			function(req,res){
+			res.send("success");
+		});
+		
+		var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+		var rdb = dbs.getDB("Reply");
+		
+		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
+			tdb.create({authorId:"u009",id:"t007",columnId:"c007"},function(err,rs){
+				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
+					request(app).post("/reply/r007").expect("success",done);
+				});
+			});				
+		});
+		
+	});	
+	
+	it("#isReplyManager3",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply/:id",
+			function(req,res,next){
+				req.session.user = {id:"u00000",role:1};
+				next();
+			},
+			DATA.reply,
+			validator.hasReply,
+			validator.isReplyManager,
+			function(req,res){
+			res.send("success");
+		});
+		
+		var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+		var rdb = dbs.getDB("Reply");
+		
+		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
+			tdb.create({authorId:"u0000",id:"t007",columnId:"c007"},function(err,rs){
+				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
+					request(app).post("/reply/r007").expect("success",done);
+				});
+			});				
+		});
+		
+	});		
+		
+	it("#isReplyManager3",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply/:id",
+			function(req,res,next){
+				req.session.user = {id:"u000dd00"};
+				next();
+			},
+			DATA.reply,
+			validator.hasReply,
+			validator.isReplyManager,
+			function(req,res){
+			res.send("success");
+		});
+		
+		var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+		var rdb = dbs.getDB("Reply");
+		
+		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
+			tdb.create({authorId:"u0000",id:"t007",columnId:"c007"},function(err,rs){
+				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
+					request(app).post("/reply/r007").expect("error",done);
+				});
+			});				
+		});
+		
+	});		
+			
+	it("#isReplyAuthor success",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply/:id",
+			function(req,res,next){
+				req.session.user = {id:"id000"};
+				req.reply = {id:"000",authorId:"id000"};
+				next();
+			},
+			validator.isReplyAuthor,
+			function(req,res){
+			res.send("success");
+		});
+		
+		var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+		var rdb = dbs.getDB("Reply");
+		
+		request(app).post("/reply/r007").expect("success",done);
+		
+		
+	});	
+	
+	it("#isReplyAuthor error" ,function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply/:id",
+			function(req,res,next){
+				req.session.user = {id:"id00110"};
+				req.reply = {id:"000",authorId:"id000"};
+				next();
+			},
+			validator.isReplyAuthor,
+			function(req,res){
+			res.send("success");
+		});
+		
+		request(app).post("/reply/r007").expect("error",done);
+		
+		
+	});
+	
+	it("#hasReply",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/reply",
+			function(req,res,next){
+				req.reply = {id:"000",authorId:"id000"};
+				next();
+			},
+			validator.hasReply,
+			function(req,res){
+			res.send("success");
+		});
+		request(app).post("/reply").expect("success",done);
+		
+	})
+	
 })

@@ -31,5 +31,8 @@ module.exports = {
 	    pw.createPNG(numtxt, function(pngnum) {
 	        res.send(pngnum);
 	    });		
+	},
+	end:function(req,res){
+		res.send(req.result);
 	}
 }

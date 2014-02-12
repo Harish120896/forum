@@ -36,5 +36,25 @@ describe("data",function(){
 
 	});
 	
+	it("#reply",function(done){
+		
+		var db = dbs.getDB("Reply");
+		
+		db.create({id:"00100"},function(err,rs){
+			
+			rs.id.should.eql("00100");
+
+			var app = express();
+			
+			app.get("/reply/:id",data.reply,function(req,res){
+				res.send(req.reply.id);
+			});
+			
+			request(app).get("/reply/00100").expect("00100",done);
+						
+		});
+
+	});	
+	
 });
 	

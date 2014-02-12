@@ -77,7 +77,51 @@ module.exports = {
 				res.send("error");
 			}			
 		});
-	}
+	},
 	
+	hasReply:function(req,res,next){
+		if(req.reply){
+			next();
+		}else{
+			res.send("error");
+		}
+	},
+	
+	// dev isLogin / hasReply
+	isReplyManager:function(req,res,next){
+		
+		query.topic({id:req.reply.topicId},function(topic){
+			if(topic){
+				query.column({id:topic.columnId},function(col){
+					if(col){
+						if(
+							req.session.user.id === req.reply.authorId || 
+							req.session.user.id === topic.authorId || 
+							req.session.user.role === 1 ){
+							req.result = "success";
+							next();
+						}else{
+							res.send("error")
+						}							
+					}else{
+						res.send("error");
+					}
+				});				
+			}else{
+				res.send("error");
+			}
+		});
+		
+	},
+	
+	//dev isLogin / hasReply
+	isReplyAuthor:function(req,res,next){
+		if(req.session.user.id === req.reply.authorId){
+			req.result = "success";
+			next();
+		}else{
+			res.send("error")
+		}
+	}
 	
 }

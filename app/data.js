@@ -1,6 +1,7 @@
 var db = require("./db");
 
 module.exports = {
+	
 	user:function(){
 
 		var keys = arguments;
@@ -37,5 +38,16 @@ module.exports = {
 			req.topic = rs;
 			next();
 		})	
+	},
+	
+	reply:function(req,res,next){
+		
+		var rdb = db.getDB("Reply");
+		rdb.findOne({id:req.param("id")}).exec(function(err,rs){
+			req.reply = rs;
+			next();
+		})			
 	}
+	
+	
 }

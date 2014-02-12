@@ -25,6 +25,7 @@ module.exports = {
 		});
 	},
 	
+	// dev isLogin / isAdmin
 	remove:function(req,res){
 		var id = req.param("id");
 		domain.exec("remove a topic",{id:id},function(err){
@@ -33,23 +34,26 @@ module.exports = {
 		})
 	},
 	
-	// isLogin / isTopicManager
+	// dev isLogin / isTopicManager
 	seal:function(req,res){
 		var id = req.param("id");
 		domain.call("Topic.toseal",{id:id},function(err){
-			res.result = err;
 			next();
 		})		
 	},
 	
-	view:function(req,res){
+	// dev isLogin / isTopicManager
+	unseal:function(req,res){
+		var id = req.param("id");
+		domain.call("Topic.unseal",{id:id},function(err){
+			next();
+		})		
+	},
+	
+	view:function(req,res,next){
 		query.topic({id:req.param("id")},function(rs){
-			if(rs){
-				res.locals.topic = rs;
-				res.render("topic");
-			}else{
-				res.send(404);
-			}
+			req.topic = rs;
+			next();
 		});
 	}
 	
