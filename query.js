@@ -1,6 +1,17 @@
 var dbs = require("./db");
-var oneday = require("./util/oneday");
 var is = require("istype");
+
+function OneDay(date){
+	
+	var date = date || new Date();
+		
+	date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+	
+	this.startTime = date.getTime();
+	
+	this.endTime = this.startTime + 1000*60*60*24;
+	
+}
 
 module.exports = {
 	

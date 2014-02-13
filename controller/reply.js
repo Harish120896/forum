@@ -2,7 +2,6 @@ var domain = require("../../domain"),query = require("../query");
 
 module.exports = {
 	
-	
 	create:function(req,res,next){
 		req.body.authorId = req.session.user.id;
 		domain.exec("create a topic",req.body,function(err,topic){
@@ -15,7 +14,6 @@ module.exports = {
 			next();
 		});
 	},
-	
 	
 	update:function(req,res){
 		req.body.authorId = req.session.user.id;
@@ -32,29 +30,6 @@ module.exports = {
 			res.result = err;
 			next();
 		})
-	},
-	
-	// dev isLogin / isTopicManager
-	seal:function(req,res){
-		var id = req.param("id");
-		domain.call("Topic.toseal",{id:id},function(err){
-			next();
-		})		
-	},
-	
-	// dev isLogin / isTopicManager
-	unseal:function(req,res){
-		var id = req.param("id");
-		domain.call("Topic.unseal",{id:id},function(err){
-			next();
-		})		
-	},
-	
-	view:function(req,res,next){
-		query.topic({id:req.param("id")},function(rs){
-			req.topic = rs;
-			next();
-		});
 	}
 	
 }
