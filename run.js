@@ -1,9 +1,6 @@
 var express = require('express');
 var http = require('http');
-var userRoute = require('./route/user');
-var topicRoute = require("./route/topic");
-var columnRoute = require("./route/column");
-var replyRoute = require("./route/reply");
+var fs = require("fs");
 
 var app = express();
 
@@ -21,13 +18,10 @@ app.use(express.session());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
-userRoute(app);
-topicRoute(app);
-columnRoute(app);
-replyRoute(app);
-messageRoute(app);
-pagerRoute(app);
-xhrRoute(app);
+// load route modules.
+fs.readdirSync(__dirname+"/route").forEach(function(filename){
+	require("./route/"+filename)(app);
+});
 
 module.exports = app;
 
