@@ -23,13 +23,8 @@ function wrap(my) {
     // remove a topic
     handle2.commandName = "remove a topic";
     function handle2(args, callback) {
-        my.repos.Topic.get(args.id, function (err, topic) {
-            if (topic) {
-                topic.removeReply();
-                topic.remove();
-            }
-            callback();
-        });
+		my.repos.Topic.remove(args.id);
+		callback();
     }
 	
 	handle3.commandName = "create a reply";

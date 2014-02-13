@@ -16,19 +16,19 @@ module.exports = {
 		});
 	},
 	
-	update:function(req,res){
+	update:function(req,res,next){
 		req.body.authorId = req.session.user.id;
 		domain.call("Topic.updateInfo",req.body.topicId,[req.body.title, req.body.body, req.body.columnId],function(err){
-			res.result = err;
+			req.result = err || "success";
 			next();
 		});
 	},
 	
 	// dev isLogin / isAdmin
-	remove:function(req,res){
+	remove:function(req,res,next){
 		var id = req.param("id");
 		domain.exec("remove a topic",{id:id},function(err){
-			res.result = err;
+			req.result = err || "success";
 			next();
 		})
 	},

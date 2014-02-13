@@ -1,19 +1,18 @@
-var validator = require("../validator"),
+var util = require("../controller/util"),
 	columnCtrl = require("../controller/column"),
-	data = require("../data"),
-	util = require("../util");
+	data = require("../controller/data");
 
 module.exports = function wrap(app){
 	// column controller
 	app.post("/column/create",
-		validator.isLogin,
-		validator.isAdmin,
+		util.isLogin,
+		util.isAdmin,
 		columnCtrl.create,
 		util.end);
 
 	app.post("/column/:id/update",
-		validator.isLogin,
-		validator.isAdmin,
+		util.isLogin,
+		util.isAdmin,
 		columnCtrl.update,
 		util.end);
 }

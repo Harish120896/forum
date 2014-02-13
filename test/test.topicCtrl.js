@@ -30,5 +30,48 @@ describe("topicCtrl",function(){
 		
 	});
 	
+	it("#update",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/update",function(req,res,next){
+				req.session.user = {id:"bc60cf90-90ad-11e3-9c63-f58e948ec7ef"};
+				next();
+			},topicCtrl.update,function(req,res){
+			res.send(req.result)
+		});
+		
+		request(app).post("/update")
+			.send({topicId:"1892ea10-92c9-11e3-a3ff-c7c99d480b8e",columnId:"c01",title:"title0000002",body:"hahahhahhhahhaha0001"})
+			.expect('success',done);
+						
+	});
+	
+	it("#remove",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/remove/:id",topicCtrl.remove,function(req,res){
+			res.send(req.result)
+		});
+		
+		request(app).post("/remove/t001")
+			.expect('success',done);
+						
+	});
+	
+	
 
 });
