@@ -1,17 +1,17 @@
 var domain = require("jsdm")();
 
 domain.register(
-	"get",require("../app/db").get,
+	"get",require("../infrastructure/db").get,
     "AggreClass", 
 	require("./Column"), 
 	require("./User"),
     require("./Topic"), 
 	require("./Reply"),
 	require("./Message"),
-    "listener", require("./eventHandles"),require("../app/eventHandles"),
+    "listener", require("./eventHandles"),require("../infrastructure/eventHandles"),
     "repository", require("./repos"),
     "commandHandle", require("./commandHandles"),
-    "service", require("./services")(require("../app/query"))
+    "service", require("./services")(require("../infrastructure/query"))
 ).openMethod(
 	"User.plus",
 	"User.updatePassword",

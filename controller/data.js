@@ -1,52 +1,34 @@
-var db = require("./db");
+var query = require("../infrastructure/query");
 
 module.exports = {
 	
-	user:function(){
-
-		var keys = arguments;
-		
-		var udb = db.getDB("User");
-		
-		return function(req,res,next){
-			
-			var qs = {};
-			
-			try{
-				for(var i=0,len = keys.length ; i<len ; i++){
-					var k = keys[i];
-					v = req.param(k);
-					if(v === undefined){
-						throw new Error();
-					}
-					qs[k] = v;
-				}		
-				udb.findOne(qs).exec(function(err,rs){
-					req.user = rs;
-					next();
-				})			
-			}catch(e){			
-				next();
-			}
-
-		}
+	userById:function(req,res,next){
+		query.userById(req.param("id"),function(rs){
+			req.user = rs;
+			next();
+		});
 	},
 	
-	topic:function(req,res,next){
-		var tdb = db.getDB("Topic");
-		tdb.findOne({id:req.param("id")}).exec(function(err,rs){
+	userByEmail:function(req,res,next){
+		
+		query.userByEmail(req.param("email"),function(rs){
+			req.user = rs;
+			next();
+		})
+	},	
+	
+	topicById:function(req,res,next){
+		query.topicById(req.param("id"),function(rs){
 			req.topic = rs;
 			next();
-		})	
+		})
 	},
 	
-	reply:function(req,res,next){
-		
-		var rdb = db.getDB("Reply");
-		rdb.findOne({id:req.param("id")}).exec(function(err,rs){
+	replyById:function(req,res,next){
+		query.replyById(req.param("id"),function(rs){
 			req.reply = rs;
 			next();
-		})			
+		})		
 	}
 	
 	

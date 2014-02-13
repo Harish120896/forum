@@ -1,9 +1,9 @@
 var request = require("supertest");
 var express = require("express");
-var userCtrl = require("../app/controller/user");
+var userCtrl = require("../controller/user");
 var assert = require("assert");
 var should = require("should");
-var DATA = require("../app/data");
+var DATA = require("../controller/data");
 
 describe("userCtrl",function(){
 	
@@ -19,7 +19,7 @@ describe("userCtrl",function(){
 		app.use(express.session());
 		app.use(app.router);
 		
-		app.post("/login",DATA.user("email"),userCtrl.login,function(req,res){
+		app.post("/login",DATA.userByEmail,userCtrl.login,function(req,res){
 			if(req.result === "success"){
 				req.session.user.email.should.eql("leo@leo.leo");
 			}
@@ -48,7 +48,7 @@ describe("userCtrl",function(){
 		app.use(express.session());
 		app.use(app.router);
 		
-		app.post("/logout",DATA.user("email"),userCtrl.login,
+		app.post("/logout",DATA.userByEmail,userCtrl.login,
 		userCtrl.logout,function(req,res){
 			assert.ok(null === req.session.user);
 			res.send();
@@ -87,7 +87,7 @@ describe("userCtrl",function(){
 		app.use(express.session());
 		app.use(app.router);
 
-		app.post("/update",DATA.user("email"),userCtrl.login,userCtrl.update,function(req,res){
+		app.post("/update",DATA.userByEmail,userCtrl.login,userCtrl.update,function(req,res){
 			res.send(req.result);
 		});
 

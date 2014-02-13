@@ -1,6 +1,6 @@
 var crypto = require("crypto");
-var domain = require("../../domain");
-var config = require("../config");
+var domain = require("../domain");
+var config = require("../infrastructure/config");
 var _ = require("underscore");
 
 module.exports = {

@@ -1,4 +1,4 @@
-var query = require("./query");
+var query = require("../infrastructure/query");
 var r = require("random-word")("0123456789");
 var pw = require("png-word")();
 

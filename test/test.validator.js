@@ -1,11 +1,10 @@
 var request = require("supertest");
 var express = require("express");
-var dbs = require("../app/db");
-var util = require("../app/util");
-var userCtrl = require("../app/controller/user");
-var validator = require("../app/validator");
+var dbs = require("../infrastructure/db");
+var util = require("../controller/util");
+var userCtrl = require("../controller/user");
 var assert = require("assert");
-var DATA = require("../app/data");
+var DATA = require("../controller/data");
 
 describe("validator",function(){
 	
@@ -29,7 +28,7 @@ describe("validator",function(){
 		app.use(express.session());
 		app.use(app.router);
 		
-		app.post("/hasReqUser",DATA.user("email"),validator.hasReqUser,function(req,res){
+		app.post("/hasReqUser",DATA.userByEmail,util.hasReqUser,function(req,res){
 			res.send("success")
 		});
 		request(app).post("/hasReqUser").send({email:"leo@leo.leo"}).expect("success",done);
@@ -46,7 +45,7 @@ describe("validator",function(){
 		app.use(express.session());
 		app.use(app.router);
 
-		app.post("/isLogin",DATA.user("email"),userCtrl.login,validator.isLogin,function(req,res){
+		app.post("/isLogin",DATA.userByEmail,userCtrl.login,util.isLogin,function(req,res){
 			res.send("success");
 		});
 		request(app).post("/isLogin").send({email:"leo@leo.leo",password:"123456"}).expect("success",done);		
@@ -66,7 +65,7 @@ describe("validator",function(){
 			req.user = {id:"001"};
 			req.session.user = {id:"002"};
 			next();
-		},validator.userNoSelf),function(req,res){
+		},util.userNoSelf),function(req,res){
 			res.send("error");
 		};
 		
@@ -84,7 +83,7 @@ describe("validator",function(){
 				req.user = {id:"001"};
 				req.session.user = {id:"001"};
 				next();
-			},validator.userNoSelf,function(req,res){
+			},util.userNoSelf,function(req,res){
 				res.send("error");
 			});
 		
@@ -104,7 +103,7 @@ describe("validator",function(){
 		app.use(express.session());
 		app.use(app.router);		
 		
-		app.post("/isAdmin",DATA.user("email"),userCtrl.login,validator.isLogin,validator.isAdmin,function(req,res){
+		app.post("/isAdmin",DATA.userByEmail,userCtrl.login,util.isLogin,util.isAdmin,function(req,res){
 			res.send(req.result);
 		});
 		request(app).post("/isAdmin")
@@ -128,7 +127,7 @@ describe("validator",function(){
 			req.user = {id:"001"};
 			req.session.user = {id:"002"};
 			next();
-		},validator.userSelf),function(req,res){
+		},util.userSelf),function(req,res){
 			res.send("error");
 		};
 		
@@ -146,7 +145,7 @@ describe("validator",function(){
 				req.user = {id:"001"};
 				req.session.user = {id:"001"};
 				next();
-			},validator.userSelf,function(req,res){
+			},util.userSelf,function(req,res){
 				res.send("error");
 			});
 		
@@ -166,7 +165,7 @@ describe("validator",function(){
 		app.use(express.session());
 		app.use(app.router);
 		
-		app.post("/topic/:id",DATA.topic,validator.hasTopic,function(req,res){
+		app.post("/topic/:id",DATA.topicById,util.hasTopic,function(req,res){
 			res.send("success");
 		});
 	
@@ -189,9 +188,9 @@ describe("validator",function(){
 				req.session.user = {id:"u001"};
 				next();
 			},
-			DATA.topic,
-			validator.hasTopic,
-			validator.isTopicManager,
+			DATA.topicById,
+			util.hasTopic,
+			util.isTopicManager,
 			function(req,res){
 			res.send("success");
 		});
@@ -225,9 +224,9 @@ describe("validator",function(){
 				req.session.user = {id:"u006"};
 				next();
 			},
-			DATA.reply,
-			validator.hasReply,
-			validator.isReplyManager,
+			DATA.replyById,
+			util.hasReply,
+			util.isReplyManager,
 			function(req,res){
 			res.send("success");
 		});
@@ -261,9 +260,9 @@ describe("validator",function(){
 				req.session.user = {id:"u006"};
 				next();
 			},
-			DATA.reply,
-			validator.hasReply,
-			validator.isReplyManager,
+			DATA.replyById,
+			util.hasReply,
+			util.isReplyManager,
 			function(req,res){
 			res.send("success");
 		});
@@ -297,9 +296,9 @@ describe("validator",function(){
 				req.session.user = {id:"u00000",role:1};
 				next();
 			},
-			DATA.reply,
-			validator.hasReply,
-			validator.isReplyManager,
+			DATA.replyById,
+			util.hasReply,
+			util.isReplyManager,
 			function(req,res){
 			res.send("success");
 		});
@@ -333,9 +332,9 @@ describe("validator",function(){
 				req.session.user = {id:"u000dd00"};
 				next();
 			},
-			DATA.reply,
-			validator.hasReply,
-			validator.isReplyManager,
+			DATA.replyById,
+			util.hasReply,
+			util.isReplyManager,
 			function(req,res){
 			res.send("success");
 		});
@@ -370,7 +369,7 @@ describe("validator",function(){
 				req.reply = {id:"000",authorId:"id000"};
 				next();
 			},
-			validator.isReplyAuthor,
+			util.isReplyAuthor,
 			function(req,res){
 			res.send("success");
 		});
@@ -400,7 +399,7 @@ describe("validator",function(){
 				req.reply = {id:"000",authorId:"id000"};
 				next();
 			},
-			validator.isReplyAuthor,
+			util.isReplyAuthor,
 			function(req,res){
 			res.send("success");
 		});
@@ -425,7 +424,7 @@ describe("validator",function(){
 				req.reply = {id:"000",authorId:"id000"};
 				next();
 			},
-			validator.hasReply,
+			util.hasReply,
 			function(req,res){
 			res.send("success");
 		});

@@ -1,9 +1,9 @@
 var request = require("supertest");
 var express = require("express");
-var topicCtrl = require("../app/controller/topic");
+var topicCtrl = require("../controller/topic");
 var assert = require("assert");
 var should = require("should");
-var DATA = require("../app/data");
+var DATA = require("../controller/data");
 
 describe("topicCtrl",function(){
 	

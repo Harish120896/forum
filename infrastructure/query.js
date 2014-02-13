@@ -1,7 +1,7 @@
 var dbs = require("./db");
 var is = require("istype");
 
-function OneDay(date){
+function oneday(date){
 	
 	var date = date || new Date();
 		
@@ -36,6 +36,17 @@ module.exports = {
 		})
 	},
 	
+	topicById:function(id,callback){
+		this.topic({id:id},callback);
+	},
+	
+	replyById:function(id,callback){
+		var db = dbs.getDB("Reply");
+		db.findOne({id:id}).exec(function(err,rs){
+			callback(rs);
+		})
+	},
+	
 	topics:function(args,callback){
 		var page = is.number(args.page) && args.page > 0 && Number(args.page) === args.page ? args.page : 1;
 		var db = dbs.getDB("Topic");
@@ -62,31 +73,29 @@ module.exports = {
 		var db = dbs.getDB("User");
 		db.find().exec(function(err,rs){
 			callback(rs);
-		})
+		});
 	},
 	
 	userById:function(id,callback){
 		var db = dbs.getDB("User");
 		db.findOne({id:id}).exec(function(err,rs){
 			callback(rs);
-		})
+		});
 	},
 	
 	userByEmail:function(email,callback){
 		var db = dbs.getDB("User");
-		db.findOne().where({email:email}).exec(function(err,rs){
+		db.findOne({email:email}).exec(function(err,rs){
 			callback(rs);
-		})
+		});
 	},
-	
 	
 	userByNick:function(nick,callback){
 		var db = dbs.getDB("User");
 		db.findOne().where({nickname:nick}).exec(function(err,rs){
 			callback(rs);
-		})
+		});
 	},
-	
 	
 	userFuzzyExist:function(userInfo,callback){
 		var db = dbs.getDB("User");
@@ -98,7 +107,7 @@ module.exports = {
 	    }
 		db.find().or(orq).count(function(err,num){
 			callback(num ? true : false);
-		})
+		});
 	},
 	
 	replyCountByToday:function(authorId,callback){
@@ -107,7 +116,7 @@ module.exports = {
 		db.find().where({authorId:authorId}).where('createTime').gt(date.startTime).lt(date.endTime)
 		.count(function(err,num){
 			callback(num || 0);
-		})
+		});
 	},
 	
 	topicCountByToday:function(authorId,callback){

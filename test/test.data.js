@@ -1,36 +1,37 @@
-var data = require("../app/data");
+var data = require("../controller/data");
 var request = require("supertest");
 var express = require("express");
 var should = require("should");
-var util = require("../app/util");
-var dbs = require("../app/db");
-var validator = require("../app/validator");
+var util = require("../controller/util");
+var dbs = require("../infrastructure/db");
 var assert = require("assert");
 
 describe("data",function(){
 	
-	it("#user",function(done){
+	it("#userByEmail",function(done){
 		var app = express();
-		app.get("/user",data.user("email"),function(req,res){
+		app.get("/user",data.userByEmail,function(req,res){
 			res.send(req.user ? req.user.email : null);
 		})
 		request(app).get("/user?email=brighthas@gmail.com").expect("brighthas@gmail.com",done);
 	});
 	
 	
-	it("#topic",function(done){
+	it("#topicById",function(done){
+		
 		var db = dbs.getDB("Topic");
+		
 		db.create({id:"001"},function(err,rs){
 			
 			rs.id.should.eql("001");
 
 			var app = express();
 			
-			app.get("/topic/:id",data.topic,function(req,res){
+			app.get("/topic/:id",data.topicById,function(req,res){
 				res.send(req.topic.id);
 			});
 			
-			request(app).get("/topic/001").expect("001",done);
+			request(app).get("/topic/"+rs.id).expect("001",done);
 						
 		});
 
@@ -46,11 +47,11 @@ describe("data",function(){
 
 			var app = express();
 			
-			app.get("/reply/:id",data.reply,function(req,res){
+			app.get("/reply/:id",data.replyById,function(req,res){
 				res.send(req.reply.id);
 			});
 			
-			request(app).get("/reply/00100").expect("00100",done);
+			request(app).get("/reply/"+rs.id).expect("00100",done);
 						
 		});
 

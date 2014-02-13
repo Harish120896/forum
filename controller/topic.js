@@ -1,5 +1,5 @@
-var domain = require("../../domain"),
-	query = require("../query");
+var domain = require("../domain"),
+	query = require("../infrastructure/query");
 
 module.exports = {
 	
