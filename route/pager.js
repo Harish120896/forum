@@ -1,6 +1,5 @@
-var validator = require("../validator"),
-	data = require("../data"),
-	util = require("../util");
+var data = require("../controller/data"),
+	util = require("../controller/util");
 
 module.exports = function wrap(app){
 	app.get("/",
@@ -12,7 +11,7 @@ module.exports = function wrap(app){
 
 	app.get("/topic/:id",
 		data.share,
-		data.topic,
+		data.topicById,
 		function(req,res){
 		
 		});
@@ -25,7 +24,7 @@ module.exports = function wrap(app){
 
 	app.get("/column/:id",
 		data.share,
-		util.pager,
+		data.topicByColumnId,
 		function(req,res){
 
 		});

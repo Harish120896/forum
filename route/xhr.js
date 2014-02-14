@@ -1,32 +1,31 @@
-var validator = require("../validator"),
-	data = require("../data"),
-	util = require("../util");
+var data = require("../controller/data"),
+	util = require("../controller/util");
 
 module.exports = function wrap(app){
 	app.get("/info",
-		validator.xhr,
+		util.xhr,
 		data.infoList,
 		function(req,res){
 	
 		});
 
 	app.get("/message",
-		validator.xhr,
+		util.xhr,
 		data.messageList,
 		function(req,res){
 	
 		});
 
 	app.get("/user/:id/get",
-		validator.xhr,
-		data.user("id"),
+		util.xhr,
+		data.userById,
 		function(req,res){
 			res.send(req.user);
 		});
 	
 	app.get("/reply/:id",
-		validator.xhr,
-		data.reply,
+		util.xhr,
+		data.replyById,
 		function(req,res){
 			res.send(req.reply);
 		})	

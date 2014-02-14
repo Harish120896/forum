@@ -108,6 +108,11 @@ module.exports = {
 	plus:function(req,res,next){
 		domain.call("User.plus",req.user.id,[req.param["fraction"]])
 		next();
+	},
+	
+	remove:function(req,res,next){
+		domain.exec("remove a user",{id:req.param("id")})
+		next();
 	}
 	
 }

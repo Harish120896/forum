@@ -1,12 +1,11 @@
-var validator = require("../validator"),
-	messageCtrl = require("../controller/message"),
-	data = require("../data"),
-	util = require("../util");
+var messageCtrl = require("../controller/message"),
+	data = require("../controller/data"),
+	util = require("../controller/util");
 
 module.exports = function wrap(app){
 	// message controller
 	app.post("/message/send",
-		validator.isLogin,
-		validator.validat_num,
-		messageCtrl.create);
+		util.isLogin,
+		util.validat_num,
+		messageCtrl.send);
 }

@@ -2,6 +2,14 @@ var query = require("../infrastructure/query");
 
 module.exports = {
 	
+	share:function(req,res,next){
+		
+	},
+	
+	columnList:function(req,res,next){
+		
+	},
+	
 	userById:function(req,res,next){
 		query.userById(req.param("id"),function(rs){
 			req.user = rs;
@@ -24,12 +32,20 @@ module.exports = {
 		})
 	},
 	
+	topicByColumnId:function(req,res,next){
+		
+	},
+	
 	replyById:function(req,res,next){
 		query.replyById(req.param("id"),function(rs){
 			req.reply = rs;
 			next();
 		})		
-	}
+	},
 	
+	infoList:function(req,res,next){},
+	messageList:function(req,res,next){
+		
+	}
 	
 }

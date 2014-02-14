@@ -1,15 +1,14 @@
-var validator = require("../validator"),
-	userCtrl = require("../controller/user"),
-	data = require("../data"),
-	util = require("../util");
+var userCtrl = require("../controller/user"),
+	data = require("../controller/data"),
+	util = require("../controller/util");
 
 module.exports = function wrap(app){
 
 // user controller
 app.post("/user/login", 
-	validator.validat_num,
-	data.user("email"),
-	validator.hasReqUser,
+	util.validat_num,
+	data.userByEmail,
+	util.hasReqUser,
 	userCtrl.login,
 	util.end);
 
@@ -18,83 +17,83 @@ app.post("/user/logout",
 	util.end);
 
 app.post("/user/reg",
-	validator.isLogin,
-	validator.validat_num, 
+	util.isLogin,
+	util.validat_num, 
 	userCtrl.create,
 	util.end);
 
 app.post("/user/update",
-	validator.isLogin,
-	validator.validat_num,
+	util.isLogin,
+	util.validat_num,
 	userCtrl.update,
 	util.end);
 
 app.post("/user/:id/seal",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
-	validator.userNoSelf,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
+	util.userNoSelf,
 	userCtrl.seal,
 	util.end);
 
 app.post("/user/:id/remove",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
-	validator.userNoSelf,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
+	util.userNoSelf,
 	userCtrl.remove,
 	util.end);
 
 app.post("/user/:id/follow",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
-	validator.userNoSelf,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
+	util.userNoSelf,
 	userCtrl.follow,
 	util.end);
 
 app.post("/user/:id/unfollow",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
-	validator.userNoSelf,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
+	util.userNoSelf,
 	userCtrl.unfollow,
 	util.end);
 
 
 app.post("/user/:id/becomeModerator",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
-	validator.userNoSelf,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
+	util.userNoSelf,
 	userCtrl.becomeModerator,
 	util.end);
 
 app.post("/user/:id/becomeUser",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
-	validator.userNoSelf,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
+	util.userNoSelf,
 	userCtrl.becomeUser,
 	util.end);
 
 app.post("/user/updatePassword",
-	validator.isLogin,
-	validator.validat_num,
+	util.isLogin,
+	util.validat_num,
 	userCtrl.updatePassword,
 	util.end);
 
 app.post("/user/:id/plus",
-	validator.isLogin,
-	validator.isAdmin,
-	data.user("id"),
-	validator.hasReqUser,
+	util.isLogin,
+	util.isAdmin,
+	data.userById,
+	util.hasReqUser,
 	userCtrl.plus,
 	util.end);
 	

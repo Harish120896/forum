@@ -157,5 +157,14 @@ module.exports = {
 		}else{
 			res.send("error")
 		}
+	},
+	
+	xhr:function(req,res,next){
+		if(req.xhr){
+			req.result = "success";
+		}else{
+			req.result = "error";
+		}
+		next();
 	}
 }

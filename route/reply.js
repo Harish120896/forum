@@ -1,31 +1,23 @@
-var validator = require("../validator"),
-	replyCtrl = require("../controller/reply"),
-	data = require("../data"),
-	util = require("../util");
+var replyCtrl = require("../controller/reply"),
+	data = require("../controller/data"),
+	util = require("../controller/util");
 
 module.exports = function wrap(app){
 // reply controller
 app.post("/reply/create",
-	validator.isLogin,
-	validator.validat_num,
+	util.isLogin,
+	util.validat_num,
 	replyCtrl.create,
 	function(req,res){
 		res.send({result:req.result,topic:req.reply});
 	});
 	
-app.post("/reply/:id/update",
-	validator.isLogin,
-	validator.validat_num,
-	data.reply,
-	validator.isReplyAuthor,
-	replyCtrl.update,
-	util.end);
-
 app.post("/reply/:id/remove",
-	validator.isLogin,
-	validator.validat_num,
-	data.reply,
-	validator.isReplyManager,
+	util.isLogin,
+	util.validat_num,
+	data.replyById,
+	util.hasReply,
+	util.isReplyManager,
 	replyCtrl.remove,
 	util.end);
 }
