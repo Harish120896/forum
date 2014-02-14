@@ -110,7 +110,7 @@ function wrap(my) {
 	}
 	
 	messageRepo._data2aggre = function(data){
-		return my.Aggre.Message.reborn(data);
+		return my.Aggres.Message.reborn(data);
 	}
 
 	messageRepo._aggre2data = function(aggre){

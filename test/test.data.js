@@ -8,15 +8,26 @@ var assert = require("assert");
 
 describe("data",function(){
 	
+	var uid;
 	it("#userByEmail",function(done){
 		var app = express();
 		app.get("/user",data.userByEmail,function(req,res){
+			uid = req.user.id;
 			res.send(req.user ? req.user.email : null);
 		})
 		request(app).get("/user?email=brighthas@gmail.com").expect("brighthas@gmail.com",done);
 	});
 	
 	
+	it("#userById",function(done){
+		var app = express();
+		app.get("/user",data.userById,function(req,res){
+			res.send(req.user ? req.user.email : null);
+		})
+		request(app).get("/user?id="+uid).expect("brighthas@gmail.com",done);
+	});
+	
+		
 	it("#topicById",function(done){
 		
 		var db = dbs.getDB("Topic");
@@ -37,7 +48,7 @@ describe("data",function(){
 
 	});
 	
-	it("#reply",function(done){
+	it("#replyById",function(done){
 		
 		var db = dbs.getDB("Reply");
 		

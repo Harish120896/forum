@@ -1,6 +1,7 @@
 module.exports = wrap;
 var filterNickname  = require("./filterNickname");
 var check = require("validator").check;
+var query = require("../infrastructure/query");
 
 function wrap(my) {
 
@@ -29,21 +30,25 @@ function wrap(my) {
 	
 	handle3.commandName = "create a reply";
 	function handle3(args,callback){
-	
-		my.services.postReplyCheck(args.authorId,function(pass){
-			if(pass){
-				my.repos.Reply.create(args,function(err,reply){
-					if(reply){
-						my.repos.Topic.get(reply.topicId,function(topic){
-							topic.addReply(reply.parentId, reply.id);
-						})
+		my.repos.Topic.get(args.topicId,function(err,topic){
+			if(topic){
+				my.services.postReplyCheck(args.authorId,function(pass){
+					if(pass){
+						my.repos.Reply.create(args,function(err,reply){
+							if(reply){
+								topic.addReply(reply.parentId, reply.id);
+								callback(null,reply.toJSON());
+							}else{
+								callback(err);
+							}
+						});
 					}
-				});
-			}
 
-		});
-		
-		callback();
+				});					
+			}
+			
+		})	
+
 		
 	}
 	
@@ -76,14 +81,25 @@ function wrap(my) {
 	
 	handle7.commandName = "send message";
 	function handle7(args,callback){
-		var content = args.body;
-		if(content){
-			filterNickname(content).forEach(function(name){
-				
+		var title = args.title;
+		var body = args.body;
+		var authorId = args.authorId;
+		if(body){
+			filterNickname(body).forEach(function(name){
+				query.userIdByNick(name,function(uid){
+					var targetId = uid;
+					if(targetId){
+						my.repos.Message.create({
+							title:title,
+							body:body,
+							authorId:authorId,
+							targetId:targetId
+						},function(err){});
+					}
+				});
 			});
-		}else{
-			callback();
 		}
+		callback();
 	}
 	
     return [ handle1, handle2, handle3 , handle4 ,handle5 , handle6, handle7 ]

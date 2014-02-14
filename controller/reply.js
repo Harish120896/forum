@@ -1,33 +1,26 @@
-var domain = require("../../domain"),query = require("../query");
+var domain = require("../domain"),query = require("../infrastructure/query");
 
 module.exports = {
 	
 	create:function(req,res,next){
 		req.body.authorId = req.session.user.id;
-		domain.exec("create a topic",req.body,function(err,topic){
-			req.topic = topic;
-			if(topic){
+		domain.exec("create a reply",req.body,function(err,reply){
+			if(reply){
 				req.result = "success";
+				req.reply = reply;
 			}else{
 				req.result = "error";
 			}
 			next();
 		});
 	},
-	
-	update:function(req,res){
-		req.body.authorId = req.session.user.id;
-		domain.call("Topic.updateInfo",req.body.topicId,[req.body.title, req.body.body, req.body.columnId],function(err){
-			res.result = err;
-			next();
-		});
-	},
-	
+		
 	// dev isLogin / isAdmin
-	remove:function(req,res){
+	remove:function(req,res,next){
 		var id = req.param("id");
-		domain.exec("remove a topic",{id:id},function(err){
-			res.result = err;
+		var topicId = req.reply.id;
+		domain.call("Topic.removeReply",topicId,[id],function(err){
+			res.result = err || "success";
 			next();
 		})
 	}

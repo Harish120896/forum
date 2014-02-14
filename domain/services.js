@@ -81,7 +81,7 @@ module.exports = function(query) {
         function service7(userId, callback) {
 		
 			query.replyCountByToday(userId,function(count){
-				if(num > 10000){ //doto
+				if(count > 10000){ //doto
 					callback(false);
 				}else{
 					callback(true);
@@ -90,11 +90,7 @@ module.exports = function(query) {
 			
         }
 
-		service8.serviceName = "userIdByNick";
-		
-		function service8(nickname,)
-		
-        return [service1, service2, service4, service5, service6, service7,service8];
+        return [service1, service2, service4, service5, service6, service7];
 
     }
 

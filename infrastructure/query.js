@@ -97,6 +97,17 @@ module.exports = {
 		});
 	},
 	
+	userIdByNick:function(nick,callback){
+		var db = dbs.getDB("User");
+		db.findOne().where({nickname:nick}).select("id").exec(function(err,rs){
+			if(rs){
+				callback(rs.id);
+			}else{
+				callback();
+			}
+		});	
+	},
+	
 	userFuzzyExist:function(userInfo,callback){
 		var db = dbs.getDB("User");
 		var orq = [];
