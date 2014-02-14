@@ -15,7 +15,7 @@ function oneday(date){
 
 module.exports = {
 	
-	columns:function(args,callback){
+	columns:function(callback){
 		var db = dbs.getDB("Column");
 		db.find().exec(function(err,rs){
 			callback(rs || []);

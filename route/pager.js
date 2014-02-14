@@ -3,10 +3,10 @@ var data = require("../controller/data"),
 
 module.exports = function wrap(app){
 	app.get("/",
-		data.share,
+		//data.share,
 		data.columnList,
 		function(req,res){
-		
+			res.render("index",{columns:req.columns});
 		});
 
 	app.get("/topic/:id",

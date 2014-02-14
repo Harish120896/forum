@@ -7,7 +7,10 @@ module.exports = {
 	},
 	
 	columnList:function(req,res,next){
-		
+		query.columns(function(rs){
+			req.columns = rs;
+			next();
+		});
 	},
 	
 	userById:function(req,res,next){
@@ -43,7 +46,9 @@ module.exports = {
 		})		
 	},
 	
-	infoList:function(req,res,next){},
+	infoList:function(req,res,next){
+		
+	},
 	messageList:function(req,res,next){
 		
 	}
