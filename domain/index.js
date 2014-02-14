@@ -27,8 +27,11 @@ domain.register(
 	
 	"Column.updateName",
 	"Column.updateDes",
+	"Column.updateInfo",
 	
-	"Topic.updateInfo"
+	"Topic.updateInfo",
+	"Topic.toseal",
+	"Topic.unseal"
 ).seal();
 
 module.exports = domain;

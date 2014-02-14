@@ -1,10 +1,8 @@
+var query = require("../infrastructure/query");
+var domain = require("../domain");
+
 module.exports = {
 	create:function(req,res,next){
-		var columnId = req.param("columnId");
-		var page = req.param("page");
-		query.topics({page:page,columnId:columnId},function(rs){
-			res.locals.topics = rs;
-			res.render("column");
-		});		
+		domain.exec("send message",)	
 	}
 }

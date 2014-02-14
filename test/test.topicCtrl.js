@@ -72,6 +72,45 @@ describe("topicCtrl",function(){
 						
 	});
 	
+	it("#seal",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/seal/:id",topicCtrl.seal,function(req,res){
+			res.send(req.result)
+		});
+		
+		request(app).post("/seal/4bfc5400-9363-11e3-a7b0-f111d6eec10f")
+			.expect('success',done);
+						
+	});
 	
+	
+	it("#unseal",function(done){
+		
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+		app.use(app.router);
+		
+		app.post("/unseal/:id",topicCtrl.unseal,function(req,res){
+			res.send(req.result)
+		});
+		
+		request(app).post("/unseal/4bfc5400-9363-11e3-a7b0-f111d6eec10f")
+			.expect('success',done);
+						
+	});
+	
+		
 
 });

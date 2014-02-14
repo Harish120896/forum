@@ -90,7 +90,11 @@ module.exports = function(query) {
 			
         }
 
-        return [service1, service2, service4, service5, service6, service7];
+		service8.serviceName = "userIdByNick";
+		
+		function service8(nickname,)
+		
+        return [service1, service2, service4, service5, service6, service7,service8];
 
     }
 

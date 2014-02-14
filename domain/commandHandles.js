@@ -1,5 +1,5 @@
 module.exports = wrap;
-
+var filterNickname  = require("./filterNickname");
 var check = require("validator").check;
 
 function wrap(my) {
@@ -73,10 +73,17 @@ function wrap(my) {
         	}
         });
     }
-
-	handle7.commandName = "create a message";
+	
+	handle7.commandName = "send message";
 	function handle7(args,callback){
-		my.repos.Message.create(args,callback);
+		var content = args.body;
+		if(content){
+			filterNickname(content).forEach(function(name){
+				
+			});
+		}else{
+			callback();
+		}
 	}
 	
     return [ handle1, handle2, handle3 , handle4 ,handle5 , handle6, handle7 ]

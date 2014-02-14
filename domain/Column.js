@@ -1,5 +1,6 @@
 var uid = require("node-uuid").v1,
-    createModel = require("model-brighthas");
+    createModel = require("model-brighthas"),
+	_ = require("underscore");
 
 
 module.exports = wrap;
@@ -76,7 +77,9 @@ function wrap(my) {
             name: name,
             des: des
         });
-        return this.errors;
+		if(this.hasError()){
+			return _.values(this.errors);
+		}
     })
 
     Column.className = "Column";

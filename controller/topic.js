@@ -34,26 +34,21 @@ module.exports = {
 	},
 	
 	// dev isLogin / isTopicManager
-	seal:function(req,res){
+	seal:function(req,res,next){
 		var id = req.param("id");
-		domain.call("Topic.toseal",{id:id},function(err){
+		domain.call("Topic.toseal",id,[],function(err){
+			req.result = err || "success";
 			next();
 		})		
 	},
 	
 	// dev isLogin / isTopicManager
-	unseal:function(req,res){
+	unseal:function(req,res,next){
 		var id = req.param("id");
-		domain.call("Topic.unseal",{id:id},function(err){
+		domain.call("Topic.unseal",id,[],function(err){
+			req.result = err || "success";
 			next();
 		})		
-	},
-	
-	view:function(req,res,next){
-		query.topic({id:req.param("id")},function(rs){
-			req.topic = rs;
-			next();
-		});
 	}
 	
 }
