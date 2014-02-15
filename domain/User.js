@@ -32,8 +32,9 @@ function wrap(my) {
         })
         .attr("nickname", {
 			min:2,
-			max:15
-	        })
+			max:15,
+			message:"昵称长度 2～15 字符，a~z A~Z 0-9"
+	     })
 		.attr("sex",{
 			type:"boolean",
 			default:true
@@ -53,12 +54,14 @@ function wrap(my) {
         .attr("password", {
             min: 6,
             max: 25,
-			message:"密码长度 6~25 ",
+			message:"密码长度 6~25，a~z A~Z 0-9",
             required: true
         })
         .attr("email", {
             min: 3,
             max: 30,
+			message:"email格式错误！",
+			type:"email",
             required: true,
             readonly: true
         })
