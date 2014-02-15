@@ -1,6 +1,5 @@
 var query = require("../infrastructure/query");
 var r = require("random-word")("0123456789");
-var pw = require("png-word")();
 
 module.exports = {
 	
@@ -28,11 +27,8 @@ module.exports = {
 	    }
 	},
 	refreshValidatNum:function(req,res,next){
-	    var numtxt = req.session.validat_num = r.random(4);
-	    pw.createPNG(numtxt, function(pngnum) {
-	        req.validatpng = pngnum;
-			next();
-	    });		
+	    req.session.validat_num = r.random(4);	
+		next();
 	},
 	end:function(req,res){
 		res.send(req.result);

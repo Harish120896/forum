@@ -32,7 +32,9 @@ module.exports = function wrap(app){
 
 	app.get("/refresh_num",
 		util.refreshValidatNum,
+		data.validatNumPng,
 		function(req,res){
-			res.send(req.validatpng);
+			res.send(req.validatNumPng);
 		})
+		
 }
