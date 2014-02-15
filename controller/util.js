@@ -27,10 +27,11 @@ module.exports = {
 	        }
 	    }
 	},
-	refreshValidatNum:function(req,res){
+	refreshValidatNum:function(req,res,next){
 	    var numtxt = req.session.validat_num = r.random(4);
 	    pw.createPNG(numtxt, function(pngnum) {
-	        res.send(pngnum);
+	        req.validatpng = pngnum;
+			next();
 	    });		
 	},
 	end:function(req,res){
@@ -52,6 +53,7 @@ module.exports = {
 	    }
 	},
 	hasReqUser:function(req,res,next){
+		
 		if(req.user){
 			next();
 		}else{

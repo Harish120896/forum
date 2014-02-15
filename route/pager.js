@@ -4,9 +4,10 @@ var data = require("../controller/data"),
 module.exports = function wrap(app){
 	app.get("/",
 		//data.share,
+		util.cookieLogin,
 		data.columnList,
 		function(req,res){
-			res.render("index",{columns:req.columns});
+			res.render("index",{columns:req.columns,user:req.session.user});
 		});
 
 	app.get("/topic/:id",

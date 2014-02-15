@@ -28,5 +28,11 @@ module.exports = function wrap(app){
 		data.replyById,
 		function(req,res){
 			res.send(req.reply);
-		})	
+		})
+
+	app.get("/refresh_num",
+		util.refreshValidatNum,
+		function(req,res){
+			res.send(req.validatpng);
+		})
 }

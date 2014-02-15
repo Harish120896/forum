@@ -23,25 +23,29 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Nodejs.biz (beta)</a>
+          <a class="navbar-brand" href="#">JSEra.com (beta)</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
-             <li><a href="#" ng-show="regButtonShow">注册</a></li>
-           	 <li><a href="#" ng-show="loginButtonShow">登录</a></li>
-           	 <li><a href="#" ng-show="logoutButtonShow">退出</a></li>
-           	 <li><a href="#" href="/user" ng-show="nicknameShow">{{user.nickname}}</a></li>
+             <li><a href="#" ng-show="!logined" data-toggle="modal" data-target="#regDialog">注册</a></li>
+           	 <li><a href="#" ng-show="!logined" data-toggle="modal" data-target="#loginDialog">登录</a></li>
+           	 <li><a href="#" href="/user" ng-show="logined">{{user.nickname || user.email}}</a></li>
+			 <li><a href="#" ng-click="logout()" ng-show="logined">退出</a></li>
           </ul>
         </div>
       </div>
 </div>
 </div>
+
 <div class="jumbotron">
       <div class="container">
         <h2>HTML5 \ Node.js社区</h2>
 		<p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
       </div>
 </div>
+
+<% include reg.html %>
+<% include login.html %>
 
 <div class="container">
 

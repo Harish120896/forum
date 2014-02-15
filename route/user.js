@@ -10,17 +10,30 @@ app.post("/user/login",
 	data.userByEmail,
 	util.hasReqUser,
 	userCtrl.login,
-	util.end);
+	function(req,res){
+		if(req.result === "success"){
+			res.send(req.session.user);
+		}else{
+			res.send("error");
+		}
+	});
 
 app.post("/user/logout",
 	userCtrl.logout,
 	util.end);
 
 app.post("/user/reg",
-	util.isLogin,
 	util.validat_num, 
 	userCtrl.create,
-	util.end);
+	util.hasReqUser,
+	userCtrl.login,
+	function(req,res){
+		if(req.result === "success"){
+			res.send(req.session.user);
+		}else{
+			res.send("error");
+		}
+	});
 
 app.post("/user/update",
 	util.isLogin,
@@ -96,5 +109,11 @@ app.post("/user/:id/plus",
 	util.hasReqUser,
 	userCtrl.plus,
 	util.end);
+
+app.post("/user/logined",
+	util.isLogin,
+	function(req,res){
+		res.send(req.session.user);
+	})
 	
 }

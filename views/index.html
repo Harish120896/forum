@@ -1,12 +1,9 @@
 <% include header.html %>
 
 <div ng-controller="ctrl">
+
 	
-	<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#createColumnDialog">
-		创建新栏目
-	</button>
-	
-	<% columns.forEach(function(col){ %>
+	<% [].forEach(function(col){ %>
 		<div class="panel panel-default">
 		  <div class="panel-heading">
 			 <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a>

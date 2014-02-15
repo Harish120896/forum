@@ -1,14 +1,52 @@
 var crypto = require("crypto");
 var domain = require("../domain");
 var config = require("../infrastructure/config");
+var query = require("../infrastructure/query");
 var _ = require("underscore");
+var nodemailer = require("nodemailer");
+
+// test email push
+var transport = nodemailer.createTransport("SMTP", {
+    service: "QQ",
+    auth: {
+        user: config.sys_email,
+        pass: config.sys_email_pwd
+    }
+});
 
 module.exports = {
+	
+	findPassword:function(req,res,next){
+	    query.userByEmail(req.body.email, function(user) {
+	        if (user) {
+	            transport.sendMail({
+	                from: "xxxq <1405491181@qq.com>",
+	                to: "qqq <brighthas@gmail.com>",
+	                // Subject of the message
+	                subject: '更改密码',
+
+	                // plaintext body
+	                text: '更改密码',
+
+	                // HTML body
+	                html: '<a href="http://localhost:3000/fpwd/' + user.email + "/" + user.password + '">点击更改密码</a>'
+
+	            }, function(err) {
+	                req.result = "success";
+					next();
+	            });
+	        } else {
+				req.result = "error";
+				next();
+	        }
+	    });		
+	},
 	
 	// must have req.user & req.body.password
 	login:function(req,res,next){
         var md5 = crypto.createHash('md5');
         var pwd = md5.update(req.body.password).digest("hex");
+		
 		if(req.user.password === pwd){
 			
 			req.session.user = req.user;
@@ -37,14 +75,12 @@ module.exports = {
 	// return success or [error];
 	// if success , req.user exist.
 	create:function(req,res,next){
-		
 		function pass(user){
 			req.user = user;
 			req.result = "success";
 			next();
 		}
-		
-	    domain.exec("create a user", req.body, function(err, user) {
+	    domain.exec("create a user", {email:req.body.email,password:req.body.password}, function(err, user) {
 	        if (err) {
 	            req.result = "error";
 				next();
