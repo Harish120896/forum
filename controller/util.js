@@ -53,7 +53,7 @@ module.exports = {
 		if(req.user){
 			next();
 		}else{
-			res.send(req.result);
+			res.send({user:["没有此用户"]});
 		}
 		
 	},

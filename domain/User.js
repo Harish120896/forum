@@ -58,9 +58,9 @@ function wrap(my) {
         })
         .attr("password", {
             min: 6,
-            max: 25,
-			validator:/^[a-zA-Z_0-9]*$/,
-			message:"密码长度 6~25，a~z A~Z 0-9",
+            max: 14,
+			validator:/^[a-z0-9]*$/,
+			message:"密码长度 6~14，支持a-z 0-9字符",
             required: true
         })
         .attr("email", {

@@ -10,13 +10,7 @@ app.post("/user/login",
 	data.userByEmail,
 	util.hasReqUser,
 	userCtrl.login,
-	function(req,res){
-		if(req.result === "success"){
-			res.send(req.session.user);
-		}else{
-			res.send("error");
-		}
-	});
+	util.end);
 
 app.post("/user/logout",
 	userCtrl.logout,
@@ -27,9 +21,7 @@ app.post("/user/reg",
 	userCtrl.create,
 	util.hasReqUser,
 	userCtrl.login,
-	function(req,res){
-		res.send(req.result);
-	});
+	util.end);
 
 app.post("/user/update",
 	util.isLogin,

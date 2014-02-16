@@ -1,121 +1,160 @@
-var app = angular.module("forumapp",[]);
+var app = angular.module("forumapp", []);
 
-;(function(){
-	
-	function initForm(scope,form){
-		clearErrors(scope);
-		scope.email = "";
-		scope.password = "";
-		scope.validat_num = "";
-		scope.$apply();
-	}
-	
-	function formFocus(form){
+;
+(function() {
+
+    function initForm(scope, form) {
+        clearErrors(scope);
+        scope.email = "";
+        scope.password = "";
+        scope.validat_num = "";
+        scope.$apply();
+    }
+
+	function popover(msg){
+		// doto 
 		setTimeout(function(){
-			$(form).find("input")[0].focus();
-		},500);
+			$("#userInfo").popover({content:msg,placement:"bottom"}).popover("show");
+		},100);
+		setTimeout(function(){
+			$("#userInfo").popover("destroy");
+		},2000)		
 	}
-	
-	function clearErrors(scope){
-		scope.emailMessage = null;
-		scope.validat_numMessage= null;
-		scope.passwordMessage = null;
-	}
-	
-	// init
-	app.run(function($rootScope,$http){
-	
-		
-		$("#regDialog [tabindex]").bind("keydown",function(e){
-		
-			if(e.keyCode === 13){
-				var t = $(this).attr("tabindex");
-				var t = parseInt(t);
 
-				var next;
-				if(t === 4){
-					next = 1;
-				}else{
-					next = t+1;
-				}
+    function formFocus(form) {
+        setTimeout(function() {
+            $(form).find("input")[0].focus();
+        }, 500);
+    }
 
-				$("#regDialog").find("[tabindex="+next+"]").focus();	
-			}
+    function clearErrors(scope) {
+        scope.emailMessage = null;
+        scope.validat_numMessage = null;
+        scope.passwordMessage = null;
+    }
 
-			
-		});
-			
-		$http.post("/user/logined").success(function(data){
-			if(data.email){
-				$rootScope.user = data;
-				$rootScope.logined = true;
-			}
-		})
-	
-		$rootScope.refreshNum = function(){
-			this.time = Date.now();
-		}
-		
-		$rootScope.refreshNum();	
-	})
+    // init
+    app.run(function($rootScope, $http) {
 
-	.controller("headerCtrl",function($scope,$rootScope,$http){
-		$scope.logout = function(){
-			$http.post("/user/logout").success(function(){
-				$rootScope.logined = false;
-			})
-		}
-	})
+        function enterFocus(e) {
 
-	.controller("regCtrl",function($scope,$rootScope,$http){
-		
-		$("#regDialog").on('show.bs.modal', function (e) {
-			initForm($scope,this);
-			$rootScope.refreshNum();
-		})
-		
-		$("#regDialog").on('shown.bs.modal', function (e) {
-			formFocus(this);
-		})
-		
-		$scope.reg = function(){
-			$http.post("/user/reg",{email:$scope.email,password:$scope.password,validat_num:$scope.validat_num})
-			.success(function(data){
-				if(data === "success"){
-					location.reload();
-				}else{
-					
-					clearErrors($scope);
-					var keys  = Object.keys(data);
-					keys.forEach(function(key){
-						$scope[key+"Message"] = data[key][0];
-					})
-					$rootScope.refreshNum();
-				}
-			})
-		}
-	})
+            if (e.keyCode === 13) {
+                var t = $(this).attr("tabindex");
+                var t = parseInt(t);
 
-	.controller("loginCtrl",function($scope,$rootScope,$http){
-		
-		$("#loginDialog").on('show.bs.modal', function (e) {
-			initForm($scope,this);
-			$rootScope.refreshNum();
-		})
-		
-		$scope.reg = function(){
-			$http.post("/user/login",{email:$scope.email,password:$scope.password,validat_num:$scope.validat_num})
-			.success(function(data){
-				if(data.email){
-					$rootScope.user = data;
-					$rootScope.logined = true;
-					$('#loginDialog').modal('hide');
-				}else{
-					$scope.errorShow = true;
-					$rootScope.refreshNum();
-				}
-				initForm($scope);
-			})
-		}
-	})	
+                var next;
+                if (t === 4) {
+                    next = 1;
+                } else {
+                    next = t + 1;
+                }
+
+                $(this).parents().find("[tabindex=" + next + "]").focus();
+            }
+
+        }
+
+        $("#regDialog [tabindex]").bind("keydown", enterFocus);
+        $("#loginDialog [tabindex]").bind("keydown", enterFocus);
+
+        $rootScope.checkLogined = function() {
+            var self = this;
+            $http.post("/user/logined").success(function(data) {
+                if (data.email) {
+                    self.user = data;
+                    self.logined = true;
+                }
+            })
+        }
+
+        $rootScope.checkLogined();
+
+        $rootScope.refreshNum = function() {
+            this.time = Date.now();
+        }
+
+        $rootScope.refreshNum();
+    })
+
+    .controller("headerCtrl", function($scope, $rootScope, $http) {
+        $scope.logout = function() {
+            $http.post("/user/logout").success(function() {
+                $rootScope.logined = false;
+            })
+        }
+    })
+
+    .controller("regCtrl", function($scope, $rootScope, $http) {
+
+        $("#regDialog").on('show.bs.modal', function(e) {
+            initForm($scope, this);
+            $rootScope.refreshNum();
+        })
+
+        $("#regDialog").on('shown.bs.modal', function(e) {
+            formFocus(this);
+        })
+
+        $scope.reg = function() {
+            $http.post("/user/reg", {
+                email: $scope.email,
+                password: $scope.password,
+                validat_num: $scope.validat_num
+            })
+                .success(function(data) {
+                    if (data === "success") {
+                        $rootScope.checkLogined();
+                        $('#regDialog').modal('hide');
+						popover("您已注册成功！")
+                    } else {
+
+                        clearErrors($scope);
+                        var keys = Object.keys(data);
+                        keys.forEach(function(key) {
+                            $scope[key + "Message"] = data[key][0];
+                        })
+                        $rootScope.refreshNum();
+                    }
+                })
+        }
+    })
+
+    .controller("loginCtrl", function($scope, $rootScope, $http) {
+
+        $("#loginDialog").on('show.bs.modal', function(e) {
+            $rootScope.refreshNum();
+            initForm($scope, this);
+        })
+
+        $("#loginDialog").on('shown.bs.modal', function(e) {
+            formFocus(this);
+        })
+
+        $scope.reg = function() {
+            $http.post("/user/login", {
+                email: $scope.email,
+                password: $scope.password,
+                validat_num: $scope.validat_num
+            })
+                .success(function(data) {
+                    if (data === "success") {
+                        $rootScope.checkLogined();
+                        $('#loginDialog').modal('hide');
+						popover("您已登录成功!");
+						
+                    } else {
+                        clearErrors($scope);
+                        var keys = Object.keys(data);
+                        keys.forEach(function(key) {
+							if(key === "user"){
+								 $scope["emailMessage"] = data[key][0];
+							}else{
+	                            $scope[key + "Message"] = data[key][0];
+							}
+                        })
+                        $rootScope.refreshNum();
+                    }
+                })
+        }
+    })
 })();
