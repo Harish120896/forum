@@ -45,7 +45,7 @@ module.exports = {
 	    if (req.body.validat_num && req.session.validat_num === req.body.validat_num) {
 			next();
 	    } else {
-			res.send(["验证码错误！"]);
+			res.send({validat_num:["验证码错误！"]});
 	    }
 	},
 	hasReqUser:function(req,res,next){
@@ -53,8 +53,9 @@ module.exports = {
 		if(req.user){
 			next();
 		}else{
-			res.send("error");
+			res.send(req.result);
 		}
+		
 	},
 	
 	// dev hasReqUser / isLogin 芳草地

@@ -11,7 +11,7 @@ describe("User",function(){
     var user;
 
     it("#new",function(){
-        user = new User({nickname:"brighthas",loginname:"brighthas",password:"123456",email:"brighthas@gmail.com"});				
+        user = new User({nickname:"brighthas",loginname:"brighthas",password:"a",email:"brighthas@gmail.com"});		
         var md5 = crypto.createHash('md5');
         user.password.should.eql(md5.update("123456").digest("hex"));
 		
@@ -19,6 +19,8 @@ describe("User",function(){
         user.fraction.should.eql(0);
         user.nickname.should.eql("brighthas");
         user.role.should.eql(User.roles.USER);
+		
+				
     });
 
     it("#updatePassword",function(){

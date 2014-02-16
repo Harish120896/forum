@@ -61,7 +61,7 @@ module.exports = {
 			req.result = "success";
 			next();
 		}else{
-			req.result = "error";
+			req.result = {email:["登录信箱或密码有误，请重新登录。"]};
 			next();
 		}
 	},
@@ -82,7 +82,8 @@ module.exports = {
 		}
 	    domain.exec("create a user", {email:req.body.email,password:req.body.password}, function(err, user) {
 	        if (err) {
-	            req.result = "error";
+				console.log(err);
+	            req.result = err;
 				next();
 	        } else {
 	            if (user.email === config.admin) {

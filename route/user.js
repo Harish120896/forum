@@ -28,11 +28,7 @@ app.post("/user/reg",
 	util.hasReqUser,
 	userCtrl.login,
 	function(req,res){
-		if(req.result === "success"){
-			res.send(req.session.user);
-		}else{
-			res.send("error");
-		}
+		res.send(req.result);
 	});
 
 app.post("/user/update",

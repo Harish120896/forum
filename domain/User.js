@@ -33,6 +33,7 @@ function wrap(my) {
         .attr("nickname", {
 			min:2,
 			max:15,
+			validator:/^[a-zA-Z0-9]*$/,
 			message:"昵称长度 2～15 字符，a~z A~Z 0-9"
 	     })
 		.attr("sex",{
@@ -40,11 +41,15 @@ function wrap(my) {
 			default:true
 		})
 		.attr("address",{
-			max:35
+			max:35,
+		default:"",
+			message:"长度小于35个字符"
+			
 		})
 		.attr("des",{
 			max:200,
-			default:""
+			default:"",
+			message:"长度小于200个字符"
 		})
         .attr("role", {
             required: true,
@@ -54,6 +59,7 @@ function wrap(my) {
         .attr("password", {
             min: 6,
             max: 25,
+			validator:/^[a-zA-Z_0-9]*$/,
 			message:"密码长度 6~25，a~z A~Z 0-9",
             required: true
         })

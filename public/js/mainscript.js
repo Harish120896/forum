@@ -3,13 +3,23 @@ var app = angular.module("forumapp",[]);
 ;(function(){
 	
 	function initForm(scope,form){
+		clearErrors(scope);
 		scope.email = "";
 		scope.password = "";
 		scope.validat_num = "";
 		scope.$apply();
+	}
+	
+	function formFocus(form){
 		setTimeout(function(){
 			$(form).find("input")[0].focus();
-		})
+		},500);
+	}
+	
+	function clearErrors(scope){
+		scope.emailMessage = null;
+		scope.validat_numMessage= null;
+		scope.passwordMessage = null;
 	}
 	
 	// init
@@ -59,23 +69,29 @@ var app = angular.module("forumapp",[]);
 
 	.controller("regCtrl",function($scope,$rootScope,$http){
 		
-		$("#regDialog").on('shown.bs.modal', function (e) {
+		$("#regDialog").on('show.bs.modal', function (e) {
 			initForm($scope,this);
 			$rootScope.refreshNum();
+		})
+		
+		$("#regDialog").on('shown.bs.modal', function (e) {
+			formFocus(this);
 		})
 		
 		$scope.reg = function(){
 			$http.post("/user/reg",{email:$scope.email,password:$scope.password,validat_num:$scope.validat_num})
 			.success(function(data){
-				if(data.email){
-					$rootScope.user = data;
-					$rootScope.logined = true;
-					$("#regDialog").modal('hide');
+				if(data === "success"){
+					location.reload();
 				}else{
-					$scope.errorShow = true;
+					
+					clearErrors($scope);
+					var keys  = Object.keys(data);
+					keys.forEach(function(key){
+						$scope[key+"Message"] = data[key][0];
+					})
 					$rootScope.refreshNum();
 				}
-				initForm($scope);
 			})
 		}
 	})

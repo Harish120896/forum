@@ -49,6 +49,7 @@ module.exports = function(query) {
         // return err or null , if err mean not unique.
         service5.serviceName = "userUnique";
         function service5(userInfo, callback) {
+			console.log(userInfo);
 			query.userFuzzyExist(userInfo,function(exist){
 				callback(!exist);
 			});
