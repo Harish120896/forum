@@ -129,6 +129,35 @@ var app = angular.module("forumapp", []);
         $("#loginDialog").on('shown.bs.modal', function(e) {
             formFocus(this);
         })
+		
+		$scope.findPassword = function(){
+            $http.post("/user/findPassword", {
+            	email: $scope.email
+            }).success(function(data){
+                if (data === "success") {
+                    alert("请到信箱"+$scope.email+"内确认");
+                } else{
+                    if (data === "success") {
+                        $rootScope.checkLogined();
+                        $('#loginDialog').modal('hide');
+						popover("您已登录成功!");
+						
+                    } else {
+                        clearErrors($scope);
+                        var keys = Object.keys(data);
+                        keys.forEach(function(key) {
+							if(key === "user"){
+								 $scope["emailMessage"] = data[key][0];
+							}else{
+	                            $scope[key + "Message"] = data[key][0];
+							}
+                        })
+                        $rootScope.refreshNum();
+                    }                	
+                }
+            })
+			
+		}
 
         $scope.reg = function() {
             $http.post("/user/login", {

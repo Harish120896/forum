@@ -29,5 +29,12 @@ module.exports = function wrap(app){
 		function(req,res){
 
 		});
-		
+
+	app.get("/setNewPassword",
+		function(req,res){
+			console.log("dfdsfsdfsfsfss")
+			res.locals.code = req.param("code");
+			res.locals.email = req.param("email");
+			res.render("setNewPassword");
+		});		
 }

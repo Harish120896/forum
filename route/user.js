@@ -84,9 +84,16 @@ app.post("/user/:id/becomeUser",
 	userCtrl.becomeUser,
 	util.end);
 
+app.post("/user/findPassword",
+	data.userByEmail,
+	util.hasReqUser,
+	userCtrl.findPassword,
+	util.end
+)
+
 app.post("/user/updatePassword",
-	util.isLogin,
-	util.validat_num,
+	data.userByEmail,
+	util.hasReqUser,
 	userCtrl.updatePassword,
 	util.end);
 

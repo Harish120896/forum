@@ -17,29 +17,22 @@ var transport = nodemailer.createTransport("SMTP", {
 module.exports = {
 	
 	findPassword:function(req,res,next){
-	    query.userByEmail(req.body.email, function(user) {
-	        if (user) {
-	            transport.sendMail({
-	                from: "xxxq <1405491181@qq.com>",
-	                to: "qqq <brighthas@gmail.com>",
-	                // Subject of the message
-	                subject: '更改密码',
+	    transport.sendMail({
+	        from: "xxxq <1405491181@qq.com>",
+	        to: "hi <"+req.user.email+">",
+	        // Subject of the message
+	        subject: '更改密码',
 
-	                // plaintext body
-	                text: '更改密码',
+	        // plaintext body
+	        text: '更改密码',
 
-	                // HTML body
-	                html: '<a href="http://localhost:3000/fpwd/' + user.email + "/" + user.password + '">点击更改密码</a>'
+	        // HTML body
+	        html: '<a href="http://localhost:3000/setNewPassword?email=' + req.user.email + "&code=" + req.user.password + '">点击更改密码</a>'
 
-	            }, function(err) {
-	                req.result = "success";
-					next();
-	            });
-	        } else {
-				req.result = "error";
-				next();
-	        }
-	    });		
+	    }, function(err) {
+	        req.result = "success";
+			next();
+	    });
 	},
 	
 	// must have req.user & req.body.password
@@ -133,13 +126,16 @@ module.exports = {
 		domain.call("User.becomeUser",req.user.id,[]);
 		next();
 	},
-	
-	// return "success" or [error]
 	updatePassword:function(req,res,next){
-		domain.call("User.updatePassword",req.session.id,[req.param("password")],function(err){
-			req.result = err || "success";
+		if(req.user.password === req.body.code ){
+			domain.call("User.updatePassword",req.user.id,[req.param("password")],function(err){
+				req.result = err || "success";
+				next();
+			})			
+		}else{
+			req.result = {"user":["非法操作！"]};
 			next();
-		})
+		}
 	},
 	
 	plus:function(req,res,next){
