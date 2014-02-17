@@ -7,6 +7,7 @@ var app = angular.module("forumapp", []);
         clearErrors(scope);
         scope.email = "";
         scope.password = "";
+        scope.nickname = "";
         scope.validat_num = "";
         scope.$apply();
     }
@@ -29,6 +30,7 @@ var app = angular.module("forumapp", []);
 
     function clearErrors(scope) {
         scope.emailMessage = null;
+        scope.nicknameMessage = null;
         scope.validat_numMessage = null;
         scope.passwordMessage = null;
     }
@@ -36,26 +38,29 @@ var app = angular.module("forumapp", []);
     // init
     app.run(function($rootScope, $http) {
 
-        function enterFocus(e) {
+		function enterFocus(maxTabNum){
+	        return function (e) {
 
-            if (e.keyCode === 13) {
-                var t = $(this).attr("tabindex");
-                var t = parseInt(t);
+	            if (e.keyCode === 13) {
+	                var t = $(this).attr("tabindex");
+	                var t = parseInt(t);
 
-                var next;
-                if (t === 4) {
-                    next = 1;
-                } else {
-                    next = t + 1;
-                }
+	                var next;
+	                if (t === maxTabNum) {
+	                    next = 1;
+	                } else {
+	                    next = t + 1;
+	                }
 
-                $(this).parents().find("[tabindex=" + next + "]").focus();
-            }
+	                $(this).parents().find("[tabindex=" + next + "]").focus();
+	            }
 
-        }
+	        }			
+		}
 
-        $("#regDialog [tabindex]").bind("keydown", enterFocus);
-        $("#loginDialog [tabindex]").bind("keydown", enterFocus);
+
+        $("#regDialog [tabindex]").bind("keydown", enterFocus(5));
+        $("#loginDialog [tabindex]").bind("keydown", enterFocus(4));
 
         $rootScope.checkLogined = function() {
             var self = this;
@@ -97,6 +102,7 @@ var app = angular.module("forumapp", []);
 
         $scope.reg = function() {
             $http.post("/user/reg", {
+				nickname:$scope.nickname,
                 email: $scope.email,
                 password: $scope.password,
                 validat_num: $scope.validat_num

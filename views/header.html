@@ -29,7 +29,7 @@
           <ul class="nav navbar-nav navbar-right">
              <li><a href="#" ng-show="!logined" data-toggle="modal" data-target="#regDialog">注册</a></li>
            	 <li><a href="#" ng-show="!logined" data-toggle="modal" data-target="#loginDialog">登录</a></li>
-           	 <li id="userInfo" data-toggle="manual" data-placement="bottom"><a href="#" href="/user" ng-show="logined">{{user.nickname || user.email}}</a></li>
+           	 <li id="userInfo" data-toggle="manual" data-placement="bottom"><a href="/user/{{user.id}}" href="/user" ng-show="logined">{{user.nickname || user.email}}</a></li>
 			 <li><a href="#" ng-click="logout()" ng-show="logined">退出</a></li>
           </ul>
         </div>

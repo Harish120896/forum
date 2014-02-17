@@ -19,7 +19,6 @@ app.post("/user/logout",
 app.post("/user/reg",
 	util.validat_num, 
 	userCtrl.create,
-	util.hasReqUser,
 	userCtrl.login,
 	util.end);
 
@@ -109,6 +108,12 @@ app.post("/user/logined",
 	util.isLogin,
 	function(req,res){
 		res.send(req.session.user);
+	})
+	
+app.post("/user/:id/get",
+	data.userById,
+	function(req,res){
+		res.send(req.user);
 	})
 	
 }

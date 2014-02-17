@@ -73,11 +73,9 @@ module.exports = {
 			req.result = "success";
 			next();
 		}
-	    domain.exec("create a user", {email:req.body.email,password:req.body.password}, function(err, user) {
-	        if (err) {
-				console.log(err);
-	            req.result = err;
-				next();
+	    domain.exec("create a user", {nickname:req.body.nickname,email:req.body.email,password:req.body.password}, function(err, user) {			
+			if (err) {
+				res.send(err);
 	        } else {
 	            if (user.email === config.admin) {
 	                setTimeout(function() {

@@ -45,14 +45,22 @@ module.exports = function(query) {
             }
         }
 
-        // userInfo{loginname , nickname , email}
+        // userInfo{nickname , email}
         // return err or null , if err mean not unique.
         service5.serviceName = "userUnique";
-        function service5(userInfo, callback) {
-			console.log(userInfo);
-			query.userFuzzyExist(userInfo,function(exist){
-				callback(!exist);
-			});
+        function service5(email,nickname, callback) {
+			var result = [];
+			query.userByEmail(email,function(u){
+				if(u){
+					result.push("email");
+				}
+				query.userByNick(nickname,function(u2){
+					if(u2){
+						result.push("nickname");
+					}
+					callback(result.length > 0 ? result : null);
+				});
+			})
 		}
 
         // true / false 

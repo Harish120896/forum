@@ -18,9 +18,11 @@ module.exports = function wrap(app){
 		});
 
 	app.get("/user/:id",
-		data.share,
+		data.userById,
+		util.hasReqUser,
 		function(req,res){
-
+			res.locals.user = req.user;
+			res.render("user");
 		});
 
 	app.get("/column/:id",
@@ -32,7 +34,6 @@ module.exports = function wrap(app){
 
 	app.get("/setNewPassword",
 		function(req,res){
-			console.log("dfdsfsdfsfsfss")
 			res.locals.code = req.param("code");
 			res.locals.email = req.param("email");
 			res.render("setNewPassword");

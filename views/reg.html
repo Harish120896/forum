@@ -7,17 +7,23 @@
       </div>
       <div class="modal-body">
 		  <form role="form">
+  		    <div class="form-group">
+  		    	<div class="alert alert-danger small" ng-show="!!nicknameMessage">
+  					{{nicknameMessage}}
+  		    	</div>
+  		      <input type="text" class="form-control" ng-keydown="tab()" ng-model="nickname" tabindex="1" placeholder="请输入昵称，之后不可更改。">
+  		    </div>			  
 		    <div class="form-group">
 		    	<div class="alert alert-danger small" ng-show="!!emailMessage">
 					{{emailMessage}}
 		    	</div>
-		      <input type="text" class="form-control" ng-keydown="tab()" ng-model="email" tabindex="1" placeholder="请输入Email">
+		      <input type="text" class="form-control" ng-keydown="tab()" ng-model="email" tabindex="2" placeholder="请输入Email">
 		    </div>
 		    <div class="form-group">
 		    	<div class="alert alert-danger small" ng-show="!!passwordMessage">
 					{{passwordMessage}}
 		    	</div> 
-		      <input type="password" class="form-control" ng-keydown="tab()" ng-model="password" tabindex="2" placeholder="请输入密码">
+		      <input type="password" class="form-control" ng-keydown="tab()" ng-model="password" tabindex="3" placeholder="请输入密码">
 		    </div>
 		    <div class="form-group">
    		    	<div class="alert alert-danger small" ng-show="!!validat_numMessage">
@@ -25,7 +31,7 @@
    		    	</div>
 				<div class="row">
 		       <div class="col-sm-7">
-		          <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3" placeholder="输入验证码">
+		          <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="4" placeholder="输入验证码">
 		       </div>
 			   <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" />
 			   <a href="#" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
@@ -35,7 +41,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-        <button type="button" ng-keydown="tab()" tabindex="4" class="btn btn-primary" ng-click="reg()">注册</button>
+        <button type="button" ng-keydown="tab()" tabindex="5" class="btn btn-primary" ng-click="reg()">注册</button>
       </div>
     </div>
   </div>

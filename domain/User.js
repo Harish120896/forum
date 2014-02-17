@@ -33,6 +33,8 @@ function wrap(my) {
         .attr("nickname", {
 			min:2,
 			max:15,
+            required: true,
+            readonly: true,
 			validator:/^[a-zA-Z0-9]*$/,
 			message:"昵称长度 2～15 字符，a~z A~Z 0-9"
 	     })

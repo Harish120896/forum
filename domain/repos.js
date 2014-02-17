@@ -1,5 +1,7 @@
 var Node = require("tree-node")
-    ,crypto = require("crypto");
+    ,crypto = require("crypto")
+	,hus = require("huskies")
+	,lock = require("huskies-lock");
 
 module.exports = wrap;
 
@@ -74,11 +76,20 @@ function wrap(my) {
 
     var userRepo = new my.Repository("User");
 
-    userRepo._create = function (args, callback) {
-		console.log(args);
-        my.services.userUnique({email:args.email},function(unique){
-            if(!unique){
-                callback({"email":["邮箱已被注册"]});
+    userRepo._create = hus(function (args, callback) {
+        my.services.userUnique(args.email,args.nickname,function(unique){
+			console.log(unique)
+            if(unique){
+				var err = {};
+				unique.forEach(function(k){
+					if(k === "nickname"){
+						err["nickname"] = ["昵称已被使用"];
+					}
+					if(k === "email"){
+						err["email"] = ["邮箱已被使用"];
+					}
+				});
+				callback(err);
             }else{
                 var user = new my.Aggres.User(args);
                 if(user.hasError()){
@@ -89,7 +100,7 @@ function wrap(my) {
                 }
             }
         });
-    }
+    }).use(lock);
 
     userRepo._aggre2data = function (aggre) {
         return aggre.toJSON();
