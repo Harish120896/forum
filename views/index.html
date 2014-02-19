@@ -1,40 +1,23 @@
 <% include header.html %>
 
-<div ng-controller="ctrl">
+<div>
 
-	
-	<% [].forEach(function(col){ %>
-		<div class="panel panel-default">
-		  <div class="panel-heading">
-			 <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a>
-		  </div>
-		  <div class="panel-body">
-			  <a href="/column/<%=col.id%>"><div columnid="<%=col.id%>" coledit="des"><%=col.name%></div></a>
-		  </div>
-  
-		</div>		
-	<% }) %>
-	
-	<!-- Modal -->
-	<div class="modal fade" id="createColumnDialog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">创建新栏目</h4>
-	      </div>
-	      <div class="modal-body">
-			  <input type="text" placeholder="栏目名称" ng-model="name" />
-			  <textarea ng-model="des"></textarea>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	        <button type="button" ng-click="createColumn()" class="btn btn-primary">创建</button>
-	      </div>
-	    </div>
+<a href="#" data-toggle="modal" data-target="#createColumnDialog">创建栏目</a>
+
+<% columns.forEach(function(col){ %>
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+		 <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a> <a ng-click='select("<%=col.id%>")'></a>
 	  </div>
-	</div>
-		
+	  <div class="panel-body">
+		  <a href="/column/<%=col.id%>"><div columnid="<%=col.id%>" coledit="des"><%=col.name%></div></a>
+	  </div>
+	</div>		
+<% }) %>
+
+<%include createColumn.html%>
+<%include updateColumn.html%>
+
 </div>	  
 
 <% include mainscript.html %>

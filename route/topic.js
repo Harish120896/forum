@@ -4,6 +4,7 @@ var topicCtrl = require("../controller/topic"),
 
 module.exports = function wrap(app){
 
+
 // Topic controller
 app.post("/topic/create",
 	util.isLogin,

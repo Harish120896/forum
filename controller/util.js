@@ -42,6 +42,7 @@ module.exports = {
 		}
 	},
 	validat_num:function(req, res, next) {
+		console.log(req.body.validat_num)
 	    if (req.body.validat_num && req.session.validat_num === req.body.validat_num) {
 			next();
 	    } else {

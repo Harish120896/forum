@@ -4,6 +4,13 @@ var pw = require("png-word")();
 
 module.exports = {
 
+	columnById:function(req,res,next){
+        query.columnById(req.param("id"),function(rs) {
+            req.column = rs;
+            next();
+        });
+	},
+
     share: function(req, res, next) {
 
     },
@@ -46,8 +53,11 @@ module.exports = {
         })
     },
 
-    topicByColumnId: function(req, res, next) {
-
+    topicsByColumnId: function(req, res, next) {
+        query.topicsByColumnId(req.param("id"), function(rs) {
+            req.topics = rs;
+            next();
+        })
     },
 
     replyById: function(req, res, next) {

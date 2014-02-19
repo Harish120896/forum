@@ -3,6 +3,7 @@ var data = require("../controller/data"),
 
 module.exports = function wrap(app){
 	app.get("/",
+	util.cookieLogin,
 		//data.share,
 		util.cookieLogin,
 		data.columnList,
@@ -11,13 +12,20 @@ module.exports = function wrap(app){
 		});
 
 	app.get("/topic/:id",
-		data.share,
+		//data.share,
+		util.cookieLogin,
 		data.topicById,
 		function(req,res){
-		
+			if(req.topic){
+				res.locals.topic = topic;
+				res.render("topic");
+			}else{
+				res.send(404);
+			}
 		});
 
 	app.get("/user/:id",
+		util.cookieLogin,
 		data.userById,
 		util.hasReqUser,
 		function(req,res){
@@ -26,10 +34,18 @@ module.exports = function wrap(app){
 		});
 
 	app.get("/column/:id",
-		data.share,
-		data.topicByColumnId,
+		//data.share,
+		util.cookieLogin,
+		data.columnById,
+		data.topicsByColumnId,
 		function(req,res){
-
+			if(req.topics && req.column){
+				res.locals.topics = req.topics;
+				res.locals.column = req.column;
+				res.render("column");
+			}else{
+				res.send(404);
+			}
 		});
 
 	app.get("/setNewPassword",

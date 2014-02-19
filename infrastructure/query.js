@@ -29,6 +29,13 @@ module.exports = {
 		})
 	},
 	
+	columnById:function(id,callback){
+		var db = dbs.getDB("Column");
+		db.findOne({id:id}).exec(function(err,rs){
+			callback(rs);
+		})
+	},
+	
 	topic:function(args,callback){
 		var db = dbs.getDB("Topic");
 		db.findOne({id:args.id}).exec(function(err,rs){
@@ -61,10 +68,9 @@ module.exports = {
 			})
 	},
 	
-	topicsByColumn:function(args,callback){
-		console.log(args)
+	topicsByColumnId:function(id,callback){
 		var db = dbs.getDB("Topic");
-		db.find(args).exec(function(err,rs){
+		db.find({columnId:id}).exec(function(err,rs){
 			callback(rs || []);
 		})
 	},
