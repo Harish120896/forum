@@ -1,6 +1,7 @@
 var db = require("../db");
 var Datastore = require('nedb');
 var should = require("should");
+var assert = require("assert");
 
 describe("DB",function(){
 	
@@ -38,7 +39,7 @@ describe("DB",function(){
 	it("#remove",function(done){
 		db.remove("User","001",function(){
 			db.get("User","001",function(err,user){
-				console.log(!!user);
+				assert(null === user);
 				done()
 			})
 		})
