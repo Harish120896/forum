@@ -10,7 +10,7 @@ module.exports = {
 			if(topic){
 				req.result = "success";
 			}else{
-				req.result = "error";
+				req.result = err;
 			}
 			next();
 		});

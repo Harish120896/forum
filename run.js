@@ -5,6 +5,14 @@ var path = require("path");
 
 var app = express();
 
+// config domain
+var domain = require("./domain");
+domain.register(
+	"get",require("./infrastructure/db").get,
+    "listener", require("./infrastructure/eventHandles"),
+	"service", require("./domain/services")(require("./infrastructure/query"))
+).seal();
+
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.html', require('ejs').__express);

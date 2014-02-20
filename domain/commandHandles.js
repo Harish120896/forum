@@ -13,7 +13,6 @@ function wrap(my) {
     function handle1(args, callback) {
 		my.services.postTopicCheck(args.authorId,function(pass){
 			if(pass){
-				console.log(args);
 				my.repos.Topic.create(args, callback);
 			}else{
 				callback("have error");

@@ -5,13 +5,16 @@ var topicCtrl = require("../controller/topic"),
 module.exports = function wrap(app){
 
 
+	{error:null,data:{}}
+
 // Topic controller
 app.post("/topic/create",
 	util.isLogin,
 	util.validat_num,
 	topicCtrl.create,
 	function(req,res){
-		res.send({result:req.result,topic:req.topic});
+		
+		res.send({result:req.result,data:req.topic.id});
 	});
 
 app.post("/topic/:id/update",

@@ -5,7 +5,7 @@ domain.seal();
 
 var Reply = domain._my.Aggres.Reply;
 
-describe("Topic", function() {
+describe("Reply", function() {
 
 	var reply;
 
@@ -32,13 +32,13 @@ describe("Topic", function() {
 
 	it("#updateInfo",function(done){
 		reply.updateInfo("tttt","bobbobod");
-		reply.errors.should.eql({});
+		reply.errors._error.should.eql({});
 		
 		reply.updateTimeout = 1;
 		
 		setTimeout(function(){
 			reply.updateInfo("title1","body1");
-			reply.errors.should.eql({'timeout':['timeout']});
+			reply.errors._error.should.eql({'timeout':['timeout']});
 			reply.title.should.eql("tttt")
 			reply.body.should.eql("bobbobod")
 			done()

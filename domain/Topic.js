@@ -16,10 +16,22 @@ function wrap(my) {
 
 	Topic
 		.attr("id")
-		.attr("title")
-		.attr("body")
-		.attr("authorId")
-		.attr("columnId")
+		.attr("title",{
+			min:2,
+			max:35,
+			message:"标题2~35字符"
+		})
+		.attr("body",{
+			min:2,
+			max:1000,
+			message:"内容2～1000字符"
+		})
+		.attr("authorId",{
+			required:true
+		})
+		.attr("columnId",{
+			required:true
+		})
 		.attr("seal",{type:"boolean",default:false})
 		.attr("accessNum", {
 			type: "number"
@@ -82,7 +94,7 @@ function wrap(my) {
 					self.columnId = columnId;
 					self.end();
 					if(self.hasError()){
-						deferred.resolve(_.values(self.errors));
+						deferred.resolve(self.errors);
 					}else{
 						deferred.resolve();
 					}

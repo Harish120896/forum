@@ -13,9 +13,10 @@ describe("repos", function () {
     it("#user repository create", function () {
 
         userRepo.create({
-            nickname: "leo",
+            nickname: "leodsfdsfds",
             password: "brighthas",
             email: email}, function (err, userAggre) {
+				console.log(err)
             should.exist(userAggre)
         })
 

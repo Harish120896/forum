@@ -52,8 +52,9 @@ describe("Topic", function() {
 	})
 
 	it("#updateInfo", function(done) {
-		var result = topic.updateInfo("title01", "body001", "00001");
+		var result = topic.updateInfo("title01", "body001", "ade4f2e0-996b-11e3-9766-5de5ca7cb065");
 		result.then(function(err){
+			console.log(err)
 			topic.title.should.eql("title01");
 			topic.body.should.eql("body001");
 			done();
