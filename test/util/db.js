@@ -13,7 +13,7 @@ var Datastore = require('nedb');
       get: function(type, id, cb) {
           dbs[type].findOne({
               "id": id
-          }, cb);
+          }).exec(cb);
       },
       save: function(type, data, cb) {
           dbs[type].insert(data, cb);
@@ -21,7 +21,7 @@ var Datastore = require('nedb');
       update: function(type, id, data, cb) {
           dbs[type].update({
               "id": id
-          }, data,{}, cb);
+          }, {$set:data},{}, cb);
       },
       remove: function(type, id, cb) {
           dbs[type].remove({
