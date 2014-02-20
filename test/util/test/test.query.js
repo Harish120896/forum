@@ -196,12 +196,10 @@ describe("query", function() {
         }, {
             createTime: Date.now() + 3,
             authorId: "001"
-        },
-		{
-		            createTime: Date.now() + 24*10*60*60*1000,
-		            authorId: "001"
-		        }
-		], function(err, docs) {
+        }, {
+            createTime: Date.now() + 24 * 10 * 60 * 60 * 1000,
+            authorId: "001"
+        }], function(err, docs) {
 
             query.replyCountByToday("001", function(num) {
 
@@ -212,7 +210,7 @@ describe("query", function() {
 
         })
     })
-	
+
     it("#topicCountByToday", function(done) {
         var DB = db.getDB("Topic");
         DB.insert([{
@@ -221,12 +219,10 @@ describe("query", function() {
         }, {
             createTime: Date.now() + 3,
             authorId: "001"
-        },
-		{
-		            createTime: Date.now() + 24*10*60*60*1000,
-		            authorId: "001"
-		        }
-		], function(err, docs) {
+        }, {
+            createTime: Date.now() + 24 * 10 * 60 * 60 * 1000,
+            authorId: "001"
+        }], function(err, docs) {
 
             query.topicCountByToday("001", function(num) {
 
