@@ -44,27 +44,25 @@ module.exports = {
 		})
 	},
 	
-	topics:function(args,callback){
-		var page = is.number(args.page) && args.page > 0 && Number(args.page) === args.page ? args.page : 1;
-		var db = dbs.getDB("Topic");
-		db
-			.find({columnId:args.columnId})
-			.limit(10)
-			.sort({createTime:-1})
-			.skip(page)
-			.exec(function(err,rs){
-				callback(rs || []);
-			})
+	topicsByColumnId:function(page,columnId,callback){
+		if(columnId){
+			var page = is.number(page) && page > 0 && Number(page) === page ? page : 1;
+			var db = dbs.getDB("Topic");
+			db
+				.find({columnId:columnId})
+				.limit(3)
+				.sort({createTime:-1})
+				.skip((page-1)*3)
+				.exec(function(err,rs){
+					callback(rs || []);
+				})			
+		}else{
+			callback([]);
+		}
+
 	},
 	
-	topicsByColumnId:function(id,callback){
-		var db = dbs.getDB("Topic");
-		db.find({columnId:id}).exec(function(err,rs){
-			callback(rs || []);
-		})
-	},
-	
-	users:function(args,callback){
+	users:function(callback){
 		var db = dbs.getDB("User");
 		db.find({}).exec(function(err,rs){
 			callback(rs);
@@ -87,20 +85,9 @@ module.exports = {
 	
 	userByNick:function(nick,callback){
 		var db = dbs.getDB("User");
-		db.findOne().where({nickname:nick}).exec(function(err,rs){
+		db.findOne({nickname:nick}).exec(function(err,rs){
 			callback(rs);
 		});
-	},
-	
-	userIdByNick:function(nick,callback){
-		var db = dbs.getDB("User");
-		db.findOne({nickname:nick}).exec(function(err,rs){
-			if(rs){
-				callback(rs.id);
-			}else{
-				callback();
-			}
-		});	
 	},
 	
 	userFuzzyExist:function(userInfo,callback){
@@ -111,7 +98,7 @@ module.exports = {
 			kv[k] = userInfo[k];
 	    	orq.push(kv);
 	    }
-		db.find().or(orq).count(function(err,num){
+		db.count({$or:orq}).exec(function(err,num){
 			callback(num ? true : false);
 		});
 	},
@@ -119,8 +106,8 @@ module.exports = {
 	replyCountByToday:function(authorId,callback){
 		var date = new oneday();
 		var db = dbs.getDB("Reply");
-		db.find({authorId:authorId,createTime:{$gt:date.startTime,$lt:date.endTime}})
-		.count(function(err,num){
+		db.count({authorId:authorId,createTime:{$gt:date.startTime,$lt:date.endTime}})
+		.exec(function(err,num){
 			callback(num || 0);
 		});
 	},
@@ -128,8 +115,8 @@ module.exports = {
 	topicCountByToday:function(authorId,callback){
 		var date = new oneday();
 		var db = dbs.getDB("Topic");
-		db.find().where({authorId:authorId,createTime:{$gt:date.startTime,$lt:date.endTime}})
-		.count(function(err,num){
+		db.count({authorId:authorId,createTime:{$gt:date.startTime,$lt:date.endTime}})
+		.exec(function(err,num){
 			callback(num || 0);
 		})
 	}
