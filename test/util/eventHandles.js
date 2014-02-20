@@ -8,14 +8,14 @@ function wrap(my){
 
     function handle1(className,data){
 		var db = dbs.getDB(className);
-		db.create(data,function(err){
+		db.insert(data,function(err){
 		})
     }
 	
 	handle2.eventName = "*.*.update";
 	function handle2(className,id,data){
 		var db = dbs.getDB(className);
-		db.update({id:id},data,function(){})
+		db.update({id:id},{$set:data},{},function(){})
 	}
 
 	handle3.eventName = "*.*.remove";
@@ -23,5 +23,7 @@ function wrap(my){
 		var db = dbs.getDB(className);
 		db.remove({id:id},function(){});
 	}
+	
     return [handle1,handle2,handle3];
+	
 }
