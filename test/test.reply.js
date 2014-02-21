@@ -1,5 +1,5 @@
 var should = require("should"),
-	domain = require("../domain");
+	domain = require("./util/domain");
 
 domain.seal();
 

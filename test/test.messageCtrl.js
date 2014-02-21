@@ -4,7 +4,7 @@ var messageCtrl = require("../controller/message");
 var assert = require("assert");
 var should = require("should");
 var DATA = require("../controller/data");
-var dbs = require("../infrastructure/db");
+var dbs = require("./util/dbrepo").db6;
 
 describe("columnCtrl",function(){
 	

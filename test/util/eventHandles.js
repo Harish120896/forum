@@ -1,4 +1,4 @@
-var dbs = require("../dbrepo").db3;
+var dbs = require("./dbrepo").db3;
 
 module.exports = wrap;
 

@@ -1,9 +1,10 @@
-var query = require("../infrastructure/query");
 var r = require("random-word")("0123456789");
 
 module.exports = {
 	
 	cookieLogin:function(req, res, next) {
+		var query = req.env.query;
+		
 	    if (req.session.user) {
 	        next();
 	    } else {
@@ -42,7 +43,6 @@ module.exports = {
 		}
 	},
 	validat_num:function(req, res, next) {
-		console.log(req.body.validat_num)
 	    if (req.body.validat_num && req.session.validat_num === req.body.validat_num) {
 			next();
 	    } else {
@@ -100,6 +100,8 @@ module.exports = {
 	
 	// dev isLogin / hasTopic
 	isTopicManager:function(req,res,next){
+		var query = req.env.query;
+		
 		query.column(req.topic.columnId,function(col){
 			if(
 				req.topic.authorId === req.session.user.id || 
@@ -123,7 +125,7 @@ module.exports = {
 	
 	// dev isLogin / hasReply
 	isReplyManager:function(req,res,next){
-		
+		var query = req.env.query;
 		query.topic({id:req.reply.topicId},function(topic){
 			if(topic){
 				query.column({id:topic.columnId},function(col){

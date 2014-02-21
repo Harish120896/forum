@@ -1,8 +1,5 @@
 var should = require("should")
-    , domain = require("../domain");
-	
-	domain.seal();
-	
+    , domain = require("./util/domain");	
 	
     var userRepo = domain._my.repos.User;
 

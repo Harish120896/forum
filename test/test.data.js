@@ -3,7 +3,7 @@ var request = require("supertest");
 var express = require("express");
 var should = require("should");
 var util = require("../controller/util");
-var dbs = require("../infrastructure/db");
+var dbs = require("./util/dbrepo").db5;
 var assert = require("assert");
 
 describe("data",function(){

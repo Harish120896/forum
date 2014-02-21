@@ -1,10 +1,11 @@
-var query = require("../infrastructure/query");
+
 var util = require("./util");
 var pw = require("png-word")();
 
 module.exports = {
 
 	columnById:function(req,res,next){
+		var query = req.env.query;
         query.columnById(req.param("id"),function(rs) {
             req.column = rs;
             next();
@@ -16,7 +17,10 @@ module.exports = {
     },
 
     columnList: function(req, res, next) {
+		var query = req.env.query;
+		
         query.columns(function(rs) {
+			
             req.columns = rs;
             next();
         });
@@ -32,6 +36,8 @@ module.exports = {
 
     },
     userById: function(req, res, next) {
+		var query = req.env.query;
+		
         query.userById(req.param("id"), function(rs) {
             req.user = rs;
             next();
@@ -39,6 +45,7 @@ module.exports = {
     },
 
     userByEmail: function(req, res, next) {
+		var query = req.env.query;
 
         query.userByEmail(req.param("email"), function(rs) {
             req.user = rs;
@@ -47,6 +54,8 @@ module.exports = {
     },
 
     topicById: function(req, res, next) {
+		var query = req.env.query;
+		
         query.topicById(req.param("id"), function(rs) {
             req.topic = rs;
             next();
@@ -54,6 +63,8 @@ module.exports = {
     },
 
     topicsByColumnId: function(req, res, next) {
+		var query = req.env.query;
+		
         query.topicsByColumnId(req.param("id"), function(rs) {
             req.topics = rs;
             next();
@@ -61,6 +72,8 @@ module.exports = {
     },
 
     replyById: function(req, res, next) {
+		var query = req.env.query;
+		
         query.replyById(req.param("id"), function(rs) {
             req.reply = rs;
             next();

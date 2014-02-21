@@ -1,7 +1,5 @@
 var should = require("should"),
-	domain = require("../domain");
-
-domain.seal();
+	domain = require("./util/domain");
 
 var Topic = domain._my.Aggres.Topic;
 

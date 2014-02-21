@@ -1,8 +1,6 @@
 var should =require("should")
-    , domain = require("../domain")
+    , domain = require("./util/domain")
     ,crypto = require("crypto");
-
-domain.seal();
 
 var User = domain._my.Aggres.User;
 

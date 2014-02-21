@@ -1,5 +1,5 @@
 var should = require("should"),
-	domain = require("../domain").seal(),
+	domain = require("./util/domain"),
 	Message = domain._my.Aggres.Message;
 
 

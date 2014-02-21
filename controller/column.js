@@ -1,9 +1,10 @@
-var query = require("../infrastructure/query");
-var domain = require("../domain");
-
 module.exports = {
 	
 	create:function(req,res,next){
+		
+		var domain = req.env.domain;
+		var query = req.env.query;
+		
 		domain.exec("create a column",req.body,function(err,column){
 			req.column = column;
 			if(column){
@@ -16,16 +17,14 @@ module.exports = {
 	},
 	
 	update:function(req,res,next){
+		
+		var domain = req.env.domain;
+				
 		var columnId = req.param("columnId");
 		domain.call("Column.updateInfo",columnId,
 			[req.body.name,req.body.des],function(err){
 				req.result = err || "success";
 				next();
 			})
-	}
-	
-	
-	
-	
-	
+		}
 }
