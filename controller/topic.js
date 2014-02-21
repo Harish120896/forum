@@ -1,3 +1,4 @@
+var Result = require("result-brighthas");
 
 module.exports = {
 	
@@ -6,11 +7,13 @@ module.exports = {
 		req.body.authorId = req.session.user.id;
 		domain.exec("create a topic",req.body,function(err,topic){
 			req.topic = topic;
+			var result = new Result();
 			if(topic){
-				req.result = "success";
+				result.data("topic",topic);
 			}else{
-				req.result = err;
+				result.error("error",err);
 			}
+			req.result = result;
 			next();
 		});
 	},

@@ -1,16 +1,29 @@
 var request = require("supertest");
 var express = require("express");
-var dbs = require("../infrastructure/db");
+var dbs = require("./util/dbrepo").db2;
 var util = require("../controller/util");
 var userCtrl = require("../controller/user");
 var assert = require("assert");
+var env = require("./util/env");
+var domain = require("./util/domain");
+
 var DATA = require("../controller/data");
 
 describe("validator",function(){
 	
+    dbs.getDB("User").insert({
+        id: "u00001"
+    });
+	
+    dbs.getDB("Column").insert({
+        id: "c00001"
+    });
+	
 	it("#validat_num",function(done){
 		
 		var app = express();
+        app.use(env);
+		
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 		app.get("/refresh",util.refreshValidatNum);
@@ -20,7 +33,11 @@ describe("validator",function(){
 	
 	it("#hasReqUser",function(done){
 		
+		
+		
 		var app = express();
+        app.use(env);
+		
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
@@ -31,13 +48,20 @@ describe("validator",function(){
 		app.post("/hasReqUser",DATA.userByEmail,util.hasReqUser,function(req,res){
 			res.send("success")
 		});
-		request(app).post("/hasReqUser").send({email:"leo@leo.leo"}).expect("success",done);
+		
+        domain.exec("create a user",{email:"leo@leo.leo",nickname:"leo",password:"123456"},function(err){
+			setTimeout(function(){
+				request(app).post("/hasReqUser").send({email:"leo@leo.leo"}).expect("success",done);
+			},100);
+        })
 		
 	})
 		
 	it("#isLogin",function(done){
 		
 		var app = express();
+        app.use(env);
+		
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
@@ -55,6 +79,8 @@ describe("validator",function(){
 
 		var app = express();
 		app.use(express.favicon());
+        app.use(env);
+		
 		app.use(express.json());
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
@@ -76,6 +102,8 @@ describe("validator",function(){
 			app.use(express.json());
 			app.use(express.methodOverride());
 			app.use(express.cookieParser('your secret here'));
+	        app.use(env);
+			
 			app.use(express.session());
 			app.use(app.router);
 			
@@ -93,6 +121,7 @@ describe("validator",function(){
 		
 	})
 	
+	// DOTO
 	it("#isAdmin",function(done){
 		
 		var app = express();
@@ -100,6 +129,8 @@ describe("validator",function(){
 		app.use(express.json());
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
+        app.use(env);
+		
 		app.use(express.session());
 		app.use(app.router);		
 		
@@ -107,8 +138,8 @@ describe("validator",function(){
 			res.send(req.result);
 		});
 		request(app).post("/isAdmin")
-			.send({email:"brighthas@gmail.com",
-			password:"zshying"}).expect("success",function(){
+			.send({email:"leo@leo.leo",
+			password:"123456"}).expect("success",function(){
 				done();
 			});				
 	})
@@ -120,6 +151,8 @@ describe("validator",function(){
 		app.use(express.json());
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
+        app.use(env);
+		
 		app.use(express.session());
 		app.use(app.router);
 		
@@ -135,6 +168,8 @@ describe("validator",function(){
 			
 			var app = express();
 			app.use(express.favicon());
+	        app.use(env);
+			
 			app.use(express.json());
 			app.use(express.methodOverride());
 			app.use(express.cookieParser('your secret here'));
@@ -158,6 +193,8 @@ describe("validator",function(){
 	it("#hasTopic",function(done){
 		
 		var app = express();
+        app.use(env);
+		
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
@@ -168,8 +205,26 @@ describe("validator",function(){
 		app.post("/topic/:id",DATA.topicById,util.hasTopic,function(req,res){
 			res.send("success");
 		});
+		
+        domain.exec("create a topic", {
+                id: "001",
+                authorId: "u00001",
+                columnId: "c00001",
+                title: "topic title",
+                body: "topic content"
+            },
+            function(err, topic) {
+				setTimeout(function(){
+					
+					
+					dbs.getDB("Topic").find({}).exec(function(err,rs){
+					})
+					
+					request(app).post("/topic/001").expect("success",done);
+					
+				},500)
+            });
 	
-		request(app).post("/topic/001").expect("success",done);
 			
 	})
 	
@@ -179,13 +234,15 @@ describe("validator",function(){
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
+        app.use(env);
+		
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 		app.use(app.router);
 		
 		app.post("/author/:id",
 			function(req,res,next){
-				req.session.user = {id:"u001"};
+				req.session.user = {id:"u00001"};
 				next();
 			},
 			DATA.topicById,
@@ -198,10 +255,10 @@ describe("validator",function(){
 		var tdb = dbs.getDB("Topic");
 		var cdb = dbs.getDB("Column");
 		
-		cdb.create({managerId:"u001",id:"c001"},function(err,rs){
+		cdb.insert({managerId:"u00001",id:"c00001"},function(err,rs){
 		
-			tdb.create({authorId:"u001",id:"t001",columnId:"c001"},function(err,rs){
-				request(app).post("/author/t001").expect("success",done);
+			tdb.insert({authorId:"u00001",id:"t00001",columnId:"c00001"},function(err,rs){
+				request(app).post("/author/t00001").expect("success",done);
 			});				
 		})
 
@@ -216,12 +273,14 @@ describe("validator",function(){
 		app.use(express.json());
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
+        app.use(env);
+		
 		app.use(express.session());
 		app.use(app.router);
 		
 		app.post("/reply/:id",
 			function(req,res,next){
-				req.session.user = {id:"u006"};
+				req.session.user = {id:"u00001"};
 				next();
 			},
 			DATA.replyById,
@@ -235,10 +294,10 @@ describe("validator",function(){
 		var cdb = dbs.getDB("Column");
 		var rdb = dbs.getDB("Reply");
 		
-		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
-			tdb.create({authorId:"u006",id:"t007",columnId:"c007"},function(err,rs){
-				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
-					request(app).post("/reply/r007").expect("success",done);
+		cdb.insert({managerId:"u00001",id:"c00001"},function(err,rs){
+			tdb.insert({authorId:"u00001",id:"t00001",columnId:"c00001"},function(err,rs){
+				rdb.insert({authorId:"u00001" , id:"r00001" , topicId:"t00001" },function(err,rs){
+					request(app).post("/reply/r00001").expect("success",done);
 				});
 			});				
 		});
@@ -250,6 +309,8 @@ describe("validator",function(){
 		var app = express();
 		app.use(express.favicon());
 		app.use(express.json());
+        app.use(env);
+		
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
@@ -257,7 +318,7 @@ describe("validator",function(){
 		
 		app.post("/reply/:id",
 			function(req,res,next){
-				req.session.user = {id:"u006"};
+				req.session.user = {id:"u00001"};
 				next();
 			},
 			DATA.replyById,
@@ -271,10 +332,10 @@ describe("validator",function(){
 		var cdb = dbs.getDB("Column");
 		var rdb = dbs.getDB("Reply");
 		
-		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
-			tdb.create({authorId:"u009",id:"t007",columnId:"c007"},function(err,rs){
-				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
-					request(app).post("/reply/r007").expect("success",done);
+		cdb.insert({managerId:"u00001",id:"c00001"},function(err,rs){
+			tdb.insert({authorId:"u00001",id:"t00001",columnId:"c00001"},function(err,rs){
+				rdb.insert({authorId:"u00001" , id:"r00001" , topicId:"t00001" },function(err,rs){
+					request(app).post("/reply/r00001").expect("success",done);
 				});
 			});				
 		});
@@ -286,6 +347,8 @@ describe("validator",function(){
 		var app = express();
 		app.use(express.favicon());
 		app.use(express.json());
+        app.use(env);
+		
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
@@ -307,10 +370,10 @@ describe("validator",function(){
 		var cdb = dbs.getDB("Column");
 		var rdb = dbs.getDB("Reply");
 		
-		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
-			tdb.create({authorId:"u0000",id:"t007",columnId:"c007"},function(err,rs){
-				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
-					request(app).post("/reply/r007").expect("success",done);
+		cdb.insert({managerId:"u00001",id:"c00001"},function(err,rs){
+			tdb.insert({authorId:"u00001",id:"t00001",columnId:"c00001"},function(err,rs){
+				rdb.insert({authorId:"u00001" , id:"r00001" , topicId:"t00001" },function(err,rs){
+					request(app).post("/reply/r00001").expect("success",done);
 				});
 			});				
 		});
@@ -323,13 +386,15 @@ describe("validator",function(){
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
+        app.use(env);
+		
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 		app.use(app.router);
 		
 		app.post("/reply/:id",
 			function(req,res,next){
-				req.session.user = {id:"u000dd00"};
+				req.session.user = {id:"u00001"};
 				next();
 			},
 			DATA.replyById,
@@ -343,9 +408,9 @@ describe("validator",function(){
 		var cdb = dbs.getDB("Column");
 		var rdb = dbs.getDB("Reply");
 		
-		cdb.create({managerId:"u009",id:"c007"},function(err,rs){
-			tdb.create({authorId:"u0000",id:"t007",columnId:"c007"},function(err,rs){
-				rdb.create({authorId:"u0011" , id:"r007" , topicId:"t007" },function(err,rs){
+		cdb.insert({managerId:"u00001",id:"c00001"},function(err,rs){
+			tdb.insert({authorId:"u00001",id:"t00001",columnId:"c00001"},function(err,rs){
+				rdb.insert({authorId:"u00001" , id:"r00001" , topicId:"t00001" },function(err,rs){
 					request(app).post("/reply/r007").expect("error",done);
 				});
 			});				
@@ -359,6 +424,8 @@ describe("validator",function(){
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
+        app.use(env);
+		
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 		app.use(app.router);
@@ -389,6 +456,8 @@ describe("validator",function(){
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
+        app.use(env);
+		
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 		app.use(app.router);
@@ -415,6 +484,8 @@ describe("validator",function(){
 		app.use(express.favicon());
 		app.use(express.json());
 		app.use(express.methodOverride());
+        app.use(env);
+		
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 		app.use(app.router);

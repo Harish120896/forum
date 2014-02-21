@@ -1,9 +1,9 @@
 var should = require("should")
-    , domain = require("./util/domain");	
-	
-    var userRepo = domain._my.repos.User;
+    , domain = require("./util/domain")	
+	, userRepo = domain._my.repos.User
+	, columnRepo = domain._my.repos.Column;
 
-describe("repos", function () {
+describe("repos", function (){
 
 	var email = "bright"+Date.now()+"@email.com";
 
@@ -13,7 +13,6 @@ describe("repos", function () {
             nickname: "leodsfdsfds",
             password: "brighthas",
             email: email}, function (err, userAggre) {
-				console.log(err)
             should.exist(userAggre)
         })
 
@@ -47,19 +46,17 @@ describe("repos", function () {
         aggre.email.should.eql("brighthas@gmail.com");
 	})
 
-	/**
     it("cloumn repository create", function () {
 
         columnRepo.create({
             name: "node.js",
             des: "my node.js column"
         }, function (err, rs) {
-            rs.model.name().should.eql("node.js");
-            rs.model.des().should.eql("my node.js column");
+            rs.name.should.eql("node.js");
+            rs.des.should.eql("my node.js column");
         });
 
     });
-	*/
 
 
 

@@ -55,7 +55,6 @@ module.exports = {
 
     topicById: function(req, res, next) {
 		var query = req.env.query;
-	
         query.topicById(req.param("id"), function(rs) {
             req.topic = rs;
             next();

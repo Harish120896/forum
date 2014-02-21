@@ -37,8 +37,7 @@ module.exports = {
     login: function(req, res, next) {
         var md5 = crypto.createHash('md5');
         var pwd = md5.update(req.body.password).digest("hex");
-
-        if (req.user.password === pwd) {
+        if (req.user && req.user.password === pwd) {
 
             req.session.user = req.user;
 

@@ -102,7 +102,7 @@ module.exports = {
 	isTopicManager:function(req,res,next){
 		var query = req.env.query;
 		
-		query.column(req.topic.columnId,function(col){
+		query.columnById(req.topic.columnId,function(col){
 			if(
 				req.topic.authorId === req.session.user.id || 
 				col.managerId === req.session.user.id || 
@@ -126,9 +126,9 @@ module.exports = {
 	// dev isLogin / hasReply
 	isReplyManager:function(req,res,next){
 		var query = req.env.query;
-		query.topic({id:req.reply.topicId},function(topic){
+		query.topicById(req.reply.topicId,function(topic){
 			if(topic){
-				query.column({id:topic.columnId},function(col){
+				query.columnById(topic.columnId,function(col){
 					if(col){
 						if(
 							req.session.user.id === req.reply.authorId || 
