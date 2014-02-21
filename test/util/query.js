@@ -1,4 +1,4 @@
-var dbs = require("./db");
+var dbs = require("./dbrepo").db2;
 var is = require("istype");
 
 function oneday(date){

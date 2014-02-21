@@ -1,5 +1,5 @@
 var query = require("../query");
-var db = require("../db");
+var db = require("../dbrepo").db2;
 var should = require("should");
 
 describe("query", function() {

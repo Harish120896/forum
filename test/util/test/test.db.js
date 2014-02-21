@@ -1,4 +1,4 @@
-var db = require("../db");
+var db = require("../dbrepo").db1;
 var Datastore = require('nedb');
 var should = require("should");
 var assert = require("assert");
