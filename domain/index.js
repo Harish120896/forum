@@ -30,6 +30,7 @@ domain.register(
 	"Column.updateInfo",
 	
 	"Topic.updateInfo",
+	"Topic.removeReply",
 	"Topic.toseal",
 	"Topic.unseal"
 );

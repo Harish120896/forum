@@ -78,7 +78,6 @@ function wrap(my) {
 
     userRepo._create = hus(function (args, callback) {
         my.services.userUnique(args.email,args.nickname,function(unique){
-			console.log(unique)
             if(unique){
 				var err = {};
 				unique.forEach(function(k){
@@ -93,7 +92,6 @@ function wrap(my) {
             }else{
                 var user = new my.Aggres.User(args);
                 if(user.hasError()){
-					console.log(user.errors);
                 	callback(user.errors);
                 }else{
 					callback(null, user);

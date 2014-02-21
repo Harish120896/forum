@@ -62,6 +62,7 @@ module.exports = function(query) {
 				});
 			})
 		}
+		
 
         // true / false 
         // check user whether post topic.
@@ -98,8 +99,15 @@ module.exports = function(query) {
 			})
 			
         }
+		
+		service8.serviceName = "userByNick"
+		function service8(nick,callback){
+			query.userByNick(nick,function(rs){
+				callback(rs);
+			});
+		}
 
-        return [service1, service2, service4, service5, service6, service7];
+        return [service1, service2, service4, service5, service6, service7,service8];
 
     }
 

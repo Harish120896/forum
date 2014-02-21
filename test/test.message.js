@@ -9,7 +9,7 @@ describe("Message",function(){
 	it("#create",function(){
 		
 		msg = new Message({id:"id001",targetId:"001",authorId:"002",title:"tttt",body:"bobby"});
-		msg.errors._error.should.eql({});
+		msg.errors.should.eql({});
 		
 	})
 		

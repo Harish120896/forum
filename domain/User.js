@@ -129,7 +129,6 @@ function wrap(my) {
 			return deferred.promise;
 		})
         .method("updatePassword", function(npass) {
-			console.log(npass);
 			this.password = npass;
 			if(this.hasError()){
 				return _.values(this.errors);

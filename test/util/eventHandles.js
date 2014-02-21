@@ -1,4 +1,4 @@
-var dbs = require("./dbrepo").db3;
+var dbs = require("./dbrepo").db2;
 
 module.exports = wrap;
 
@@ -19,6 +19,7 @@ function wrap(my){
 	}
 
 	handle3.eventName = "*.*.remove";
+	
 	function handle3(className,id){
 		var db = dbs.getDB(className);
 		db.remove({id:id},function(){});

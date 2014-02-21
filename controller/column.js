@@ -1,9 +1,7 @@
 module.exports = {
 	
 	create:function(req,res,next){
-		
 		var domain = req.env.domain;
-		var query = req.env.query;
 		
 		domain.exec("create a column",req.body,function(err,column){
 			req.column = column;

@@ -4,7 +4,9 @@ var messageCtrl = require("../controller/message");
 var assert = require("assert");
 var should = require("should");
 var DATA = require("../controller/data");
-var dbs = require("./util/dbrepo").db6;
+var dbs = require("./util/dbrepo").db2;
+var env = require("./util/env");
+
 
 describe("columnCtrl",function(){
 	
@@ -16,13 +18,14 @@ describe("columnCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
+		app.use(env);
 		app.use(app.router);
 		
 		var messagedb = dbs.getDB("Message");
 		var udb = dbs.getDB("User");
 		
 		
-		udb.create({id:"u123",nickname:"u123"},function(){
+		udb.insert({id:"u123",nickname:"u123"},function(){
 			
 			
 			app.post("/send",

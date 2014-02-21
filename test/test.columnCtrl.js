@@ -3,6 +3,8 @@ var express = require("express");
 var columnCtrl = require("../controller/column");
 var assert = require("assert");
 var should = require("should");
+var env = require("./util/env");
+
 var DATA = require("../controller/data");
 
 describe("columnCtrl",function(){
@@ -15,6 +17,7 @@ describe("columnCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
+		app.use(env);
 		app.use(app.router);
 		
 		app.post("/create",columnCtrl.create,function(req,res){
@@ -34,7 +37,9 @@ describe("columnCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
+		app.use(env);
 		app.use(app.router);
+		
 		
 		app.post("/update",columnCtrl.create,function(req,res){
 			res.send(req.result)

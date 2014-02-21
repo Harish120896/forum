@@ -1,7 +1,7 @@
 module.exports = wrap;
 var filterNickname  = require("./filterNickname");
 var check = require("validator").check;
-var query = require("../infrastructure/query");
+//var query = require("../infrastructure/query");
 
 function wrap(my) {
 
@@ -32,7 +32,9 @@ function wrap(my) {
 	function handle3(args,callback){
 		my.repos.Topic.get(args.topicId,function(err,topic){
 			if(topic){
+								
 				my.services.postReplyCheck(args.authorId,function(pass){
+					
 					if(pass){
 						my.repos.Reply.create(args,function(err,reply){
 							if(reply){
@@ -42,9 +44,13 @@ function wrap(my) {
 								callback(err);
 							}
 						});
+					}else{
+						callback(new Error("error"));
 					}
 
 				});					
+			}else{
+				callback(new Error("no topic"));
 			}
 			
 		})	
@@ -86,14 +92,13 @@ function wrap(my) {
 		var authorId = args.authorId;
 		if(body){
 			filterNickname(body).forEach(function(name){
-				query.userIdByNick(name,function(uid){
-					var targetId = uid;
-					if(targetId){
+				my.services.userByNick(name,function(user){
+					if(user){
 						my.repos.Message.create({
 							title:title,
 							body:body,
 							authorId:authorId,
-							targetId:targetId
+							targetId:user.id
 						},function(err){});
 					}
 				});
