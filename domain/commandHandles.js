@@ -13,11 +13,20 @@ function wrap(my) {
     // create a topic.
     handle1.commandName = "create a topic";
     function handle1(args, callback) {
+		var result = new Result();
 		my.services.postTopicCheck(args.authorId,function(pass){
-			if(pass.hasError()){
-				callback(pass);
+			if(pass){
+				my.repos.Topic.create(args, function(err,topic){
+					if(topic){
+						result.data("topic",topic);
+					}else{
+						result.error("error",err);
+					}
+					callback(result);
+				});
 			}else{
-				my.repos.Topic.create(args, callback);
+				result.error("error","error");
+				callback(result);
 			}
 		})
     }
@@ -32,24 +41,29 @@ function wrap(my) {
 	
 	handle3.commandName = "create a reply";
 	function handle3(args,callback){
-		my.repos.Topic.get(args.topicId,function(result){
-			var topic = result.data("topic");
+		var result = new Result();
+		my.repos.Topic.get(args.topicId,function(err,topic){
 			if(topic){
 				my.services.postReplyCheck(args.authorId,function(pass){
 					
-					if(!pass.hasError()){
-						my.repos.Reply.create(args,function(result){
-							if(result.data("reply")){
-								topic.addReply(reply.parentId, reply.id);
+					if(pass){
+						my.repos.Reply.create(args,function(err,reply){
+							if(reply){
+								topic.addReply(reply.parentId, reply);
+								result.data("reply",reply);
+							}else{
+								result.error("error",err);
 							}
 							callback(result);
 						});
 					}else{
-						callback(new Error("error"));
+						result.error("error","no reply");
+						callback(result);
 					}
 
 				});			
 			}else{
+				result.error("error","no reply");
 				callback(result);
 			}
 		})	

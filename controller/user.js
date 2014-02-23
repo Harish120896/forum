@@ -70,19 +70,22 @@ module.exports = {
     // return success or [error];
     // if success , req.user exist.
     create: function(req, res, next) {
+		
+		var result = new Result();
         var domain = req.env.domain;
         domain.exec("create a user", {
             nickname: req.body.nickname,
             email: req.body.email,
             password: req.body.password
-        }, function(result) {
+        }, function(err,user) {
 			
-			if(!result.hasError()){
-				var user = result.data("user");
-			
+			if(user){	
+				result.data("user",user);
 	            if (user.email === config.admin) {
 	                domain.call("User.becomeAdmin", user.id);
 	            }
+			}else{
+				result.error("error",err);
 			}
 			
 			req.result = result;

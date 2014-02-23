@@ -1,7 +1,7 @@
 var check = require('validator').check,
     huskies = require("huskies"),
     lock = require("huskies-lock"),
-    findUser = require("./findUser"),
+	//Result = require("result-brighthas"),
     step = require("step");
 
 

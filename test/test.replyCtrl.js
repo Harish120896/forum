@@ -1,9 +1,6 @@
-var cdb = require("./util/db")
-var query = require("./util/query")(cdb())
-var domain = require("./util/domain")(query);
-var dbs = query.dbs;
-var env = require("./util/env")(domain, query);
-
+var dbs = require("./util/db")
+var env = require("./util/env");
+require("./util/testInit");
 var request = require("supertest");
 var express = require("express");
 var replyCtrl = require("../controller/reply");
@@ -18,21 +15,6 @@ describe("topicCtrl", function() {
 
     it("#create", function(done) {
 
-        dbs.getDB("User").insert({
-            id: "u00001"
-        });
-
-        domain.exec("create a topic", {
-                id: "t00001",
-                authorId: "u00001",
-                columnId: "c0001",
-                title: "topic title",
-                body: "topic content"
-            },
-            function(err, topic) {});
-
-        //dbs.getDB("Topic").insert({id:"t00001"});
-
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -44,38 +26,26 @@ describe("topicCtrl", function() {
 
         app.post("/create", function(req, res, next) {
             req.session.user = {
-                id: "u00001"
+                id: "u001"
             };
             next();
         }, replyCtrl.create, function(req, res) {
-            //console.log(req.reply)
-            setTimeout(function() {
-                res.send(req.reply)
-            })
+            res.send(req.result.json())
         });
 
-		setTimeout(function(){
-	        request(app).post("/create")
-	            .send({
-	                topicId: "t00001",
-	                title: "title001",
-	                body: "hahahhahhhahhaha"
-	            })
-	            .end(function(err, res) {
+        request(app).post("/create")
+            .send({
+                topicId: "t001",
+                title: "reply title",
+                body: "reply content"
+            })
+            .end(function(err, res) {
+				rid = res.body.data.reply.id;
+                should.exist(rid);
+				done()
+            });
 
-	                should.exist(res.body.id);
-	                rid = res.body.id;
-                    done()
-
-
-
-	            });			
-		})
- 
     })
-
-
-
 
     // DOTO
     it("#remove", function(done) {
@@ -86,23 +56,15 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
-
+    
         app.use(app.router);
-
-        app.post("/remove/:id", DATA.replyById, util.hasReply, replyCtrl.remove, function(req, res) {
+    
+        app.post("/remove/:id", DATA.replyById,replyCtrl.remove, function(req, res) {
             res.send(req.result)
         });
-
         request(app).post("/remove/" + rid)
             .end(function() {
-                setTimeout(function() {
-                    dbs.getDB("Reply").findOne({
-                        id: rid
-                    }, function(err, rs) {
-                        should.not.exist(rs);
-                        done()
-                    });
-                })
+				done();
             });
     });
 

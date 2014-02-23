@@ -1,10 +1,7 @@
+require("./util/testInit");
+var dbs = require("./util/db");
 
-var cdb = require("./util/db")
-var query = require("./util/query")(cdb())
-var domain = require("./util/domain")(query);
-var dbs = query.dbs;
-var env = require("./util/env")(domain,query);
-
+var env = require("./util/env");
 var request = require("supertest");
 var express = require("express");
 var userCtrl = require("../controller/user");
@@ -28,14 +25,16 @@ describe("userCtrl",function(){
 		app.use(app.router);
 		
 		app.post("/create",userCtrl.create,function(req,res){
-			res.send(req.result);
+            if(req.result.hasError()){
+            	res.send("error");
+            }else{
+            	res.send("success");
+            }
 		});
 		
 		request(app).post("/create")
-		.send({email:"leo@leo.leo",nickname:"leo",password:"123456"})
-		.expect("success",function(){
-			setTimeout(done,500);
-		});		
+		.send({email:"leo2@leo.leo",nickname:"leo2",password:"1234567"})
+		.expect("success",done);		
 	})
 	
 	it("#login",function(done){
@@ -46,15 +45,17 @@ describe("userCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
-        app.use(env);
+	        app.use(env);
 		
 		app.use(app.router);
 		
 		app.post("/login",DATA.userByEmail,userCtrl.login,function(req,res){
-			if(req.result === "success"){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
 				req.session.user.email.should.eql("leo@leo.leo");
+				res.send("success");
 			}
-			res.send(req.result);
 		});
 		
 		request(app).post("/login")
@@ -64,12 +65,11 @@ describe("userCtrl",function(){
 			user.email.should.eql("leo@leo.leo")
 			request(app).post("/login")
 			.send({email:"leo@leo.leo",password:"1234567"})
-			.expect( {
-                email: ["登录信箱或密码有误，请重新登录。"]
-            },done);
+			.expect("error",done);
 		});
 		
 	});
+	
 	
 	it("#logout",function(done){
 		
@@ -79,7 +79,7 @@ describe("userCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
-        app.use(env);
+	        app.use(env);
 		
 		app.use(app.router);
 		
@@ -102,14 +102,18 @@ describe("userCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
-        app.use(env);
+	        app.use(env);
 		
 		app.use(app.router);
-
+	
 		app.post("/update",DATA.userByEmail,userCtrl.login,userCtrl.update,function(req,res){
-			res.send(req.result);
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
 		});
-
+	
 		setTimeout(function(){
 			request(app).post("/update")
 			.send({email:"leo@leo.leo",password:"123456",address:"ddddd"})
@@ -119,9 +123,9 @@ describe("userCtrl",function(){
 				.expect("error",done);			
 			});			
 		})
-
+	
 	})
-
+	
 	
 	
 })

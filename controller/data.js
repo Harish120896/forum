@@ -93,7 +93,7 @@ module.exports = {
 		
         query.replyById(req.param("id"), function(rs) {
 			var result = new Result();
-			result.data("user",rs);
+			result.data("reply",rs);
 			req.result = result;
             next();
         })

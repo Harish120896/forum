@@ -2,7 +2,7 @@ var express = require('express');
 var http = require('http');
 var fs = require("fs");
 var path = require("path");
-
+var result = require("./controller/util").result;
 var app = express();
 
 // config domain
@@ -24,6 +24,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
+app.use(result);
 
 app.use(function(req,res,next){
 	req.env = {

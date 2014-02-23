@@ -3,12 +3,8 @@ var express = require("express");
 var columnCtrl = require("../controller/column");
 var assert = require("assert");
 var should = require("should");
-
-var cdb = require("./util/db")
-var query = require("./util/query")(cdb())
-var domain = require("./util/domain")(query);
-
-var env = require("./util/env")(domain,query);
+var env = require("./util/env");
+var result = require("../controller/util").result;
 
 var DATA = require("../controller/data");
 
@@ -22,11 +18,17 @@ describe("columnCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
+		
+		app.use(result);
 		app.use(env);
 		app.use(app.router);
 		
 		app.post("/create",columnCtrl.create,function(req,res){
-			res.send(req.result)
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
 		});
 		
 		request(app).post("/create")
@@ -42,12 +44,17 @@ describe("columnCtrl",function(){
 		app.use(express.methodOverride());
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
+		app.use(result);
 		app.use(env);
 		app.use(app.router);
 		
 		
 		app.post("/update",columnCtrl.create,function(req,res){
-			res.send(req.result)
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
 		});
 		
 		request(app).post("/update")

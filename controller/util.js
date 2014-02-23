@@ -3,6 +3,11 @@ var Result = require("result-brighthas");
 
 module.exports = {
 	
+	result:function(req,res,next){
+		req.result = new Result();
+		next();
+	},
+	
 	cookieLogin:function(req, res, next) {
 		var query = req.env.query;
 		

@@ -15,8 +15,8 @@ module.exports = {
 	remove:function(req,res,next){
 		var domain = req.env.domain;
 		var id = req.param("id");
-		var topicId = req.reply.topicId;
-		domain.call("Topic.removeReply",topicId,[id],function(result){
+		var topicId = req.result.data("reply").topicId;
+;		domain.call("Topic.removeReply",topicId,[id],function(result){
 			req.result = result;
 			next();
 		})
