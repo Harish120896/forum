@@ -1,11 +1,16 @@
+
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+var dbs = query.dbs;
+var env = require("./util/env")(domain,query);
+
 var request = require("supertest");
 var express = require("express");
-var dbs = require("./util/dbrepo").db2;
 var util = require("../controller/util");
 var userCtrl = require("../controller/user");
 var assert = require("assert");
-var env = require("./util/env");
-var domain = require("./util/domain");
+
 
 var DATA = require("../controller/data");
 

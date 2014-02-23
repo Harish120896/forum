@@ -5,14 +5,7 @@ module.exports = {
 	create:function(req,res,next){
 		var domain = req.env.domain;
 		req.body.authorId = req.session.user.id;
-		domain.exec("create a topic",req.body,function(err,topic){
-			req.topic = topic;
-			var result = new Result();
-			if(topic){
-				result.data("topic",topic);
-			}else{
-				result.error("error",err);
-			}
+		domain.exec("create a topic",req.body,function(result){
 			req.result = result;
 			next();
 		});
@@ -21,8 +14,8 @@ module.exports = {
 	update:function(req,res,next){
 		var domain = req.env.domain;
 		req.body.authorId = req.session.user.id;
-		domain.call("Topic.updateInfo",req.body.topicId,[req.body.title, req.body.body, req.body.columnId],function(err){
-			req.result = err || "success";
+		domain.call("Topic.updateInfo",req.body.topicId,[req.body.title, req.body.body, req.body.columnId],function(result){
+			req.result = result;
 			next();
 		});
 	},
@@ -31,8 +24,8 @@ module.exports = {
 	remove:function(req,res,next){
 		var domain = req.env.domain;
 		var id = req.param("id");
-		domain.exec("remove a topic",{id:id},function(err){
-			req.result = err || "success";
+		domain.exec("remove a topic",{id:id},function(result){
+			req.result = new Result;
 			next();
 		})
 	},
@@ -42,7 +35,7 @@ module.exports = {
 		var domain = req.env.domain;
 		var id = req.param("id");
 		domain.call("Topic.toseal",id,[],function(err){
-			req.result = err || "success";
+			req.result = new Result();
 			next();
 		})		
 	},
@@ -52,7 +45,7 @@ module.exports = {
 		var domain = req.env.domain;
 		var id = req.param("id");
 		domain.call("Topic.unseal",id,[],function(err){
-			req.result = err || "success";
+			req.result = new Result();
 			next();
 		})		
 	}

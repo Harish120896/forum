@@ -3,7 +3,12 @@ var express = require("express");
 var columnCtrl = require("../controller/column");
 var assert = require("assert");
 var should = require("should");
-var env = require("./util/env");
+
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+
+var env = require("./util/env")(domain,query);
 
 var DATA = require("../controller/data");
 

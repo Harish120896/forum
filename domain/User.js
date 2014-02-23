@@ -86,30 +86,26 @@ function wrap(my) {
             type: "date"
         })
 		.method("updateInfo",function(data){
-			var self = this;
 			
-			if(is.type(data) === "object"){
-				
-				var attrs = ["address","des","sex"];
-				
-				var keys = Object.keys(data);
-				keys = keys.filter(function(key){
-					return attrs.indexOf(key) !== -1;
-				});
-				
-				self.begin();
-				keys.forEach(function(key){
-					self[key] = data[key];
-				})
-				self.end();
-				
-			}else{
-				this.error("updateInfo","error");
+			data = data || {}
+			
+			this.begin();
+			
+			if(data.hasOwnProperty("address")){
+				this.address = data.address;
 			}
 			
-			if(this.hasError()){
-				return this.errors;
+			if(data.hasOwnProperty("des")){
+				this.des = data.des;
 			}
+			
+			if(data.hasOwnProperty("sex")){
+				this.sex = data.sex;
+			}
+			
+			this.end();
+			return this.result;
+			
 		})
 		.method("updateNickname",function(nickname){
 			var deferred = q.defer();
@@ -117,28 +113,20 @@ function wrap(my) {
 			my.services.userUnique(nickname,function(unique){
 				if(unique){
 					self.nickname = nickname;
-					if(self.hasError()){
-						deferred.resolve(self.errors);
-					}else{
-						deferred.resolve();
-					}
 				}else{
-					deferred.resolve();
+					self.result.error("nickname","昵称已被占用");
 				}
+				deferred.resolve();
 			})
 			return deferred.promise;
 		})
         .method("updatePassword", function(npass) {
 			this.password = npass;
-			if(this.hasError()){
-				return _.values(this.errors);
-			}else{
-				return null;
-			}
+			return this.result;
         })
         .method("plus", function(num) {
             this.fraction = this.fraction + num;
-            return this.errors;
+            return this.result;
         })
         .method("report", function() {
             var reportTime = this.reportTime;
@@ -213,7 +201,7 @@ function wrap(my) {
             if (keys.indexOf("role") !== -1) {
                 var role = user.attrs["role"];
                 if ([0, 1, 2,3].indexOf(role) === -1) {
-                    user.error("role", "no the role");
+                    user.result.error("role", "没有这个角色");
                 }
             }
         })

@@ -1,7 +1,15 @@
+
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+var dbs = query.dbs;
+var env = require("./util/env")(domain,query);
+
 var should = require("should")
-    , domain = require("./util/domain")	
 	, userRepo = domain._my.repos.User
 	, columnRepo = domain._my.repos.Column;
+
+
 
 describe("repos", function (){
 

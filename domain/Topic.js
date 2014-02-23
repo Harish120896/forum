@@ -86,6 +86,7 @@ function wrap(my) {
 		.method("updateInfo", function(title, body, columnId) {
 			var deferred = Q.defer();
 			var self = this;
+			
 			my.services.existColumn(columnId,function(has){
 				if(has){
 					self.begin();
@@ -93,14 +94,10 @@ function wrap(my) {
 					self.body = body;
 					self.columnId = columnId;
 					self.end();
-					if(self.hasError()){
-						deferred.resolve(self.errors);
-					}else{
-						deferred.resolve();
-					}
 				}else{
-					deferred.resolve(["no have column"]);
+					self.result.error("columnId","没有这个栏目");
 				}
+				deferred.resolve(self.result);
 			});
 			return deferred.promise;
 		})

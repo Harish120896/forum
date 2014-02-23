@@ -32,7 +32,7 @@ function wrap(my) {
 		// update timeout
 		.on("changing",function(reply){
 			if(Date.now() - reply.updateTime.getTime() > reply.updateTimeout){
-				reply.error("timeout","timeout");
+				reply.result.error("timeout","timeout");
 			}
 		})
 		
@@ -46,7 +46,7 @@ function wrap(my) {
 			this.title = title;
 			this.body = body;
 			this.end();
-			return this.errors;
+			return this.result;
 		})
 
 	Reply.className = "Reply";

@@ -3,9 +3,13 @@ var request = require("supertest");
 var express = require("express");
 var should = require("should");
 var util = require("../controller/util");
-var dbs = require("./util/dbrepo").db2;
 var assert = require("assert");
-var env = require("./util/env");
+
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+var dbs = query.dbs;
+var env = require("./util/env")(domain,query);
 
 describe("data",function(){
 	
@@ -26,13 +30,19 @@ describe("data",function(){
 	
 	
 	it("#userById",function(done){
+		
 		var app = express();
 		app.use(env);
 		
+		dbs.getDB("User").insert({email:"brighthas@gmail.com",id:"u00001"});
+		
 		app.get("/user",data.userById,function(req,res){
+			
+			//console.log(req.user)
+			
 			res.send(req.user ? req.user.email : null);
 		})
-		request(app).get("/user?id="+uid).expect("brighthas@gmail.com",done);
+		request(app).get("/user?id=u00001").expect("brighthas@gmail.com",done);
 	});
 	
 		

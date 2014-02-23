@@ -1,6 +1,10 @@
 var should =require("should")
-    , domain = require("./util/domain")
-    , my = domain._my;
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+
+var env = require("./util/env")(domain,query);
+    var my = domain._my;
 
 describe("commandHandles",function(){
     it("#create a user",function(done){

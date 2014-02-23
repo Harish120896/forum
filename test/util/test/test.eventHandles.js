@@ -1,5 +1,5 @@
 var ehs = require("../eventHandles")();
-var db = require("../dbrepo").db3;
+var db = require("../db");
 var Emitter = require("events").EventEmitter;
 var should = require("should");
 var bus = new Emitter;

@@ -1,6 +1,8 @@
 module.exports = wrap;
 var filterNickname  = require("./filterNickname");
 var check = require("validator").check;
+var Result = require("result-brighthas");
+
 //var query = require("../infrastructure/query");
 
 function wrap(my) {
@@ -12,10 +14,10 @@ function wrap(my) {
     handle1.commandName = "create a topic";
     function handle1(args, callback) {
 		my.services.postTopicCheck(args.authorId,function(pass){
-			if(pass){
-				my.repos.Topic.create(args, callback);
+			if(pass.hasError()){
+				callback(pass);
 			}else{
-				callback("have error");
+				my.repos.Topic.create(args, callback);
 			}
 		})
     }
@@ -25,47 +27,44 @@ function wrap(my) {
     handle2.commandName = "remove a topic";
     function handle2(args, callback) {
 		my.repos.Topic.remove(args.id);
-		callback();
+		callback(new Result());
     }
 	
 	handle3.commandName = "create a reply";
 	function handle3(args,callback){
-		my.repos.Topic.get(args.topicId,function(err,topic){
+		my.repos.Topic.get(args.topicId,function(result){
+			var topic = result.data("topic");
 			if(topic){
-								
 				my.services.postReplyCheck(args.authorId,function(pass){
 					
-					if(pass){
-						my.repos.Reply.create(args,function(err,reply){
-							if(reply){
+					if(!pass.hasError()){
+						my.repos.Reply.create(args,function(result){
+							if(result.data("reply")){
 								topic.addReply(reply.parentId, reply.id);
-								callback(null,reply.toJSON());
-							}else{
-								callback(err);
 							}
+							callback(result);
 						});
 					}else{
 						callback(new Error("error"));
 					}
 
-				});					
+				});			
 			}else{
-				callback(new Error("no topic"));
+				callback(result);
 			}
-			
 		})	
-
-		
 	}
 	
 	handle5.commandName = "remove a reply";
 	function handle5(args,callback){
 
 		my.repos.Topic.get(args.topicId,function(topic){
-			topic.removeReply(args.replyId);
+			if(topic){
+				topic.removeReply(args.replyId);
+			}
 		})
 
-		callback();
+		callback(new Result());
 	}
 
     //////////////////////  command handle for User  ////////////////////
@@ -76,13 +75,7 @@ function wrap(my) {
 	
     handle6.commandName = "create a column";
     function handle6(args, callback) {
-        my.repos.Column.create(args, function(err,user){
-        	if(user){
-        		callback(err,user.toJSON());
-        	}else{
-        		callback(err);
-        	}
-        });
+        my.repos.Column.create(args,callback);
     }
 	
 	handle7.commandName = "send message";
@@ -104,7 +97,7 @@ function wrap(my) {
 				});
 			});
 		}
-		callback();
+		callback(new Result());
 	}
 	
     return [ handle1, handle2, handle3 , handle4 ,handle5 , handle6, handle7 ]

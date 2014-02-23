@@ -1,8 +1,5 @@
-var should = require("should"),
-	domain = require("./util/domain");
-
-domain.seal();
-
+var should = require("should")
+var domain = require("./util/domain")
 var Reply = domain._my.Aggres.Reply;
 
 describe("Reply", function() {
@@ -32,13 +29,13 @@ describe("Reply", function() {
 
 	it("#updateInfo",function(done){
 		reply.updateInfo("tttt","bobbobod");
-		reply.errors.should.eql({});
+		
+		reply.hasError().should.eql(false);
 		
 		reply.updateTimeout = 1;
-		
 		setTimeout(function(){
 			reply.updateInfo("title1","body1");
-			reply.errors.should.eql({'timeout':['timeout']});
+			reply.result.json().errors.should.eql({'timeout':['timeout']});
 			reply.title.should.eql("tttt")
 			reply.body.should.eql("bobbobod")
 			done()

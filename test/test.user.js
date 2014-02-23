@@ -1,7 +1,7 @@
-var should = require("should"),
-    domain = require("./util/domain"),
-    crypto = require("crypto");
 
+var should = require("should");
+var crypto = require("crypto");
+var domain = require("./util/domain");
 var User = domain._my.Aggres.User;
 
 describe("User", function() {
@@ -52,15 +52,13 @@ describe("User", function() {
 
         domain._my.repos.User.create({
             nickname: "brighthas",
-            loginname: "brighthas",
             password: "123456",
-            email: "brighthas@gmail.com"
-        }, function(err, user) {
+            email: "brighthas2@gmail.com"
+        }, function(err, user) {			
             u1 = user;
 
             domain._my.repos.User.create({
                 nickname: "leo",
-                loginname: "leo",
                 password: "123456",
                 email: "leoddd@gmail.com"
             }, function(err, user) {

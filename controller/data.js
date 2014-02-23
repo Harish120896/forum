@@ -1,4 +1,4 @@
-
+var Result = require("result-brighthas");
 var util = require("./util");
 var pw = require("png-word")();
 
@@ -7,39 +7,49 @@ module.exports = {
 	columnById:function(req,res,next){
 		var query = req.env.query;
         query.columnById(req.param("id"),function(rs) {
-            req.column = rs;
+			var result = new Result();
+			result.data("column",rs);
+			req.result = result;
             next();
         });
 	},
 
     share: function(req, res, next) {
-
+		next();
     },
 
     columnList: function(req, res, next) {
-		var query = req.env.query;
 		
+		var query = req.env.query;
         query.columns(function(rs) {
-			
-            req.columns = rs;
+			var result = new Result();
+			result.data("columns",rs);
+			req.result = result;
             next();
         });
+		
     },
+	
     validatNumPng: function(req, res, next) {
         if (!req.session.validat_num) {
             util.refreshValidatNum(req, res, function() {});
         }
         pw.createPNG(req.session.validat_num, function(pngnum) {
-            req.validatNumPng = pngnum;
+			var result = new Result();
+			result.data("validatNumPng",pngnum);
+			req.result= result;
             next();
         });
 
     },
+	
     userById: function(req, res, next) {
 		var query = req.env.query;
 		
         query.userById(req.param("id"), function(rs) {
-            req.user = rs;
+			var result = new Result();
+			result.data("user",rs);
+			req.result = result;
             next();
         });
     },
@@ -48,7 +58,9 @@ module.exports = {
 		var query = req.env.query;
 
         query.userByEmail(req.param("email"), function(rs) {
-            req.user = rs;
+			var result = new Result();
+			result.data("user",rs);
+			req.result = result;
             next();
         })
     },
@@ -56,25 +68,33 @@ module.exports = {
     topicById: function(req, res, next) {
 		var query = req.env.query;
         query.topicById(req.param("id"), function(rs) {
-            req.topic = rs;
+			var result = new Result();
+			result.data("topic",rs);
+			req.result = result;
             next();
         })
     },
 
     topicsByColumnId: function(req, res, next) {
+		
 		var query = req.env.query;
 		
         query.topicsByColumnId(req.param("id"), function(rs) {
-            req.topics = rs;
+			var result = new Result();
+			result.data("topic",rs);
+			req.result = result;
             next();
-        })
+        });
+		
     },
 
     replyById: function(req, res, next) {
 		var query = req.env.query;
 		
         query.replyById(req.param("id"), function(rs) {
-            req.reply = rs;
+			var result = new Result();
+			result.data("user",rs);
+			req.result = result;
             next();
         })
     },

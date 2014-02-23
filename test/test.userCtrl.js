@@ -1,13 +1,16 @@
+
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+var dbs = query.dbs;
+var env = require("./util/env")(domain,query);
+
 var request = require("supertest");
 var express = require("express");
 var userCtrl = require("../controller/user");
 var assert = require("assert");
 var should = require("should");
 var DATA = require("../controller/data");
-var env = require("./util/env");
-var domain = require("./util/domain");
-
-
 
 describe("userCtrl",function(){
 	
@@ -30,7 +33,9 @@ describe("userCtrl",function(){
 		
 		request(app).post("/create")
 		.send({email:"leo@leo.leo",nickname:"leo",password:"123456"})
-		.expect("success",done);		
+		.expect("success",function(){
+			setTimeout(done,500);
+		});		
 	})
 	
 	it("#login",function(done){
@@ -54,14 +59,14 @@ describe("userCtrl",function(){
 		
 		request(app).post("/login")
 		.send({email:"leo@leo.leo",password:"123456"})
-		.expect('success',function(err,res){
+		.end(function(err,res){
 			var user = JSON.parse(decodeURIComponent(res.headers["set-cookie"][0]).split(";")[0].replace(/user=/g,""));
 			user.email.should.eql("leo@leo.leo")
 			request(app).post("/login")
 			.send({email:"leo@leo.leo",password:"1234567"})
 			.expect( {
                 email: ["登录信箱或密码有误，请重新登录。"]
-            },done)
+            },done);
 		});
 		
 	});
@@ -105,13 +110,16 @@ describe("userCtrl",function(){
 			res.send(req.result);
 		});
 
-		request(app).post("/update")
-		.send({email:"leo@leo.leo",password:"123456",address:"ddddd"})
-		.expect("success",function(){
+		setTimeout(function(){
 			request(app).post("/update")
-			.send({email:"leo@leo.leo",password:"123456",address:"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"})
-			.expect("error",done);			
-		});
+			.send({email:"leo@leo.leo",password:"123456",address:"ddddd"})
+			.expect("success",function(){
+				request(app).post("/update")
+				.send({email:"leo@leo.leo",password:"123456",address:"ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"})
+				.expect("error",done);			
+			});			
+		})
+
 	})
 
 	

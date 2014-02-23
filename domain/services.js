@@ -13,36 +13,13 @@ module.exports = function(query) {
         service1.serviceName = "existColumn";
 
         function service1(columnId, callback) {
-            my.repos.Column.get(columnId, function(err, col) {
+           query.columnById(columnId, function(col) {
                 if (col) {
                     callback(true);
                 } else {
                     callback(false);
                 }
             })
-        }
-
-
-        service2.serviceName = "existPost";
-
-        function service2(postId, callback) {
-            my.repos.SubPost.get(postId, function(err, post) {
-                if (col) {
-                    callback(true);
-                } else {
-                    callback(false);
-                }
-            })
-        }
-
-        service4.serviceName = "updatePasswordValidator";
-
-        function service4(password) {
-            if (password === password.trim()) {
-                check(password).len(6, 18);
-            } else {
-                throw new Error();
-            }
         }
 
         // userInfo{nickname , email}
@@ -72,7 +49,7 @@ module.exports = function(query) {
 			query.userById(userId,function(user){
 				if(user){
 					query.topicCountByToday(userId,function(count){
-						if(count > 10000){
+						if(count > 10){
 							callback(false);
 						}else{
 							callback(true);
@@ -91,7 +68,7 @@ module.exports = function(query) {
         function service7(userId, callback) {
 		
 			query.replyCountByToday(userId,function(count){
-				if(count > 10000){ //doto
+				if(count > 50){ //doto
 					callback(false);
 				}else{
 					callback(true);
@@ -107,7 +84,7 @@ module.exports = function(query) {
 			});
 		}
 
-        return [service1, service2, service4, service5, service6, service7,service8];
+        return [service1, service5, service6, service7,service8];
 
     }
 

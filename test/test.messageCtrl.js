@@ -1,11 +1,18 @@
+
+
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+var dbs = query.dbs;
+var env = require("./util/env")(domain,query);
+
+
 var request = require("supertest");
 var express = require("express");
 var messageCtrl = require("../controller/message");
 var assert = require("assert");
 var should = require("should");
 var DATA = require("../controller/data");
-var dbs = require("./util/dbrepo").db2;
-var env = require("./util/env");
 
 
 describe("columnCtrl",function(){

@@ -5,13 +5,8 @@ module.exports = {
 		var query = req.env.query;
 		var domain = req.env.domain;
 		req.body.authorId = req.session.user.id;
-		domain.exec("create a reply",req.body,function(err,reply){
-			if(reply){
-				req.result = "success";
-				req.reply = reply;
-			}else{
-				req.result = "error";
-			}
+		domain.exec("create a reply",req.body,function(result){		
+			req.result = result;
 			next();
 		});
 	},
@@ -21,8 +16,8 @@ module.exports = {
 		var domain = req.env.domain;
 		var id = req.param("id");
 		var topicId = req.reply.topicId;
-		domain.call("Topic.removeReply",topicId,[id],function(err){
-			res.result = err || "success";
+		domain.call("Topic.removeReply",topicId,[id],function(result){
+			req.result = result;
 			next();
 		})
 	}

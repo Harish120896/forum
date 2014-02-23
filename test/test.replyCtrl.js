@@ -1,3 +1,9 @@
+var cdb = require("./util/db")
+var query = require("./util/query")(cdb())
+var domain = require("./util/domain")(query);
+var dbs = query.dbs;
+var env = require("./util/env")(domain, query);
+
 var request = require("supertest");
 var express = require("express");
 var replyCtrl = require("../controller/reply");
@@ -5,9 +11,6 @@ var assert = require("assert");
 var should = require("should");
 var DATA = require("../controller/data");
 var util = require("../controller/util");
-var env = require("./util/env");
-var dbs = require("./util/dbrepo").db2;
-var domain = require("./util/domain");
 
 describe("topicCtrl", function() {
 
@@ -26,9 +29,7 @@ describe("topicCtrl", function() {
                 title: "topic title",
                 body: "topic content"
             },
-            function(err, topic) {
-
-            });
+            function(err, topic) {});
 
         //dbs.getDB("Topic").insert({id:"t00001"});
 
@@ -47,35 +48,32 @@ describe("topicCtrl", function() {
             };
             next();
         }, replyCtrl.create, function(req, res) {
-            res.send(req.reply)
+            //console.log(req.reply)
+            setTimeout(function() {
+                res.send(req.reply)
+            })
         });
 
-        setTimeout(function() {
-            request(app).post("/create")
-                .send({
-                    topicId: "t00001",
-                    title: "title001",
-                    body: "hahahhahhhahhaha"
-                })
-                .end(function(err, res) {
+		setTimeout(function(){
+	        request(app).post("/create")
+	            .send({
+	                topicId: "t00001",
+	                title: "title001",
+	                body: "hahahhahhhahhaha"
+	            })
+	            .end(function(err, res) {
 
-                    should.exist(res.body.id);
-                    rid = res.body.id;
+	                should.exist(res.body.id);
+	                rid = res.body.id;
+                    done()
 
-                    dbs.getDB("Reply").findOne({
-                        id: rid
-                    }, function(err, rs) {
 
-                        should.exist(rs.id);
 
-                        done()
+	            });			
+		})
+ 
+    })
 
-                    });
-
-                });
-        })
-
-    });
 
 
 

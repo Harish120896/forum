@@ -2,14 +2,8 @@ module.exports = {
 	
 	create:function(req,res,next){
 		var domain = req.env.domain;
-		
-		domain.exec("create a column",req.body,function(err,column){
-			req.column = column;
-			if(column){
-				req.result = "success";
-			}else{
-				req.result = err || "error";
-			}
+		domain.exec("create a column",req.body,function(result){
+			req.result = result;
 			next();
 		});
 	},
@@ -20,8 +14,8 @@ module.exports = {
 				
 		var columnId = req.param("columnId");
 		domain.call("Column.updateInfo",columnId,
-			[req.body.name,req.body.des],function(err){
-				req.result = err || "success";
+			[req.body.name,req.body.des],function(result){
+				req.result = result;
 				next();
 			})
 		}

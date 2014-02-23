@@ -60,12 +60,12 @@ function wrap(my) {
 
     .method("updateName", function(name) {
         this.name = name;
-        return this.errors;
+        return this.result;
     })
 	
     .method("updateDes", function(des) {
         this.des = des;
-        return this.errors;
+        return this.result;
     })
 	
 	.method("setManager",function(id){
@@ -77,9 +77,7 @@ function wrap(my) {
             name: name,
             des: des
         });
-		if(this.hasError()){
-			return _.values(this.errors);
-		}
+		return this.result;
     })
 
     Column.className = "Column";
