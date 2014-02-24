@@ -6,7 +6,7 @@ var uid = require("node-uuid").v1,
 module.exports = wrap;
 
 function wrap(my) {
-
+infrastructure
     var Column = createModel("Column")
         .attr('id',{default:uid(),readonly:true})
         .attr("name", {
