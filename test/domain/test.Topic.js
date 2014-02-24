@@ -1,8 +1,6 @@
-var should = require("should");
-var domain = require("./util/domain");
-var Topic = domain._my.Aggres.Topic;
-
-
+var should =require("should")
+var my = require("../util/my");
+var Topic = require("../../domain/Topic")(my);
 
 describe("Topic", function() {
 
@@ -28,7 +26,7 @@ describe("Topic", function() {
 	})
 
 
-	it("#addSubMark", function() {
+	it("#addReply", function() {
 		topic.addReply(null, "id001");
 		topic.addReply(null, "id002");
 		topic.addReply("id001", "id003");
@@ -37,7 +35,7 @@ describe("Topic", function() {
 	});
 
 
-	it("#removeSubMark", function() {
+	it("#removeReply", function() {
 		topic.removeReply("id002");
 		topic.replyTree.childIds.length.should.eql(1);
 		topic.removeReply();
@@ -51,18 +49,22 @@ describe("Topic", function() {
 	})
 
 	it("#updateInfo", function(done) {
-		
-		
-		done()
-		// dbs.getDB("Column").insert({id:"c01"},function(err,col){
-	// 		var result = topic.updateInfo("title01", "body001", "c01");
-	// 		result.then(function(err){
-	// 			topic.title.should.eql("title01");
-	// 			topic.body.should.eql("body001");
-	// 			done();
-	// 		})			
-	// 	})
 
+		var result = topic.updateInfo("title01", "body001", "c01");
+		result.then(function(result){
+			topic.title.should.eql("title01");
+			topic.body.should.eql("body001");
+			topic.columnId.should.eql("c01");
+			done();
+		})
+
+	})
+	
+	it("#toseal / unseal",function(){
+		topic.toseal();
+		topic.seal.should.be.true;
+		topic.unseal();
+		topic.seal.should.be.false;
 	})
 
 });

@@ -8,17 +8,18 @@ Forum
 
 Forum for node.js , use CQRS framework [JSDM](https://github.com/brighthas/jsdm) develop core.
 
-install
-=======
+Domain Layer API
+================
 
-    npm install forum
+### domain.exec
 
-run
-===
-```js
-var forum = require("forum");
-forum.run();
-```
+#### domain.exec("send message", args , callback )
+
++ args { authorId , title , body , targetId } 
+
++ callback
+
+
 
 LICENSE
 =======

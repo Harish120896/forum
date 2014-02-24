@@ -1,15 +1,20 @@
-var should = require("should"),
-domain = require("./util/domain"),
-	Message = domain._my.Aggres.Message;
-
+var should =require("should")
+var my = require("../util/my");
+var Message = require("../../domain/Message")(my);
 
 describe("Message",function(){
 	
 	var msg
+	
 	it("#create",function(){
 		
-		msg = new Message({id:"id001",targetId:"001",authorId:"002",title:"tttt",body:"bobby"});
-		msg.hasError().should.eql(false);
+		msg = new Message({targetId:"001",authorId:"002",title:"tttt",body:"bobby"});
+		msg.hasError().should.be.false;
+		should.exist(msg.id);
+		should.exist(msg.createTime);
+		msg.authorId.should.eql("002");
+		msg.title.should.eql("tttt");
+		msg.body.should.eql("bobby");
 		
 	})
 		

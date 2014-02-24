@@ -1,5 +1,5 @@
 module.exports = wrap;
-
+var uid = require("node-uuid").v1;
 
 var createModel = require("model-brighthas");
 
@@ -8,15 +8,18 @@ function wrap(my) {
     var Info = createModel("Info");
 
     Info
-        .attr("id")
+        .attr("id", {
+            default: uid(),
+            readonly: true
+        })
         .attr("targetId", {
             required: true,
-			readonly:true
+            readonly: true
         })
         .attr("body", {
             required: true,
             max: 500,
-			readonly:true
+            readonly: true
         })
         .attr("createTime", {
             type: "date"

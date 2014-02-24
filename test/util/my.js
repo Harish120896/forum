@@ -1,3 +1,13 @@
 module.exports = {
-	publish:function(){}
+	publish:function(){},
+	repos:{
+		Reply:{
+			remove:function(){}
+		}
+	},
+	services:{
+		existColumn:function(columnId,callback){
+			callback(true);
+		}
+	}
 }
