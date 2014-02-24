@@ -23,9 +23,10 @@ describe("userCtrl",function(){
         app.use(env);
 		
 		app.use(app.router);
-		
 		app.post("/create",userCtrl.create,function(req,res){
+			
             if(req.result.hasError()){
+				
             	res.send("error");
             }else{
             	res.send("success");

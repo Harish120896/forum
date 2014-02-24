@@ -1,14 +1,24 @@
 var r = require("random-word")("0123456789");
 var Result = require("result-brighthas");
 
-module.exports = {
+var util = {
 	
 	result:function(req,res,next){
 		req.result = new Result();
 		next();
 	},
 	
+	// if req.result.hasError() true , then next();
+	pass:function(req,res,next){
+		if(req.result.hasError()){
+			next();
+		}
+	},
+	
 	cookieLogin:function(req, res, next) {
+		
+		return util.pass(req,res,next);
+		
 		var query = req.env.query;
 		
 	    if (req.session.user) {
@@ -32,91 +42,102 @@ module.exports = {
 	            next();
 	        }
 	    }
+		
 	},
+	
 	refreshValidatNum:function(req,res,next){
 	    req.session.validat_num = r.random(4);	
 		next();
 	},
+	
 	end:function(req,res){
-		res.send(req.result.toJSON());
+		res.send(req.result.json());
 	},
 
 	isLogin:function(req,res,next){
-		if(req.session.user){
+		
+		return util.pass(req,res,next);
+		
+		if(!req.session.user){
+			req.result.error("email","请先登录");
 			next();
-		}else{
-			var result = new Result();
-			result.error("email","请先登录");
-			res.send(result.toJSON());
 		}
 	},
 	
 	validat_num:function(req, res, next) {
-	    if (req.body.validat_num && req.session.validat_num === req.body.validat_num) {
-			next();
-	    } else {
-			var result = new Result();
-			result.error("validat_num","验证码错误");
-			res.send(result.toJSON());
+		
+	    if (!(req.body.validat_num && req.session.validat_num === req.body.validat_num)) {
+			req.result.error("validat_num","验证码错误");
 	    }
+		next();
+		
 	},
 	
 	hasReqUser:function(req,res,next){
-		if(req.result.data("user")){
-			next();
-		}else{
-			var result = new Result();
-			result.error("user","没有此用户");
-			res.send(result.toJSON());
+		
+		return util.pass(req,res,next);
+		
+		if(!req.result.data("user")){
+			req.result.error("user","没有此用户");
 		}
+		next();
 	},
 	
-	// // dev hasReqUser / isLogin
-	// userNoSelf:function(req,res,next){	 
-	// 	var user = req.result.data("user");
-	// 	if(user.id !== req.session.user.id){
-	// 		res.send(req.result.toJSON());
-	// 	}else{
-	// 		next();
-	// 	}
-	// },
-	// 
-	// // dev hasReqUser / isLogin
-	// userSelf:function(req,res,next){	 
-	// 	if(req.user.id === req.session.user.id){
-	// 		res.send("success");
-	// 	}else{
-	// 		next();
-	// 	}
-	// },
+	// dev hasReqUser / isLogin
+	userNoSelf:function(req,res,next){	 
+		
+		return util.pass(req,res,next);
+		
+		var user = req.result.data("user");
+		if(user.id === req.session.user.id){
+			req.result.error("error","error");
+		}
+		
+		next();
+	},
+	
+	// dev hasReqUser / isLogin
+	userSelf:function(req,res,next){	
+		
+		return util.pass(req,res,next);
+		
+		var user = req.result.data("user");
+		 
+		if(user.id !== req.session.user.id){
+			req.result.error("error","error");
+		}
+		
+		next()
+	},
 	
 	// dev isLogin
 	isAdmin:function(req,res,next){
-		var result = new Result();
+		return util.pass(req,res,next);
+		
 		if(req.session.user.role !== 1){
-			result.error("user","不是管理员");
-			res.send(result.toJSON());
-		}else{
-			next();
+			req.result.error("user","不是管理员");
 		}
+		next();
 	},
 	
 	hasTopic:function(req,res,next){
+		
+		return util.pass(req,res,next);
+		
 		var topic = req.result.data("topic");
-		var result = new Result();
-		if(topic){
-			next();
-		}else{
+		if(!topic){
 			result.error("topic","没有主题帖");
-			res.send(result);
 		}
+		next();
 	},
 	
 	// dev isLogin / hasTopic
 	isTopicManager:function(req,res,next){
 		
+		return util.pass(req,res,next);
+		
 		var query = req.env.query;
-		var result = new Result();
+
 		var topic = req.result.data("topic");
 		
 		query.columnById(topic.columnId,function(col){
@@ -124,31 +145,34 @@ module.exports = {
 				topic.authorId === req.session.user.id || 
 				col.managerId === req.session.user.id || 
 				req.session.user.role === 1 ){
-					
-					next();
 			}else{
-				result.error("user","非法操作");
-				res.send(result);
+				req.result.error("user","非法操作");
 			}			
+			next();
 		});
+		
 	},
 	
 	hasReply:function(req,res,next){
+		
+		return util.pass(req,res,next);
+		
 		var reply = req.result.data("reply");
-		if(reply){
-			next();
-		}else{
-			var result = new Result();
+		
+		if(!reply){
 			result.error("reply","没有回复贴")
-			res.send(result);
 		}
+		next();
+		
 	},
 	
 	// dev isLogin / hasReply
 	isReplyManager:function(req,res,next){
+		
+		return util.pass(req,res,next);
+		
 		var query = req.env.query;
 		var reply = req.result.data("reply");
-		var result = new Result();
 		
 		query.topicById(reply.topicId,function(topic){
 			if(topic){
@@ -158,18 +182,17 @@ module.exports = {
 							req.session.user.id === req.reply.authorId || 
 							req.session.user.id === topic.authorId || 
 							req.session.user.role === 1 ){
-							next();
 						}else{
 							req.result.error("error","非法操作 ");
 						}							
 					}else{
 						req.result.error("error","非法操作 ");
 					}
-					res.send(req.result.toJSON());
+					next();
 				});				
 			}else{
 				req.result.error("error","非法操作 ");
-				res.send(req.result.toJSON());
+				next();
 			}
 		});
 		
@@ -177,22 +200,27 @@ module.exports = {
 	
 	//dev isLogin / hasReply
 	isReplyAuthor:function(req,res,next){
+		return util.pass(req,res,next);
+		
 		var reply = req.result.data("reply");
 		
-		if(req.session.user.id === reply.authorId){
-			next();
-		}else{
+		if(req.session.user.id !== reply.authorId){
+
 			req.result.error("error","非法操作 ");
-			res.send(req.result.toJSON());
 		}
+		next();
 	},
 	
 	xhr:function(req,res,next){
+		
+		return util.pass(req,res,next);
+		
 		if(!req.xhr){
 			req.result.error("error","非法操作 ");
-			res.send(req.result.toJSON());
-		}else{
-			next();
 		}
+		
+		next();
 	}
 }
+
+module.exports = util;

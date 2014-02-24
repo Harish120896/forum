@@ -1,9 +1,7 @@
 
 var cdb = require("./util/db")
-var query = require("./util/query")(cdb())
-var domain = require("./util/domain")(query);
-var dbs = query.dbs;
-var env = require("./util/env")(domain,query);
+var domain = require("./util/domain");
+require("./util/testInit")
 
 var should = require("should")
 	, userRepo = domain._my.repos.User
@@ -32,7 +30,7 @@ describe("repos", function (){
     it("user repository _data2aggre",function(){
         aggre = userRepo._data2aggre({
             id:"id001",
-            nickname: "leo",
+            nickname: "leo2",
             loginname: "brighthas",
             password: "111111",
             email: "brighthas@gmail.com",
@@ -40,7 +38,7 @@ describe("repos", function (){
 			fraction:0
 		});
         aggre.id.should.eql("id001");
-        aggre.nickname.should.eql("leo");
+        aggre.nickname.should.eql("leo2");
         aggre.password.should.eql("111111");
         aggre.email.should.eql("brighthas@gmail.com");
 
@@ -49,7 +47,7 @@ describe("repos", function (){
 	it("user repository _aggre2data",function(){
 		var data = userRepo._aggre2data(aggre);
         aggre.id.should.eql("id001");
-        aggre.nickname.should.eql("leo");
+        aggre.nickname.should.eql("leo2");
         aggre.password.should.eql("111111");
         aggre.email.should.eql("brighthas@gmail.com");
 	})

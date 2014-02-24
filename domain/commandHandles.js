@@ -89,7 +89,15 @@ function wrap(my) {
 	
     handle6.commandName = "create a column";
     function handle6(args, callback) {
-        my.repos.Column.create(args,callback);
+		var result = new Result();
+        my.repos.Column.create(args,function(err,col){
+        	if(col){
+        		result.data("column",col);
+        	}else{
+        		result.error("error",err);
+        	}
+			callback(result);
+        });
     }
 	
 	handle7.commandName = "send message";

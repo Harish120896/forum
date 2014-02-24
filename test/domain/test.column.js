@@ -1,7 +1,6 @@
 var should =require("should")
-var query = require("./util/query");
-var domain = require("./util/domain");
-var Column = domain._my.Aggres.Column;
+var my = require("../util/my");
+var Column = require("../../domain/Column")(my);
 
 describe("column",function(){
 

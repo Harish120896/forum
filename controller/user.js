@@ -78,7 +78,6 @@ module.exports = {
             email: req.body.email,
             password: req.body.password
         }, function(err,user) {
-			
 			if(user){	
 				result.data("user",user);
 	            if (user.email === config.admin) {

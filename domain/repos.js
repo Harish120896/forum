@@ -76,7 +76,7 @@ function wrap(my) {
 
     var userRepo = new my.Repository("User");
 
-    userRepo._create = hus(function (args, callback) {
+    userRepo._create = function (args, callback) {
         my.services.userUnique(args.email,args.nickname,function(unique){
             if(unique){
 				var err = {};
@@ -98,7 +98,7 @@ function wrap(my) {
                 }
             }
         });
-    }).use(lock);
+    }
 
     userRepo._aggre2data = function (aggre) {
         return aggre.toJSON();
