@@ -11,8 +11,6 @@ describe("column",function(){
         column.name.should.eql("column name");
         column.des.should.eql("column des");
         column.updateTime.should.eql(column.updateTime);
-        column.accessNum.should.eql(0);
-        column.top_.should.eql(false);
     })
 
     it("#up",function(){
@@ -22,17 +20,6 @@ describe("column",function(){
 
     })
 	
-    it("#top",function(){
-        column.top();
-        column.top_.should.eql(true);
-		
-    })
-
-    it("#untop",function(){
-        column.untop();
-        column.top_.should.eql(false);
-		
-    })
 
     it("#updateInfo",function(){
 
@@ -42,11 +29,5 @@ describe("column",function(){
         
     })
 
-    it("#access",function(){
-
-		column.access();
-		column.accessNum.should.eql(1);
-
-    })
 
 })

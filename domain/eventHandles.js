@@ -3,15 +3,9 @@ module.exports = wrap;
 
 function wrap(my){
 
-    handle1.eventName = "User.*.create";
-
-    function handle1(user){
-
-    }
+	handle1.eventName = "Topic.*.create";
 	
-	handle2.eventName = "Topic.*.create";
-	
-	function handle2(topic){
+	function handle1(topic){
 		my.repos.User.get(topic.authorId,function(err,user){
 			if(user){
 				user.plus(5);
@@ -19,9 +13,9 @@ function wrap(my){
 		})
 	}
 	
-	handle3.eventName = "Reply.*.create";
+	handle2.eventName = "Reply.*.create";
 	
-	function handle3(reply){
+	function handle2(reply){
 		my.repos.User.get(reply.authorId,function(err,user){
 			if(user){
 				user.plus(1);

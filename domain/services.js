@@ -22,6 +22,17 @@ module.exports = function(query) {
             })
         }
 
+		service2.serviceName = "existUser";
+		function service2(uid,callback){
+            query.userById(uid, function(u) {
+                 if (u) {
+                     callback(true);
+                 } else {
+                     callback(false);
+                 }
+             })
+		}
+		
         // userInfo{nickname , email}
         // return err or null , if err mean not unique.
         service5.serviceName = "userUnique";

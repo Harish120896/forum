@@ -8,8 +8,6 @@ var Column = mongoose.model("Column", new Schema({
     name: String,
     des: String,
     id: String,
-    top: Boolean,
-    accessNum: Number,
     updateTime: Number,
     createTime: Number
 }));

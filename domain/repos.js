@@ -1,5 +1,6 @@
 var Node = require("tree-node")
     ,crypto = require("crypto")
+	,Result = require("result-brighthas")
 	,hus = require("huskies")
 	,lock = require("huskies-lock");
 
@@ -13,7 +14,7 @@ function wrap(my) {
         var Topic = my.Aggres.Topic;
 		var topic = new Topic(args);
 		if(topic.hasError()){
-			callback(topic.result.json().errors);
+			callback(topic.result);
 		}else{
 	        callback(null, topic);
 		}
@@ -35,7 +36,7 @@ function wrap(my) {
         var Reply = my.Aggres.Reply;
         var reply = new Reply(args);
 		if(reply.hasError()){
-			callback(reply.result.json().errors);
+			callback(reply.result);
 		}else{
 	        callback(null, reply);
 		}
@@ -58,8 +59,7 @@ function wrap(my) {
         var Column = my.Aggres.Column;
         var column = new Column(args);
 		if(column.hasError()){
-	        callback(column.result.json().errors);
-
+	        callback(column.result);
 		}else{
 			callback(null,column)
 		}
@@ -79,20 +79,20 @@ function wrap(my) {
     userRepo._create = function (args, callback) {
         my.services.userUnique(args.email,args.nickname,function(unique){
             if(unique){
-				var err = {};
+				var result = new Result();
 				unique.forEach(function(k){
 					if(k === "nickname"){
-						err["nickname"] = ["昵称已被使用"];
+						result.error("nickname","昵称已被使用");
 					}
 					if(k === "email"){
-						err["email"] = ["邮箱已被使用"];
+						result.error("email","邮箱已被使用")
 					}
 				});
-				callback(err);
+				callback(result);
             }else{
                 var user = new my.Aggres.User(args);
                 if(user.hasError()){
-                	callback(user.result.json().errors);
+                	callback(user.result);
                 }else{
 					callback(null, user);
                 }
@@ -114,7 +114,7 @@ function wrap(my) {
 	messageRepo._create = function(args,callback){
 		var msg = new my.Aggres.Message(args);
 		if(msg.hasError()){
-			callback(msg.result.json().errors);
+			callback(msg.result);
 		}else{
 			callback(null,msg);
 		}
@@ -133,14 +133,14 @@ function wrap(my) {
 	infoRepo._create = function(args,callback){
 		var info = new my.Aggres.Info(args);
 		if(info.hasError()){
-			callback(info.result.json().errors);
+			callback(info.result);
 		}else{
 			callback(null,info);
 		}
 	}
 
 	infoRepo._data2aggre = function(data){
-		return my.Aggre.Info.reborn(data);
+		return my.Aggres.Info.reborn(data);
 	}
 
 	infoRepo._aggre2data = function(aggre){

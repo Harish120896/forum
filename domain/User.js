@@ -4,9 +4,9 @@ module.exports = wrap;
 var crypto = require("crypto"),
     createModel = require("model-brighthas"),
     is = require("istype"),
-	q = require("q"),
-	_ = require("underscore");
-    attr = require("./plugin/attr");
+    q = require("q"),
+	 uid = require("node-uuid").v1,
+    _ = require("underscore");
 
 function wrap(my) {
 
@@ -17,11 +17,14 @@ function wrap(my) {
         USER: 0,
         ADMIN: 1,
         MODERATOR: 2,
-		SEAL:3
+        SEAL: 3
     };
 
     User
-        .attr("id")
+        .attr("id", {
+            default: uid(),
+            readonly: true
+        })
         .attr("follows", {
             type: "array",
             default: []
@@ -31,28 +34,28 @@ function wrap(my) {
             default: []
         })
         .attr("nickname", {
-			min:2,
-			max:15,
+            min: 2,
+            max: 15,
             required: true,
             readonly: true,
-			validator:/^[a-zA-Z0-9]*$/,
-			message:"昵称长度 2～15 字符，a~z A~Z 0-9"
-	     })
-		.attr("sex",{
-			type:"boolean",
-			default:true
-		})
-		.attr("address",{
-			max:35,
-		default:"",
-			message:"长度小于35个字符"
-			
-		})
-		.attr("des",{
-			max:200,
-			default:"",
-			message:"长度小于200个字符"
-		})
+            validator: /^[a-zA-Z0-9]*$/,
+            message: "昵称长度 2～15 字符，a~z A~Z 0-9"
+        })
+        .attr("sex", {
+            type: "boolean",
+            default: true
+        })
+        .attr("address", {
+            max: 35,
+            default: "",
+            message: "长度小于35个字符"
+
+        })
+        .attr("des", {
+            max: 200,
+            default: "",
+            message: "长度小于200个字符"
+        })
         .attr("role", {
             required: true,
             type: "number",
@@ -61,20 +64,19 @@ function wrap(my) {
         .attr("password", {
             min: 6,
             max: 14,
-			validator:/^[a-z0-9]*$/,
-			message:"密码长度 6~14，支持a-z 0-9字符",
+            validator: /^[a-z0-9]*$/,
+            message: "密码长度 6~14，支持a-z 0-9字符",
             required: true
         })
         .attr("email", {
             min: 3,
             max: 30,
-			message:"email格式错误！",
-			type:"email",
+            message: "email格式错误！",
+            type: "email",
             required: true,
             readonly: true
         })
-		// base64 image data  must < 150KB .
-		.attr("logo")
+        .attr("logo")
         .attr("fraction", {
             default: 0,
             type: "number"
@@ -85,44 +87,32 @@ function wrap(my) {
         .attr("reportTime", {
             type: "date"
         })
-		.method("updateInfo",function(data){
-			
-			data = data || {}
-			
-			this.begin();
-			
-			if(data.hasOwnProperty("address")){
-				this.address = data.address;
-			}
-			
-			if(data.hasOwnProperty("des")){
-				this.des = data.des;
-			}
-			
-			if(data.hasOwnProperty("sex")){
-				this.sex = data.sex;
-			}
-			
-			this.end();
-			return this.result;
-			
-		})
-		.method("updateNickname",function(nickname){
-			var deferred = q.defer();
-			var self = this;
-			my.services.userUnique(nickname,function(unique){
-				if(unique){
-					self.nickname = nickname;
-				}else{
-					self.result.error("nickname","昵称已被占用");
-				}
-				deferred.resolve();
-			})
-			return deferred.promise;
-		})
+		
+        .method("updateInfo", function(data) {
+
+            data = data || {}
+
+            this.begin();
+
+            if (data.hasOwnProperty("address")) {
+                this.address = data.address;
+            }
+
+            if (data.hasOwnProperty("des")) {
+                this.des = data.des;
+            }
+
+            if (data.hasOwnProperty("sex")) {
+                this.sex = data.sex;
+            }
+
+            this.end();
+            return this.result;
+
+        })
         .method("updatePassword", function(npass) {
-			this.password = npass;
-			return this.result;
+            this.password = npass;
+            return this.result;
         })
         .method("plus", function(num) {
             this.fraction = this.fraction + num;
@@ -180,70 +170,70 @@ function wrap(my) {
                 }
             })
         })
-		.method("becomeModerator",function(){
-			this.role = User.roles.MODERATOR;
-		})
-		.method("becomeAdmin",function(){
-			
-			this.role = User.roles.ADMIN;
-		})
-		.method("becomeUser",function(){
-			this.role = User.roles.USER;
-		})
-		.method("sealUser",function(){
-			this.role = User.roles.SEAL;
-		})
+        .method("becomeModerator", function() {
+            this.role = User.roles.MODERATOR;
+        })
+        .method("becomeAdmin", function() {
+
+            this.role = User.roles.ADMIN;
+        })
+        .method("becomeUser", function() {
+            this.role = User.roles.USER;
+        })
+        .method("sealUser", function() {
+            this.role = User.roles.SEAL;
+        })
         .on("changed", function(u, attrs) {
-			passTransform(u);
+            passTransform(u);
             my.publish("*.*.update", "User", u.id, this.toJSON(u, Object.keys(attrs)));
         })
         .validate(function(user, keys) {
             if (keys.indexOf("role") !== -1) {
                 var role = user.attrs["role"];
-                if ([0, 1, 2,3].indexOf(role) === -1) {
+                if ([0, 1, 2, 3].indexOf(role) === -1) {
                     user.result.error("role", "没有这个角色");
                 }
             }
         })
-		// logo validat
-		//  image base64 must cut base64 type head
-		.validate(function(user, keys){
-			
-			var keys = []
-			
-			if(keys.indexOf("logo") !== -1){
-				
-				var logo = user.attrs["logo"];
-				if(is.string(logo) && logo.length > 0){
-					var buf = new Buffer(logo,"base64")
-					if(buf.length > 1024 * 150){
-						user.error("logo","error");
-					}
-				}else{
-					user.error("logo","error");
-				}
-				
-			}
-			
-		})
+    // logo validat
+    //  image base64 must cut base64 type head
+    .validate(function(user, keys) {
 
-	User.on("created",function(user){
-		passTransform(user);
-	})
-		
+        var keys = []
+
+        if (keys.indexOf("logo") !== -1) {
+
+            var logo = user.attrs["logo"];
+            if (is.string(logo) && logo.length > 0) {
+                var buf = new Buffer(logo, "base64")
+                if (buf.length > 1024 * 150) {
+                    user.error("logo", "error");
+                }
+            } else {
+                user.error("logo", "error");
+            }
+
+        }
+
+    })
+
+    User.on("created", function(user) {
+        passTransform(user);
+    })
+
     User.on("creating", function(user) {
         user.attrs.createTime = new Date();
         user.attrs.reportTime = new Date(0);
     })
-	
-	
-	function passTransform(u){
+
+
+    function passTransform(u) {
         // password transform
         if (u.attrs.password) {
             var md5 = crypto.createHash('md5');
             u.oattrs.password = md5.update(u.oattrs.password).digest("hex");
         }
-	}
+    }
 
     User.className = "User";
 

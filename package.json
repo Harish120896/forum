@@ -34,7 +34,7 @@
     "huskies": "0.0.9",
     "huskies-lock": "0.0.1",
     "step": "0.0.5",
-    "model-brighthas": "0.2.6",
+    "model-brighthas": "0.2.7",
     "jsdm.middle": "0.0.7",
     "istype": "0.0.2",
     "png-word": "0.0.5",
@@ -43,7 +43,7 @@
     "nodemailer": "~0.6.0",
     "node-validator": "~0.1.4",
     "q": "~1.0.0",
-    "result-brighthas": "0.0.4"
+    "result-brighthas": "0.0.6"
   },
   "devDependencies": {
     "should": "~2.1.0",

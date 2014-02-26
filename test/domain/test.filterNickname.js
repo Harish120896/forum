@@ -1,13 +1,9 @@
-module.exports = filter;
+var filterNickName = require("../../domain/filterNickName");
+var should = require("should");
 
-function filter(content){
-	var names = content.match(/(?:@)\w*(?=\s|$)/gi);
-	var names2 = [];
-	if(names){
-		names.forEach(function(name){
-			names2.push(name.substring(1,name.length));
-		});
-	}
-	return names2;
-}
-
+describe("filterNickName",function(){
+	it("#filterNickName",function(){
+		var result = filterNickName("abcd @leo fdsfs @brighthas ");
+		result.should.eql(["leo","brighthas"]);		
+	})
+});

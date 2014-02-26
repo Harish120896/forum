@@ -32,7 +32,10 @@ domain.register(
 	"Topic.updateInfo",
 	"Topic.removeReply",
 	"Topic.toseal",
-	"Topic.unseal"
+	"Topic.unseal",
+	"Topic.access",
+	
+	"Reply.updateInfo"
 );
 
 module.exports = domain;

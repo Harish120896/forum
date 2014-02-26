@@ -1,7 +1,7 @@
 var nodemailer = require("nodemailer");
 var domain = require("./domain");
 var query = require("./query");
-var config = require("./config");
+var config = require("./config")
 
 var transport = nodemailer.createTransport("SMTP", {
     service: "QQ",
@@ -11,11 +11,12 @@ var transport = nodemailer.createTransport("SMTP", {
     }
 });
 
-module.exports = function(req,res,next){
+
+function env(req,res,next){
 	req.env = {
+		transport:transport,
 		domain:domain,
 		query:query,
-		transport:transport,
 		config:config
 	}
 	next();

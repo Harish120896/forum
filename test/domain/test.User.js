@@ -1,8 +1,8 @@
-
-var should = require("should");
 var crypto = require("crypto");
-var domain = require("./util/domain");
-var User = domain._my.Aggres.User;
+
+var should = require("should")
+var my = require("../util/my");
+var User = require("../../domain/User")(my);
 
 describe("User", function() {
 
@@ -32,12 +32,16 @@ describe("User", function() {
 
     });
 
-    it("#authorizeAdmin", function() {
-        user.role = 4;
-        user.role.should.eql(User.roles.USER);
-        user.role = 1;
+    it("#become", function() {
+        user.becomeAdmin();
         user.role.should.eql(User.roles.ADMIN);
-
+        user.becomeModerator();
+        user.role.should.eql(User.roles.MODERATOR);
+		user.becomeUser();
+        user.role.should.eql(User.roles.USER);
+		user.sealUser();
+        user.role.should.eql(User.roles.SEAL);
+		
     });
 
     it("#plus", function() {
@@ -46,42 +50,24 @@ describe("User", function() {
         user.fraction.should.eql(15);
     });
 
-    var u1, u2;
+    var u1;
 
     it("#follow", function(done) {
-
-        domain._my.repos.User.create({
-            nickname: "brighthas",
+		
+		u1 = new User({
+            nickname: "leo",
             password: "123456",
-            email: "brighthas2@gmail.com"
-        }, function(err, user) {			
-            u1 = user;
-
-            domain._my.repos.User.create({
-                nickname: "leo",
-                password: "123456",
-                email: "leoddd@gmail.com"
-            }, function(err, user) {
-                u2 = user;
-
-                u1.follow(u2.id);
-
-                u1.follows[0].should.eql(u2.id);
-
-                u2.watchers[0].should.eql(u1.id);
-
-                done();
-
-            });
-        });
-
+            email: "leo@gmail.com"
+		})
+        u1.follow("u001");
+        u1.follows[0].should.eql("u001");
+        done();
 
     })
 
     it("#unfollow", function() {
-        u1.unfollow(u2.id);
+        u1.unfollow("u001");
         u1.follows.should.eql([]);
-        u2.watchers.should.eql([]);
     })
 
 
@@ -93,5 +79,7 @@ describe("User", function() {
         u1.fraction.should.eql(2);
 
     })
+	
+	
 
 })

@@ -15,14 +15,6 @@ function wrap(my) {
             type: "string",
             required: true
         })
-        .attr("top_", {
-            type: "boolean",
-            default: false
-        })
-        .attr("accessNum", {
-            type: "number",
-            default: 0
-        })
         .attr("updateTime", {
             type: "date"
         })
@@ -48,30 +40,14 @@ function wrap(my) {
         this.updateTime = new Date;
     })
 
-    .method("top", function() {
-        this.top_ = true;
-    })
-
-    .method("untop", function() {
-        this.top_ = false;
-    })
-
-    .method("access", function(readerId) {
-        this.accessNum = this.accessNum + 1;
-    })
-
-    .method("updateName", function(name) {
-        this.name = name;
-        return this.result;
-    })
-
-    .method("updateDes", function(des) {
-        this.des = des;
-        return this.result;
-    })
-
-    .method("setManager", function(id) {
-        this.managerId = id;
+    .method("setManager", function(uid) {
+		
+		var self = this;
+		my.services.existUser(uid,function(exist){
+			if(exist)
+	        self.managerId = uid;
+		});
+		
     })
 
     .method("updateInfo", function(name, des) {

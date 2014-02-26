@@ -1,14 +1,14 @@
-var dbs = require("./util/db")
-var env = require("./util/env");
-require("./util/testInit")
+var dbs = require("../util/db")
+var env = require("../util/env");
+require("../util/testInit")
 var request = require("supertest");
 var express = require("express");
-var topicCtrl = require("../controller/topic");
+var topicCtrl = require("../../controller/topic");
 var assert = require("assert");
 var should = require("should");
-var DATA = require("../controller/data");
-
-
+var DATA = require("../../controller/data");
+var util = require("../../controller/util");
+var result = util.result;
 
 describe("topicCtrl", function() {
 
@@ -23,6 +23,7 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
+        app.use(result);
 
         app.use(app.router);
 
@@ -57,7 +58,8 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
-    
+        app.use(result);
+
         app.use(app.router);
     
         app.post("/update", function(req, res, next) {
@@ -93,6 +95,7 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
+        app.use(result);
     
         app.use(app.router);
     
@@ -119,6 +122,7 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
+        app.use(result);
     
         app.use(app.router);
     
@@ -146,6 +150,7 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
+        app.use(result);
     
         app.use(app.router);
     
@@ -162,6 +167,81 @@ describe("topicCtrl", function() {
     
     });
 
+    
+    it("#access", function(done) {
+    
+        var app = express();
+        app.use(express.favicon());
+        app.use(express.json());
+        app.use(express.methodOverride());
+        app.use(express.cookieParser('your secret here'));
+        app.use(express.session());
+        app.use(env);
+        app.use(result);
+    
+        app.use(app.router);
+    
+        app.post("/access/:id", topicCtrl.access, function(req, res) {
+            if(req.result.hasError()){
+            	res.send("error");
+            }else{
+            	res.send("success");
+            }
+        });
+    
+        request(app).post("/access/" + tid)
+            .expect('success', done);
+    
+    });
 
+    it("#access", function(done) {
+    
+        var app = express();
+        app.use(express.favicon());
+        app.use(express.json());
+        app.use(express.methodOverride());
+        app.use(express.cookieParser('your secret here'));
+        app.use(express.session());
+        app.use(env);
+        app.use(result);
+    
+        app.use(app.router);
+    
+        app.post("/access/:id", topicCtrl.access, function(req, res) {
+            if(req.result.hasError()){
+            	res.send("error");
+            }else{
+            	res.send("success");
+            }
+        });
+    
+        request(app).post("/access/" + tid)
+            .expect('success', done);
+    
+    });
+	
+	it("#removeReply" ,function(done){
+        var app = express();
+        app.use(express.favicon());
+        app.use(express.json());
+        app.use(express.methodOverride());
+        app.use(express.cookieParser('your secret here'));
+        app.use(express.session());
+        app.use(env);
+        app.use(result);
+    
+        app.use(app.router);
+    
+        app.post("/removeReply/:id", topicCtrl.removeReply, function(req, res) {
+            if(req.result.hasError()){
+            	res.send("error");
+            }else{
+            	res.send("success");
+            }
+        });
+    
+        request(app).post("/removeReply/" + tid)
+            .expect('success', done);		
+	})
 
 });

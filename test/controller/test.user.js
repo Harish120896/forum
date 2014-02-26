@@ -1,13 +1,14 @@
-require("./util/testInit");
-var dbs = require("./util/db");
+require("../util/testInit");
+var dbs = require("../util/db");
+var result = require("../../controller/util").result;
 
-var env = require("./util/env");
+var env = require("../util/env");
 var request = require("supertest");
 var express = require("express");
-var userCtrl = require("../controller/user");
+var userCtrl = require("../../controller/user");
 var assert = require("assert");
 var should = require("should");
-var DATA = require("../controller/data");
+var DATA = require("../../controller/data");
 
 describe("userCtrl",function(){
 	
@@ -21,10 +22,10 @@ describe("userCtrl",function(){
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
         app.use(env);
+		app.use(result);
 		
 		app.use(app.router);
 		app.post("/create",userCtrl.create,function(req,res){
-			
             if(req.result.hasError()){
 				
             	res.send("error");
@@ -34,7 +35,7 @@ describe("userCtrl",function(){
 		});
 		
 		request(app).post("/create")
-		.send({email:"leo2@leo.leo",nickname:"leo2",password:"1234567"})
+		.send({email:"leo2@leo.leo9",nickname:"leo2",password:"1234567"})
 		.expect("success",done);		
 	})
 	
@@ -47,6 +48,7 @@ describe("userCtrl",function(){
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 	        app.use(env);
+			app.use(result);
 		
 		app.use(app.router);
 		
@@ -81,6 +83,7 @@ describe("userCtrl",function(){
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 	        app.use(env);
+			app.use(result);
 		
 		app.use(app.router);
 		
@@ -104,6 +107,7 @@ describe("userCtrl",function(){
 		app.use(express.cookieParser('your secret here'));
 		app.use(express.session());
 	        app.use(env);
+			app.use(result);
 		
 		app.use(app.router);
 	
@@ -127,6 +131,279 @@ describe("userCtrl",function(){
 	
 	})
 	
+	it("#seal",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
 	
+		app.post("/seal/:id",userCtrl.seal,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/seal/u001")
+		.send({})
+		.expect("success",done);			
+	
+	})
+	
+	
+	it("#findPassword",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/findPassword",
+			function(req,res,next){
+				req.result.data("user",{
+					email:"308212012@qq.com",
+					password:"1212121212"
+				})
+				next();
+			},
+			userCtrl.findPassword,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/findPassword")
+		.send({})
+		.expect("success",done);			
+	
+	})
+	
+	
+	it("#follow",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/follow/:id",
+		function(req,res,next){
+			req.session.user = {
+				id:"00111"
+			}
+			next();
+		},userCtrl.follow,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/follow/u001")
+		.send({})
+		.expect("success",done);			
+	
+	})
+	
+	it("#unfollow",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/unfollow/:id",
+		function(req,res,next){
+			req.session.user = {
+				id:"00111"
+			}
+			next();
+		},userCtrl.unfollow,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/unfollow/u001")
+		.send({})
+		.expect("success",done);			
+	
+	})
+	
+	
+	it("#becomeModerator",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/becomeModerator/:id",
+		function(req,res,next){
+			req.session.user = {
+				id:"00111"
+			}
+			next();
+		},userCtrl.becomeModerator,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/becomeModerator/u001")
+		.send({})
+		.expect("success",done);			
+	
+	})
+	
+	it("#becomeUser",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/becomeUser/:id",
+		function(req,res,next){
+			req.session.user = {
+				id:"00111"
+			}
+			next();
+		},userCtrl.becomeUser,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/becomeUser/u001")
+		.send({})
+		.expect("success",done);			
+	
+	})
+	
+	it("#updatePassword",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/updatePassword/:id",
+		function(req,res,next){
+			req.result.data("user",{id:"u0001",password:"123"})
+			next();
+		},userCtrl.updatePassword,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/updatePassword/u001")
+		.send({code:"123"})
+		.expect("success",done);			
+	
+	})
+	
+	it("#plus",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/plus/:id",
+		userCtrl.plus,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/plus/u001")
+		.send({code:"123"})
+		.expect("success",done);			
+	
+	})
+	
+	it("#remove",function(done){
+		var app = express();
+		app.use(express.favicon());
+		app.use(express.json());
+		app.use(express.methodOverride());
+		app.use(express.cookieParser('your secret here'));
+		app.use(express.session());
+	        app.use(env);
+			app.use(result);
+		
+		app.use(app.router);
+	
+		app.post("/remove/:id",
+		userCtrl.remove,function(req,res){
+			if(req.result.hasError()){
+				res.send("error");
+			}else{
+				res.send("success");
+			}
+		});
+	
+		request(app).post("/remove/u001")
+		.send({code:"123"})
+		.expect("success",done);			
+	
+	})
 	
 })

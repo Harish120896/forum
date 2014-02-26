@@ -3,51 +3,81 @@ var Result = require("result-brighthas");
 module.exports = {
 	
 	create:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
 		var domain = req.env.domain;
 		req.body.authorId = req.session.user.id;
 		domain.exec("create a topic",req.body,function(result){
-			req.result = result;
+			req.result.mix(result);
 			next();
 		});
 	},
 	
 	update:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
 		var domain = req.env.domain;
 		req.body.authorId = req.session.user.id;
 		domain.call("Topic.updateInfo",req.body.topicId,[req.body.title, req.body.body, req.body.columnId],function(result){
-			req.result = result;
+			req.result.mix(result);
 			next();
 		});
 	},
 	
 	// dev isLogin / isAdmin
 	remove:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
 		var domain = req.env.domain;
 		var id = req.param("id");
-		domain.exec("remove a topic",{id:id},function(result){
-			req.result = new Result;
-			next();
-		})
+		domain.exec("remove a topic",{id:id});
+		next();
 	},
 	
 	// dev isLogin / isTopicManager
 	seal:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
 		var domain = req.env.domain;
 		var id = req.param("id");
-		domain.call("Topic.toseal",id,[],function(err){
-			req.result = new Result();
-			next();
-		})		
+		domain.call("Topic.toseal",id);
+		next();
 	},
 	
 	// dev isLogin / isTopicManager
 	unseal:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
 		var domain = req.env.domain;
 		var id = req.param("id");
-		domain.call("Topic.unseal",id,[],function(err){
-			req.result = new Result();
-			next();
-		})		
-	}
+		domain.call("Topic.unseal",id);
+		next();	
+	},
+	
+	access:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
+		var domain = req.env.domain;
+		var id = req.param("id");
+		domain.call("Topic.access",id);
+		next();
+	},
+	
+	removeReply:function(req,res,next){
+		if(req.result.hasError()){
+			return next();
+		}
+		var domain = req.env.domain;
+		var id = req.param("id");
+		var replyId = req.body.replyId;
+		domain.call("Topic.removeReply",id,[replyId]);
+		next();
+	}	
 	
 }

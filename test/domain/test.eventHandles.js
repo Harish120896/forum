@@ -1,33 +1,33 @@
+var my = require("../util/my");
+var should = require("should");
+var User = require("../../domain/User")(my);
+var user = new User({
+    nickname: "brighthas",
+    password: "123456",
+    email: "brighthas@gmail.com"
+});
 
-module.exports = wrap;
-
-function wrap(my){
-
-    handle1.eventName = "User.*.create";
-
-    function handle1(user){
-
-    }
-	
-	handle2.eventName = "Topic.*.create";
-	
-	function handle2(topic){
-		my.repos.User.get(topic.authorId,function(err,user){
-			if(user){
-				user.plus(5);
+var eventHandles = require("../../domain/eventHandles")({
+	repos:{
+		User:{
+			get:function(id,cb){
+				cb(null,user);
 			}
-		})
+		}
 	}
+});
+
+describe("eventHandles",function(){
 	
-	handle3.eventName = "Reply.*.create";
+	it("#Topic.*.create",function(){
+		eventHandles[0]({authorId:"001"});
+		user.fraction.should.eql(5);
+		
+	})
 	
-	function handle3(reply){
-		my.repos.User.get(reply.authorId,function(err,user){
-			if(user){
-				user.plus(1);
-			}
-		})
-	}
+	it("#Reply.*.create",function(){
+		eventHandles[1]({authorId:"001"});
+		user.fraction.should.eql(6);
+	})
 	
-    return [handle1,handle2];
-}
+})

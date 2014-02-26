@@ -4,6 +4,7 @@ var dbs = {
     User: new Datastore,
     Topic: new Datastore,
     Column: new Datastore,
+	Info:new Datastore,
     Reply: new Datastore,
     Message: new Datastore
 }

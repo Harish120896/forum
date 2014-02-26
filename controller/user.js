@@ -1,26 +1,17 @@
 var crypto = require("crypto");
-var config = require("../infrastructure/config");
 var _ = require("underscore");
-var nodemailer = require("nodemailer");
-var Result = require("result-brighthas");
-
-// test email push
-var transport = nodemailer.createTransport("SMTP", {
-    service: "QQ",
-    auth: {
-        user: config.sys_email,
-        pass: config.sys_email_pwd
-    }
-});
 
 module.exports = {
 
     findPassword: function(req, res, next) {
 		
+		if(req.result.hasError()){
+			return next();
+		}
+	
 		var user = req.result.data("user");
-		
-        transport.sendMail({
-            from: "xxxq <1405491181@qq.com>",
+        req.env.transport.sendMail({
+            from: "xxxq <308212012@qq.com>",
             to: "hi <" + user.email + ">",
             // Subject of the message
             subject: '更改密码',
@@ -32,14 +23,19 @@ module.exports = {
             html: '<a href="http://localhost:3000/setNewPassword?email=' + user.email + "&code=" + user.password + '">点击更改密码</a>'
 
         }, function(err) {
-            req.result =  new Result();
+			if(err)
+				req.result.error("error",err);
             next();
         });
     },
 
     // must have req.user & req.body.password
     login: function(req, res, next) {
-		var result = new Result();
+
+		if(req.result.hasError()){
+			return next();
+		}
+
         var md5 = crypto.createHash('md5');
         var pwd = md5.update(req.body.password).digest("hex");
 		var user = req.result.data("user");
@@ -54,10 +50,8 @@ module.exports = {
                 maxAge: 1000 * 60 * 60 * 24 * 90
             });
         } else {
-            result.error("email","登录信箱或密码有误，请重新登录。");
+            req.result.error("email","登录信箱或密码有误，请重新登录。");
         }
-		
-		req.result = result;
 		next();
     },
 
@@ -71,102 +65,124 @@ module.exports = {
     // if success , req.user exist.
     create: function(req, res, next) {
 		
-		var result = new Result();
+		if(req.result.hasError()){
+			return next();
+		}
+		
         var domain = req.env.domain;
         domain.exec("create a user", {
             nickname: req.body.nickname,
             email: req.body.email,
             password: req.body.password
-        }, function(err,user) {
+        }, function(result) {
+			var user = result.data("user");
 			if(user){	
-				result.data("user",user);
-	            if (user.email === config.admin) {
+	            if (user.email === req.env.config.admin) {
 	                domain.call("User.becomeAdmin", user.id);
 	            }
-			}else{
-				result.error("error",err);
 			}
 			
-			req.result = result;
+			req.result.mix(result);
+			
 			next();
 			
         });
     },
 
     update: function(req, res, next) {
+		
+		if(req.result.hasError()){
+			return next();
+		}
+		
         var domain = req.env.domain;
         domain.call("User.updateInfo", req.session.user.id, [req.body], function(result) {
-            req.result = result;
+            req.result.mix(result);
             next();
         });
     },
 
     seal: function(req, res, next) {
+		if(req.result.hasError()){
+			return next();
+		}
         var domain = req.env.domain;
-		var user = req.result.data("user");
-        domain.call("User.sealUser", user.id, []);
+        domain.call("User.sealUser", req.param("id"), []);
         next();
     },
 
     follow: function(req, res, next) {
-		var user = req.result.data("user");
+		if(req.result.hasError()){
+			return next();
+		}		
+        var domain = req.env.domain;
 		
-        domain.call("User.follow", req.session.id, [user.id]);
+        domain.call("User.follow", req.session.id, [req.param("id")]);
         next();
     },
 
     unfollow: function(req, res, next) {
+		if(req.result.hasError()){
+			return next();
+		}
         var domain = req.env.domain;
-		var user = req.result.data("user");
 		
-        domain.call("User.unfollow", req.session.id, [user.id]);
+        domain.call("User.unfollow", req.session.id, [req.param("id")]);
         next();
     },
 
     becomeModerator: function(req, res, next) {
+		if(req.result.hasError()){
+			return next();
+		}
         var domain = req.env.domain;
-		var user = req.result.data("user");
 
-        domain.call("User.becomeModerator", user.id, []);
+        domain.call("User.becomeModerator", req.param("id"));
         next();
     },
 
     becomeUser: function(req, res, next) {
+		if(req.result.hasError()){
+			return next();
+		}
         var domain = req.env.domain;
-		var user = req.result.data("user");
-
-        domain.call("User.becomeUser", user.id, []);
+        domain.call("User.becomeUser", req.param("id"));
         next();
     },
     updatePassword: function(req, res, next) {
+		if(req.result.hasError()){
+			return next();
+		}
         var domain = req.env.domain;
 		var user = req.result.data("user");
-        if (req.user.password === req.body.code) {
+        if (user.password === req.body.code) {
             domain.call("User.updatePassword", user.id, [req.param("password")], function(result) {
-                req.result = result;
                 next();
             })
         } else {
-			var result = new Result();
-			result.error("code","操作失败");
+			req.result.error("code","操作失败");
             next();
         }
     },
 
     plus: function(req, res, next) {
-        var domain = req.env.domain;
-		var user = req.result.data("user");
-		
-        domain.call("User.plus", user.id, [req.param["fraction"]])
+		if(req.result.hasError()){
+			return next();
+		}
+        var domain = req.env.domain;		
+        domain.call("User.plus", req.param("id"), [req.param["fraction"]])
         next();
     },
 
     remove: function(req, res, next) {
+		
+		if(req.result.hasError()){
+			return next();
+		}
         var domain = req.env.domain;
-
         domain.exec("remove a user", {
             id: req.param("id")
-        })
+        });
         next();
     }
 

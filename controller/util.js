@@ -8,17 +8,10 @@ var util = {
 		next();
 	},
 	
-	// if req.result.hasError() true , then next();
-	pass:function(req,res,next){
-		if(req.result.hasError()){
-			next();
-		}
-	},
-	
 	cookieLogin:function(req, res, next) {
-		
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var query = req.env.query;
 		
 	    if (req.session.user) {
@@ -46,26 +39,37 @@ var util = {
 	},
 	
 	refreshValidatNum:function(req,res,next){
+        if (req.result.hasError()) {
+            return next();
+        }
 	    req.session.validat_num = r.random(4);	
 		next();
 	},
 	
 	end:function(req,res){
+        if (req.result.hasError()) {
+            return next();
+        }
 		res.send(req.result.json());
 	},
 
 	isLogin:function(req,res,next){
 		
-		return util.pass(req,res,next);
-		
+        
+		if (req.result.hasError()) {
+            return next();
+        }				
 		if(!req.session.user){
 			req.result.error("email","请先登录");
-			next();
 		}
+		next();
+		
 	},
 	
 	validat_num:function(req, res, next) {
-		
+        if (req.result.hasError()) {
+            return next();
+        }		
 	    if (!(req.body.validat_num && req.session.validat_num === req.body.validat_num)) {
 			req.result.error("validat_num","验证码错误");
 	    }
@@ -73,10 +77,10 @@ var util = {
 		
 	},
 	
-	hasReqUser:function(req,res,next){
-		
-		return util.pass(req,res,next);
-		
+	hasUser:function(req,res,next){
+        if (req.result.hasError()) {
+            return next();
+        }				
 		if(!req.result.data("user")){
 			req.result.error("user","没有此用户");
 		}
@@ -84,10 +88,10 @@ var util = {
 	},
 	
 	// dev hasReqUser / isLogin
-	userNoSelf:function(req,res,next){	 
-		
-		return util.pass(req,res,next);
-		
+	noSelf:function(req,res,next){	 
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var user = req.result.data("user");
 		if(user.id === req.session.user.id){
 			req.result.error("error","error");
@@ -97,12 +101,11 @@ var util = {
 	},
 	
 	// dev hasReqUser / isLogin
-	userSelf:function(req,res,next){	
-		
-		return util.pass(req,res,next);
-		
+	isSelf:function(req,res,next){	
+        if (req.result.hasError()) {
+            return next();
+        }		
 		var user = req.result.data("user");
-		 
 		if(user.id !== req.session.user.id){
 			req.result.error("error","error");
 		}
@@ -112,8 +115,9 @@ var util = {
 	
 	// dev isLogin
 	isAdmin:function(req,res,next){
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }		
 		if(req.session.user.role !== 1){
 			req.result.error("user","不是管理员");
 		}
@@ -121,9 +125,9 @@ var util = {
 	},
 	
 	hasTopic:function(req,res,next){
-		
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var topic = req.result.data("topic");
 		if(!topic){
 			result.error("topic","没有主题帖");
@@ -133,9 +137,9 @@ var util = {
 	
 	// dev isLogin / hasTopic
 	isTopicManager:function(req,res,next){
-		
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var query = req.env.query;
 
 		var topic = req.result.data("topic");
@@ -154,13 +158,13 @@ var util = {
 	},
 	
 	hasReply:function(req,res,next){
-		
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var reply = req.result.data("reply");
 		
 		if(!reply){
-			result.error("reply","没有回复贴")
+			req.result.error("reply","没有回复贴")
 		}
 		next();
 		
@@ -168,9 +172,9 @@ var util = {
 	
 	// dev isLogin / hasReply
 	isReplyManager:function(req,res,next){
-		
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var query = req.env.query;
 		var reply = req.result.data("reply");
 		
@@ -179,7 +183,7 @@ var util = {
 				query.columnById(topic.columnId,function(col){
 					if(col){
 						if(
-							req.session.user.id === req.reply.authorId || 
+							req.session.user.id === reply.authorId || 
 							req.session.user.id === topic.authorId || 
 							req.session.user.role === 1 ){
 						}else{
@@ -200,8 +204,9 @@ var util = {
 	
 	//dev isLogin / hasReply
 	isReplyAuthor:function(req,res,next){
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		var reply = req.result.data("reply");
 		
 		if(req.session.user.id !== reply.authorId){
@@ -212,9 +217,9 @@ var util = {
 	},
 	
 	xhr:function(req,res,next){
-		
-		return util.pass(req,res,next);
-		
+        if (req.result.hasError()) {
+            return next();
+        }				
 		if(!req.xhr){
 			req.result.error("error","非法操作 ");
 		}
