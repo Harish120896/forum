@@ -41,13 +41,13 @@ function wrap(my) {
     })
 
     .method("setManager", function(uid) {
-		
-		var self = this;
-		my.services.existUser(uid,function(exist){
-			if(exist)
-	        self.managerId = uid;
-		});
-		
+
+        var self = this;
+        my.services.existUser(uid, function(exist) {
+            if (exist)
+                self.managerId = uid;
+        });
+
     })
 
     .method("updateInfo", function(name, des) {

@@ -32,49 +32,50 @@ describe("commandHandles", function() {
                 done()
             })
     });
-	
-	var topicID;
-	
-	it("#create a topic",function(done){
-		domain.exec("create a topic",{
-				title: "test title",
-				body: "test body",
-				authorId: "u001",
-				columnId: "c001"},function(result){
-					topicID = result.data("topic").id;
-					result.hasError().should.be.false;
-					setTimeout(function(){
-						done()
-					})
-				})
-	})
-	
-	it("#create a reply" ,function(done){
-		domain.exec("create a reply",{
+
+    var topicID;
+
+    it("#create a topic", function(done) {
+        domain.exec("create a topic", {
+            title: "test title",
+            body: "test body",
+            authorId: "u001",
+            columnId: "c001"
+        }, function(result) {
+            topicID = result.data("topic").id;
+            result.hasError().should.be.false;
+            setTimeout(function() {
+                done()
+            })
+        })
+    })
+
+    it("#create a reply", function(done) {
+        domain.exec("create a reply", {
             "title": "my title",
             "body": "my reply body",
             "authorId": "u001",
             "topicId": topicID
-		},function(result){			
-			result.hasError().should.be.false;
-			done()
-		})
-	})
-	
-	it("#up topic" ,function(done){
-		domain.exec("top topic",{
+        }, function(result) {
+            result.hasError().should.be.false;
+            done()
+        })
+    })
+
+    it("#up topic", function(done) {
+        domain.exec("top topic", {
             "topicId": topicID
-		},function(result){			
-			done()
-		})
-	})
-		
-	it("#down topic" ,function(done){
-		domain.exec("down topic",{
+        }, function(result) {
+            done()
+        })
+    })
+
+    it("#down topic", function(done) {
+        domain.exec("down topic", {
             "topicId": topicID
-		},function(result){			
-			done()
-		})
-	})
-	
+        }, function(result) {
+            done()
+        })
+    })
+
 })

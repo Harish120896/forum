@@ -101,7 +101,7 @@ module.exports = {
         }
         var query = req.env.query;
 
-        query.topicsByColumnId(req.param("page"),req.param("id"), function(rs) {
+        query.topicsByColumnId(req.param("page"), req.param("id"), function(rs) {
             var result = new Result();
             result.data("topics", rs);
             req.result = result;

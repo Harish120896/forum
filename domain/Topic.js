@@ -26,7 +26,7 @@ function wrap(my) {
         .attr("body", {
             min: 2,
             max: 1000,
-			required: true,
+            required: true,
             message: "内容2～1000字符"
         })
         .attr("authorId", {

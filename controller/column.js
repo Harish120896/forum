@@ -5,9 +5,9 @@ var util = require("./util");
 module.exports = {
 
     create: function(req, res, next) {
-		if(req.result.hasError()){
-			return next();
-		}
+        if (req.result.hasError()) {
+            return next();
+        }
         var domain = req.env.domain;
         domain.exec("create a column", req.body, function(result) {
             req.result.mix(result);
@@ -16,9 +16,9 @@ module.exports = {
     },
 
     update: function(req, res, next) {
-		if(req.result.hasError()){
-			return next();
-		}
+        if (req.result.hasError()) {
+            return next();
+        }
         var domain = req.env.domain;
         var columnId = req.param("id");
         domain.call("Column.updateInfo", columnId, [req.body.name, req.body.des], function(result) {
@@ -31,26 +31,26 @@ module.exports = {
         })
     },
 
-    up: function(req,res,next) {
-		if(req.result.hasError()){
-			return next();
-		}
+    up: function(req, res, next) {
+        if (req.result.hasError()) {
+            return next();
+        }
         var domain = req.env.domain;
         var columnId = req.param("id");
         domain.call("Column.up", columnId);
-		next();
+        next();
     },
 
-    setManager: function(req,res,next) {
-		if(req.result.hasError()){
-			return next();
-		}
+    setManager: function(req, res, next) {
+        if (req.result.hasError()) {
+            return next();
+        }
         var domain = req.env.domain;
         var columnId = req.param("id");
-		var userId = req.body.userId;
-		if(userId)
-			domain.call("Column.setManager", columnId,[userId]);
-		next();
+        var userId = req.body.userId;
+        if (userId)
+            domain.call("Column.setManager", columnId, [userId]);
+        next();
     }
 
 }

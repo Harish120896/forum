@@ -8,26 +8,30 @@ var user = new User({
 });
 
 var eventHandles = require("../../domain/eventHandles")({
-	repos:{
-		User:{
-			get:function(id,cb){
-				cb(null,user);
-			}
-		}
-	}
+    repos: {
+        User: {
+            get: function(id, cb) {
+                cb(null, user);
+            }
+        }
+    }
 });
 
-describe("eventHandles",function(){
-	
-	it("#Topic.*.create",function(){
-		eventHandles[0]({authorId:"001"});
-		user.fraction.should.eql(5);
-		
-	})
-	
-	it("#Reply.*.create",function(){
-		eventHandles[1]({authorId:"001"});
-		user.fraction.should.eql(6);
-	})
-	
+describe("eventHandles", function() {
+
+    it("#Topic.*.create", function() {
+        eventHandles[0]({
+            authorId: "001"
+        });
+        user.fraction.should.eql(5);
+
+    })
+
+    it("#Reply.*.create", function() {
+        eventHandles[1]({
+            authorId: "001"
+        });
+        user.fraction.should.eql(6);
+    })
+
 })

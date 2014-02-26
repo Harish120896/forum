@@ -37,11 +37,11 @@ describe("User", function() {
         user.role.should.eql(User.roles.ADMIN);
         user.becomeModerator();
         user.role.should.eql(User.roles.MODERATOR);
-		user.becomeUser();
+        user.becomeUser();
         user.role.should.eql(User.roles.USER);
-		user.sealUser();
+        user.sealUser();
         user.role.should.eql(User.roles.SEAL);
-		
+
     });
 
     it("#plus", function() {
@@ -53,12 +53,12 @@ describe("User", function() {
     var u1;
 
     it("#follow", function(done) {
-		
-		u1 = new User({
+
+        u1 = new User({
             nickname: "leo",
             password: "123456",
             email: "leo@gmail.com"
-		})
+        })
         u1.follow("u001");
         u1.follows[0].should.eql("u001");
         done();
@@ -79,7 +79,7 @@ describe("User", function() {
         u1.fraction.should.eql(2);
 
     })
-	
-	
+
+
 
 })

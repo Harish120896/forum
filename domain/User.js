@@ -5,7 +5,7 @@ var crypto = require("crypto"),
     createModel = require("model-brighthas"),
     is = require("istype"),
     q = require("q"),
-	 uid = require("node-uuid").v1,
+    uid = require("node-uuid").v1,
     _ = require("underscore");
 
 function wrap(my) {
@@ -87,29 +87,29 @@ function wrap(my) {
         .attr("reportTime", {
             type: "date"
         })
-		
-        .method("updateInfo", function(data) {
 
-            data = data || {}
+    .method("updateInfo", function(data) {
 
-            this.begin();
+        data = data || {}
 
-            if (data.hasOwnProperty("address")) {
-                this.address = data.address;
-            }
+        this.begin();
 
-            if (data.hasOwnProperty("des")) {
-                this.des = data.des;
-            }
+        if (data.hasOwnProperty("address")) {
+            this.address = data.address;
+        }
 
-            if (data.hasOwnProperty("sex")) {
-                this.sex = data.sex;
-            }
+        if (data.hasOwnProperty("des")) {
+            this.des = data.des;
+        }
 
-            this.end();
-            return this.result;
+        if (data.hasOwnProperty("sex")) {
+            this.sex = data.sex;
+        }
 
-        })
+        this.end();
+        return this.result;
+
+    })
         .method("updatePassword", function(npass) {
             this.password = npass;
             return this.result;

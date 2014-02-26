@@ -23,7 +23,7 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
-		app.use(result);
+        app.use(result);
         app.use(app.router);
 
         app.post("/create", function(req, res, next) {
@@ -42,9 +42,9 @@ describe("topicCtrl", function() {
                 body: "reply content"
             })
             .end(function(err, res) {
-				rid = res.body.data.reply.id;
+                rid = res.body.data.reply.id;
                 should.exist(rid);
-				done()
+                done()
             });
 
     })
@@ -57,18 +57,18 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
-		app.use(result);
+        app.use(result);
         app.use(app.router);
-    
-        app.post("/remove/:id", DATA.replyById,replyCtrl.remove, function(req, res) {
+
+        app.post("/remove/:id", DATA.replyById, replyCtrl.remove, function(req, res) {
             res.send(req.result)
         });
         request(app).post("/remove/" + rid)
             .end(function() {
-				done();
+                done();
             });
     });
-	
+
     it("#updateInfo", function(done) {
         var app = express();
         app.use(express.favicon());
@@ -77,18 +77,21 @@ describe("topicCtrl", function() {
         app.use(express.cookieParser('your secret here'));
         app.use(express.session());
         app.use(env);
-		app.use(result);
+        app.use(result);
         app.use(app.router);
-    
-        app.post("/updateInfo/:id",replyCtrl.updateInfo, function(req, res) {
-			if(!req.result.hasError()){
-				res.send("success")
-			}
+
+        app.post("/updateInfo/:id", replyCtrl.updateInfo, function(req, res) {
+            if (!req.result.hasError()) {
+                res.send("success")
+            }
         });
-		
+
         request(app).post("/updateInfo/" + rid)
-		.send({title:"hahaha",body:"hahahah"})
-        .expect("success",done);
+            .send({
+                title: "hahaha",
+                body: "hahahah"
+            })
+            .expect("success", done);
     });
 
 });

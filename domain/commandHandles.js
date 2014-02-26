@@ -130,38 +130,40 @@ function wrap(my) {
         callback();
     }
 
-	handle8.commandName = "top topic";
-	function handle8(args,callback){
+    handle8.commandName = "top topic";
 
-		my.repos.Topic.get(args.id,function(err,topic){
-			if(topic){
-				topic.begin();
-				topic.top = true;
-				topic.updateTime = new Date();
-				topic.end();
-			}
-		})
-		callback();
-	}
-	
-	handle9.commandName = "down topic";
-	function handle9(args,callback){
+    function handle8(args, callback) {
 
-		my.repos.Topic.get(args.id,function(err,topic){
-			if(topic){
-				topic.top = false;
-			}
-		})
-		callback();
-	}
-	
+        my.repos.Topic.get(args.id, function(err, topic) {
+            if (topic) {
+                topic.begin();
+                topic.top = true;
+                topic.updateTime = new Date();
+                topic.end();
+            }
+        })
+        callback();
+    }
+
+    handle9.commandName = "down topic";
+
+    function handle9(args, callback) {
+
+        my.repos.Topic.get(args.id, function(err, topic) {
+            if (topic) {
+                topic.top = false;
+            }
+        })
+        callback();
+    }
+
     handle5.commandName = "remove a user";
 
     function handle10(args, callback) {
 
-        my.repos.Topic.remove(args.id,callback)
+        my.repos.Topic.remove(args.id, callback)
     }
-	
-    return [handle1, handle2, handle3, handle4, handle5, handle6, handle7 , handle8 , handle9 ,handle10];
-	
+
+    return [handle1, handle2, handle3, handle4, handle5, handle6, handle7, handle8, handle9, handle10];
+
 }

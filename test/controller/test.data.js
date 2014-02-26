@@ -111,61 +111,61 @@ describe("data", function() {
         });
 
         request(app).get("/columns").end(function(err, res) {
-			res.body.should.be.an.Array;
+            res.body.should.be.an.Array;
             done()
         });
-		
+
     })
-	
-	it("#validatNumPng",function(done){
-		var app = express();
-		app.use(express.favicon());
-		app.use(express.json());
-		app.use(express.methodOverride());
-		app.use(express.cookieParser('your secret here'));
-		app.use(express.session());
-		app.use(result);
-		app.use(env);
-		app.use(app.router);
-		
+
+    it("#validatNumPng", function(done) {
+        var app = express();
+        app.use(express.favicon());
+        app.use(express.json());
+        app.use(express.methodOverride());
+        app.use(express.cookieParser('your secret here'));
+        app.use(express.session());
+        app.use(result);
+        app.use(env);
+        app.use(app.router);
+
 
         app.get("/validatNumPng", data.validatNumPng, function(req, res) {
-			var result = req.result.data("validatNumPng");
+            var result = req.result.data("validatNumPng");
             res.send(result);
         });
 
         request(app).get("/validatNumPng").end(function(err, res) {
-			// res.body.should.be.an.Array;
-			should.exist(res.text);
+            // res.body.should.be.an.Array;
+            should.exist(res.text);
             done()
         });
-	})
+    })
 
-	it("#topicsByColumnId",function(done){
-		
-		var app = express();
-		app.use(express.favicon());
-		app.use(express.json());
-		app.use(express.methodOverride());
-		app.use(express.cookieParser('your secret here'));
-		app.use(express.session());
-		app.use(result);
-		app.use(env);
-		app.use(app.router);
-		
+    it("#topicsByColumnId", function(done) {
+
+        var app = express();
+        app.use(express.favicon());
+        app.use(express.json());
+        app.use(express.methodOverride());
+        app.use(express.cookieParser('your secret here'));
+        app.use(express.session());
+        app.use(result);
+        app.use(env);
+        app.use(app.router);
+
 
         app.get("/topicsByColumnId/:id", data.topicsByColumnId, function(req, res) {
-			var result = req.result.data("topics");
+            var result = req.result.data("topics");
             res.send(result);
         });
 
         request(app).get("/topicsByColumnId/c001").end(function(err, res) {
-			// res.body.should.be.an.Array;
-			should.exist(res.body);
+            // res.body.should.be.an.Array;
+            should.exist(res.body);
             done()
         });
-		
-	})
+
+    })
 
 
 });

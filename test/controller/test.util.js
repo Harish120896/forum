@@ -74,7 +74,7 @@ describe("validator", function() {
         app.post("/isLogin",
             function(req, res, next) {
                 req.session.user = {};
-				next();
+                next();
             },
             util.isLogin, function(req, res) {
                 res.send("success");
@@ -99,25 +99,25 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/noself", function(req, res, next) {
-            req.result.data("user" , {
-                id: "001"
-            });
-			
-            req.session.user = {
-                id: "002"
-            };
-			
-            next();
-			
-        }, util.noSelf,
-        function(req, res) {
-            res.send("success");
-        })
+                req.result.data("user", {
+                    id: "001"
+                });
+
+                req.session.user = {
+                    id: "002"
+                };
+
+                next();
+
+            }, util.noSelf,
+            function(req, res) {
+                res.send("success");
+            })
 
         request(app).post("/noself").send({}).expect("success", done);
-		
+
     })
-	
+
     it("#isSelf", function(done) {
 
         var app = express();
@@ -132,18 +132,18 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/isself", function(req, res, next) {
-            req.result.data("user" , {
-                id: "001"
+                req.result.data("user", {
+                    id: "001"
+                });
+
+                req.session.user = {
+                    id: "001"
+                };
+                next();
+            }, util.isSelf,
+            function(req, res) {
+                res.send("success");
             });
-			
-            req.session.user = {
-                id: "001"
-            };
-            next();
-        }, util.isSelf,
-        function(req, res) {
-            res.send("success");
-        });
 
         request(app).post("/isself").expect("success", done);
     })
@@ -161,15 +161,15 @@ describe("validator", function() {
         app.use(express.session());
         app.use(app.router);
 
-        app.post("/isAdmin", function(req,res,next){
-        	
-			req.session.user = {
-				role : 1
-			}
-			
-			next();
-			
-        },util.isAdmin, function(req, res) {
+        app.post("/isAdmin", function(req, res, next) {
+
+            req.session.user = {
+                role: 1
+            }
+
+            next();
+
+        }, util.isAdmin, function(req, res) {
             res.send("success");
         });
         request(app).post("/isAdmin")
@@ -193,14 +193,14 @@ describe("validator", function() {
         app.use(express.session());
         app.use(app.router);
 
-        app.post("/topic/:id", 
-		function(req,res,next){
-			req.result.data("topic",{});
-			next();
-		},
-		util.hasTopic, function(req, res) {
-            res.send("success");
-        });
+        app.post("/topic/:id",
+            function(req, res, next) {
+                req.result.data("topic", {});
+                next();
+            },
+            util.hasTopic, function(req, res) {
+                res.send("success");
+            });
 
         request(app).post("/topic/t001").expect("success", done);
     })
@@ -220,20 +220,20 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/isTopicManager/:id",
-		
+
             function(req, res, next) {
-				
+
                 req.session.user = {
                     id: "u001"
                 };
-				
-				req.result.data("topic",{
-					columnId:"c001"
-				});
-				
+
+                req.result.data("topic", {
+                    columnId: "c001"
+                });
+
                 next();
             },
-            
+
             util.isTopicManager,
             function(req, res) {
                 res.send("success");
@@ -365,7 +365,7 @@ describe("validator", function() {
                 req.session.user = {
                     id: "u001"
                 };
-                req.result.data("reply" , {
+                req.result.data("reply", {
                     id: "r001",
                     authorId: "u001"
                 });
