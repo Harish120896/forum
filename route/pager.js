@@ -8,7 +8,8 @@ module.exports = function wrap(app){
 		util.cookieLogin,
 		data.columnList,
 		function(req,res){
-			res.render("index",{columns:req.columns,user:req.session.user});
+			
+			res.render("index",{columns:req.result.data("columnList"),user:req.session.user});
 		});
 
 	app.get("/topic/:id",
@@ -27,7 +28,7 @@ module.exports = function wrap(app){
 	app.get("/user/:id",
 		util.cookieLogin,
 		data.userById,
-		util.hasReqUser,
+		util.hasUser,
 		function(req,res){
 			res.locals.user = req.user;
 			res.render("user");
@@ -39,9 +40,11 @@ module.exports = function wrap(app){
 		data.columnById,
 		data.topicsByColumnId,
 		function(req,res){
-			if(req.topics && req.column){
-				res.locals.topics = req.topics;
-				res.locals.column = req.column;
+			var topics = req.result.data("topics");
+			var column = req.result.data("column");
+			if(column){
+				res.locals.topics = topics;
+				res.locals.column = column;
 				res.render("column");
 			}else{
 				res.send(404);

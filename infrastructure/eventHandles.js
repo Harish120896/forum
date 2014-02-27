@@ -7,21 +7,19 @@ function wrap(my){
     handle1.eventName = "*.*.create";
 
     function handle1(className,data){
-		var db = dbs.getDB(className);
-		db.create(data,function(err){
-		})
+		console.log(className,"---------------------");
+		
+		dbs.save(className,data,function(){})
     }
 	
 	handle2.eventName = "*.*.update";
 	function handle2(className,id,data){
-		var db = dbs.getDB(className);
-		db.update({id:id},data,function(){})
+		dbs.update(className,id,data,function(){})
 	}
 
 	handle3.eventName = "*.*.remove";
 	function handle3(className,id){
-		var db = dbs.getDB(className);
-		db.remove({id:id},function(){});
+		dbs.remove(className,id);
 	}
     return [handle1,handle2,handle3];
 }

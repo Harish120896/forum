@@ -24,7 +24,7 @@ module.exports = {
 
         }, function(err) {
             if (err)
-                req.result.error("error", err);
+                req.result.error("email", "内部错误，请联系管理员");
             next();
         });
     },
@@ -68,7 +68,7 @@ module.exports = {
         if (req.result.hasError()) {
             return next();
         }
-
+		console.log(req.env.domain);
         var domain = req.env.domain;
         domain.exec("create a user", {
             nickname: req.body.nickname,

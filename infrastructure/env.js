@@ -11,8 +11,7 @@ var transport = nodemailer.createTransport("SMTP", {
     }
 });
 
-
-function env(req,res,next){
+module.exports = function env(req,res,next){
 	req.env = {
 		transport:transport,
 		domain:domain,

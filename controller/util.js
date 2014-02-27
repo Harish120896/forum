@@ -46,11 +46,12 @@ var util = {
         next();
     },
 
-    end: function(req, res) {
-        if (req.result.hasError()) {
-            return next();
-        }
-        res.send(req.result.json());
+    end: function(req, res,next) {
+		if(req.result.hasError()){
+	        res.send(req.result.error());
+		}else{
+			res.send("success");
+		}
     },
 
     isLogin: function(req, res, next) {

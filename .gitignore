@@ -1,4 +1,8 @@
 node_modules
 .idea
+dbs
 infrastructure/config.json
+infrastructure/db
+infrastructure/dbs
 test/util/config.json
+

@@ -9,10 +9,7 @@ app.post("/topic/create",
 	util.isLogin,
 	util.validat_num,
 	topicCtrl.create,
-	function(req,res){
-		
-		res.send({result:req.result,data:req.topic.id});
-	});
+	util.end);
 
 app.post("/topic/:id/update",
 	util.isLogin,

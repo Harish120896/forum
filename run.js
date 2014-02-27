@@ -6,12 +6,7 @@ var result = require("./controller/util").result;
 var app = express();
 
 // config domain
-var domain = require("./domain");
-domain.register(
-	"get",require("./infrastructure/db").get,
-    "listener", require("./infrastructure/eventHandles"),
-	"service", require("./domain/services")(require("./infrastructure/query"))
-).seal();
+var env = require("./infrastructure/env");
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -24,15 +19,9 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
-app.use(result);
 
-app.use(function(req,res,next){
-	req.env = {
-		domain:domain,
-		query:require("./infrastructure/query")
-	}
-	next()
-})
+app.use(result);
+app.use(env);
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));

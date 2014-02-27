@@ -8,7 +8,7 @@ module.exports = function wrap(app){
 app.post("/user/login", 
 	util.validat_num,
 	data.userByEmail,
-	util.hasReqUser,
+	util.hasUser,
 	userCtrl.login,
 	util.end);
 
@@ -32,8 +32,8 @@ app.post("/user/:id/seal",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
-	util.userNoSelf,
+	util.hasUser,
+	util.noSelf,
 	userCtrl.seal,
 	util.end);
 
@@ -41,8 +41,8 @@ app.post("/user/:id/remove",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
-	util.userNoSelf,
+	util.hasUser,
+	util.noSelf,
 	userCtrl.remove,
 	util.end);
 
@@ -50,8 +50,8 @@ app.post("/user/:id/follow",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
-	util.userNoSelf,
+	util.hasUser,
+	util.noSelf,
 	userCtrl.follow,
 	util.end);
 
@@ -59,8 +59,8 @@ app.post("/user/:id/unfollow",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
-	util.userNoSelf,
+	util.hasUser,
+	util.noSelf,
 	userCtrl.unfollow,
 	util.end);
 
@@ -69,8 +69,8 @@ app.post("/user/:id/becomeModerator",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
-	util.userNoSelf,
+	util.hasUser,
+	util.noSelf,
 	userCtrl.becomeModerator,
 	util.end);
 
@@ -78,21 +78,21 @@ app.post("/user/:id/becomeUser",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
-	util.userNoSelf,
+	util.hasUser,
+	util.noSelf,
 	userCtrl.becomeUser,
 	util.end);
 
 app.post("/user/findPassword",
 	data.userByEmail,
-	util.hasReqUser,
+	util.hasUser,
 	userCtrl.findPassword,
 	util.end
 )
 
 app.post("/user/updatePassword",
 	data.userByEmail,
-	util.hasReqUser,
+	util.hasUser,
 	userCtrl.updatePassword,
 	util.end);
 
@@ -100,7 +100,7 @@ app.post("/user/:id/plus",
 	util.isLogin,
 	util.isAdmin,
 	data.userById,
-	util.hasReqUser,
+	util.hasUser,
 	userCtrl.plus,
 	util.end);
 

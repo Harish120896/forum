@@ -10,9 +10,9 @@ module.exports = {
         }
         var query = req.env.query;
         query.columnById(req.param("id"), function(rs) {
-            var result = new Result();
-            result.data("column", rs);
-            req.result = result;
+			if(rs){
+	            req.result.data("column", rs);
+			}
             next();
         });
     },
@@ -30,9 +30,7 @@ module.exports = {
         }
         var query = req.env.query;
         query.columns(function(rs) {
-            var result = new Result();
-            result.data("columnList", rs);
-            req.result = result;
+            req.result.data("columnList", rs);
             next();
         });
 
@@ -46,9 +44,7 @@ module.exports = {
             util.refreshValidatNum(req, res, function() {});
         }
         pw.createPNG(req.session.validat_num, function(pngnum) {
-            var result = new Result();
-            result.data("validatNumPng", pngnum);
-            req.result = result;
+            req.result.data("validatNumPng", pngnum);
             next();
         });
 
@@ -61,9 +57,9 @@ module.exports = {
         var query = req.env.query;
 
         query.userById(req.param("id"), function(rs) {
-            var result = new Result();
-            result.data("user", rs);
-            req.result = result;
+			if(rs){
+	            req.result.data("user", rs);
+			}
             next();
         });
     },
@@ -75,9 +71,9 @@ module.exports = {
         var query = req.env.query;
 
         query.userByEmail(req.param("email"), function(rs) {
-            var result = new Result();
-            result.data("user", rs);
-            req.result = result;
+			if(rs){
+	            req.result.data("user", rs);
+			}
             next();
         })
     },
@@ -88,9 +84,9 @@ module.exports = {
         }
         var query = req.env.query;
         query.topicById(req.param("id"), function(rs) {
-            var result = new Result();
-            result.data("topic", rs);
-            req.result = result;
+			if(rs){
+	            req.result.data("topic", rs);
+			}
             next();
         })
     },
@@ -102,9 +98,9 @@ module.exports = {
         var query = req.env.query;
 
         query.topicsByColumnId(req.param("page"), req.param("id"), function(rs) {
-            var result = new Result();
-            result.data("topics", rs);
-            req.result = result;
+			if(rs){
+	            req.result.data("topics", rs);
+			}
             next();
         });
 
@@ -117,11 +113,15 @@ module.exports = {
         var query = req.env.query;
 
         query.replyById(req.param("id"), function(rs) {
-            var result = new Result();
-            result.data("reply", rs);
-            req.result = result;
+			if(rs){
+	            req.result.data("reply", rs);
+			}
             next();
         })
-    }
+    },
 
+	// DOTO
+	infoList:function(req,res,next){
+		next();
+	}
 }
