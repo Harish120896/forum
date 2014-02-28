@@ -15,6 +15,15 @@ module.exports = function wrap(app){
 	// 	function(req,res){
 	// 
 	// 	});
+	
+	
+	app.get("/column/:id/get",
+		data.columnById,
+		function(req,res){
+			var column = req.result.data("column");
+			res.send(column)
+		}
+	)
 
 	app.get("/user/:id/get",
 		util.xhr,

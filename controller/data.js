@@ -18,9 +18,7 @@ module.exports = {
     },
 
     share: function(req, res, next) {
-        if (req.result.hasError()) {
-            return next();
-        }
+		res.locals.user = null;
         next();
     },
 

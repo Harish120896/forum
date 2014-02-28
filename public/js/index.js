@@ -12,32 +12,26 @@ app.controller("createColumnCtrl",function($scope,$http){
   
 });
 
-app.directive("coledit",function($http){
-  return {
-	  scope:{},
-	  link:function(scope,elem,attrs){
-		 
-		  var columnId = attrs.columnid;
-		  var content = "";
-		  var t;
-		  
-		  elem.bind("click",function(){
-			  elem.attr("contentEditable","true");
-			  
-		  });
-		  
-		  elem.bind("keyup",function(){
-			  content = elem.text();
-			  clearTimeout(t);
-			  t = setTimeout(function(){
-				  if(attrs.coledit === "name"){
-					  $http.post("/column/"+columnId+"/updateName",{name:content});
-				  }else{
-					  $http.post("/column/"+columnId+"/updateDes",{des:content});
-				  }
-			  },2000)
-		  });
-		  
-	  }
-  }
+app.controller("columnCtrl",function($scope,$http){
+	
+	
+	$scope.updateColumn = function(id){
+   	   $http.get("/column/"+id+"/get")
+  	  .success(function(data){
+		  $scope.ucolumn = data;
+  	  })
+	}
+	
+	$scope.update = function(){
+    	  $http.post("/column/"+$scope.ucolumn.id+"/update",$scope.ucolumn)
+  	  .success(function(data){
+		  $("#updateColumnDialog").modal("hide");
+  		  setTimeout(function(){
+			  	window.location.reload();
+  		  },1000)
+  	  })
+	}
+	
 })
+
+
