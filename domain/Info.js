@@ -9,7 +9,6 @@ function wrap(my) {
 
     Info
         .attr("id", {
-            default: uid(),
             readonly: true
         })
         .attr("targetId", {
@@ -36,6 +35,7 @@ function wrap(my) {
 
     Info.on("creating", function(info) {
         info.attrs.createTime = new Date();
+		info.attrs.id = uid();
     })
 
     Info.className = "Info";

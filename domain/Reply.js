@@ -15,7 +15,6 @@ function wrap(my) {
             default: 1000 * 60 * 60
         })
         .attr("id", {
-            default: uid(),
             readonly: true
         })
         .attr("title", {
@@ -52,6 +51,7 @@ function wrap(my) {
             }
         })
         .on("creating", function(reply) {
+			reply.attrs.id = uid();
             reply.attrs.createTime = reply.attrs.updateTime = new Date();
         })
         .method("updateInfo", function(title, body) {

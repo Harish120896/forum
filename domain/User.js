@@ -22,7 +22,6 @@ function wrap(my) {
 
     User
         .attr("id", {
-            default: uid(),
             readonly: true
         })
         .attr("follows", {
@@ -224,6 +223,7 @@ function wrap(my) {
     User.on("creating", function(user) {
         user.attrs.createTime = new Date();
         user.attrs.reportTime = new Date(0);
+		user.attrs.id = uid();
     })
 
 

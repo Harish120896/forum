@@ -62,7 +62,7 @@ module.exports = function(query) {
             query.userById(userId, function(user) {
                 if (user) {
                     query.topicCountByToday(userId, function(count) {
-                        if (count > 10) {
+                        if (count > 50000) {
                             callback(false);
                         } else {
                             callback(true);
@@ -81,7 +81,7 @@ module.exports = function(query) {
         function service7(userId, callback) {
 
             query.replyCountByToday(userId, function(count) {
-                if (count > 50) { //doto
+                if (count > 5000) { //doto
                     callback(false);
                 } else {
                     callback(true);

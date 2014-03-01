@@ -219,8 +219,9 @@ var util = {
         if (req.result.hasError()) {
             return next();
         }
-        if (!req.xhr) {
-            req.result.error("error", "非法操作 ");
+        if (req.xhr || req.get("angular-request") === "ajaxRequest") {
+        }else{
+	        req.result.error("error", "非法操作 ");
         }
 
         next();

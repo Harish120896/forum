@@ -44,7 +44,7 @@ function wrap(my) {
                     if (pass) {
                         my.repos.Reply.create(args, function(err, reply) {
                             if (!err) {
-                                topic.addReply(reply.parentId, reply);
+                                topic.addReply(reply.parentId, reply.id);
                                 result.data("reply", reply.toJSON());
                             } else {
                                 result.mix(err);

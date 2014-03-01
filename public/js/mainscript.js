@@ -1,6 +1,16 @@
-var app = angular.module("forumapp", []);
+var app = angular.module("forumapp", []).config([
+    '$httpProvider',
+    '$locationProvider',
+    function($httpProvider, $locationProvider) {
+      // Expose XHR requests to server
+      $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-;
+      // This is `false` by default
+      $locationProvider.html5Mode(true);
+    }
+  ]);
+  
+  
 (function() {
 
     function initForm(scope, form) {

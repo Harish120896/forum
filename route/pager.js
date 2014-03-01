@@ -16,7 +16,9 @@ module.exports = function wrap(app){
 		util.cookieLogin,
 		data.topicById,
 		function(req,res){
-			if(req.topic){
+			var topic = req.result.data("topic");
+		
+			if(topic){
 				res.locals.topic = topic;
 				res.render("topic");
 			}else{

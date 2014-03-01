@@ -8,7 +8,7 @@
     <table class="table">
 		<% topics.forEach(function(topic){ %>
 			<tr>
- 				<td><%=topic.title%> <a class="button" href="/topic/update/<%=topic.id%>">update</a> </td>
+ 				<td><a href="/topic/<%=topic.id%>"><%=topic.title%> </td>
 			</tr>
 		<% }) %>
     </table>

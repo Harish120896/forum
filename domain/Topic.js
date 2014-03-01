@@ -14,7 +14,6 @@ function wrap(my) {
 
     Topic
         .attr("id", {
-            default: uid(),
             readonly: true
         })
         .attr("title", {
@@ -55,6 +54,7 @@ function wrap(my) {
         .on("creating", function(topic) {
             topic.attrs.replyTree = new Node();
             topic.attrs.createTime = topic.attrs.updateTime = new Date();
+			topic.attrs.id = uid();
         })
         .on("changed", function(topic, attrs) {
             my.publish("*.*.update", "Topic", topic.id, this.toJSON(topic, Object.keys(attrs)));
@@ -83,9 +83,13 @@ function wrap(my) {
             this.accessNum = num + 1;
         })
         .method("addReply", function(parentId, replyId) {
+			console.log(replyId)
             var tree = this.replyTree;
             var parent = tree.getNode(parentId);
-            parent.appendChild(new Node(replyId));
+			if(parent){
+	            parent.appendChild(new Node(replyId));
+			}
+			
         })
         .method("updateInfo", function(title, body, columnId) {
             var deferred = Q.defer();

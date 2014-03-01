@@ -8,7 +8,6 @@ module.exports = wrap;
 function wrap(my) {
     var Column = createModel("Column")
         .attr('id', {
-            default: uid(),
             readonly: true
         })
         .attr("name", {
@@ -26,6 +25,7 @@ function wrap(my) {
 
     .on("creating", function(column) {
         column.attrs.createTime = column.attrs.updateTime = new Date();
+		column.attrs.id = uid();
     })
 
     .on("changing", function(column, attrs) {

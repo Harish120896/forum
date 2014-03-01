@@ -1,11 +1,54 @@
 <% include header.html %>
 <% include breadcrumbs.html %>
 
+<div  ng-controller="replyCtrl">
 <div class="panel panel-success">
-	<div class="panel-heading"> Node教程 </div>
+	<div class="panel-heading"> <%=topic.title%> </div>
 	<div calss="panel-body">
-		
+		<%=topic.body%>
 	</div>
+	{{replyTree}}
+	<table class="table">
+		<tr ng-repeat="r in replyTree">
+			<td replyId="{{r.id}}" reply>{{r.id}}</td>
+		</tr>
+	</table>
+	
 </div>
 
+<div>
+    <div role="form" id="createTopic">
+  	<input type="hidden" ng-init='topicId="<%=topic.id%>"' />
+      <div class="form-group">
+      	<div class="alert alert-danger small" ng-show="!!titleMessage">
+  			{{titleMessage}}
+      	</div>
+        <input type="text" class="form-control" ng-keydown="tab()" ng-model="title" tabindex="1" placeholder="请输入昵称，之后不可更改。">
+      </div>			  
+      <div class="form-group">
+      	<div class="alert alert-danger small" ng-show="!!bodyMessage">
+  			{{bodyMessage}}
+      	</div>
+        <textarea class="form-control" ng-model="body" tabindex="2" placeholder="请输入Email">
+  	  </textarea>
+      </div>
+      <div class="form-group">
+      	<div class="alert alert-danger small" ng-show="!!validat_numMessage">
+  			{{validat_numMessage}}
+      	</div>
+  		<div class="row">
+         <div class="col-sm-7">
+            <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3" placeholder="输入验证码">
+         </div>
+  	   <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" />
+  	   <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
+     </div>
+       </div>
+  	 <button type="button" ng-click="createReply()" tabindex="5" class="btn btn-primary" >回帖</button>
+    </div>		
+</div>
+</div>
+
+<% include mainscript.html %>
+<script src="/js/topic.js"></script>
 <% include footer.html %>

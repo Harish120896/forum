@@ -35,6 +35,7 @@ function wrap(my) {
     replyRepo._create = function(args, callback) {
         var Reply = my.Aggres.Reply;
         var reply = new Reply(args);
+		console.log(reply);
         if (reply.hasError()) {
             callback(reply.result);
         } else {

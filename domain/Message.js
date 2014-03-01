@@ -8,7 +8,6 @@ function wrap(my) {
 
     Message
         .attr("id", {
-            default: uid(),
             readonly: true
         })
         .attr("authorId", {
@@ -42,6 +41,7 @@ function wrap(my) {
 
     Message.on("creating", function(msg) {
         msg.attrs.createTime = new Date();
+		msg.attrs.id = uid();
     })
 
     Message.className = "Message";
