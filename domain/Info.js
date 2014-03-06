@@ -1,5 +1,4 @@
 module.exports = wrap;
-var uid = require("node-uuid").v1;
 
 var createModel = require("model-brighthas");
 
@@ -35,7 +34,6 @@ function wrap(my) {
 
     Info.on("creating", function(info) {
         info.attrs.createTime = new Date();
-		info.attrs.id = uid();
     })
 
     Info.className = "Info";

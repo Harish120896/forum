@@ -16,6 +16,19 @@ module.exports = {
             next();
         });
     },
+	
+	columnByTopicId:function(req,res,next){
+        if (req.result.hasError()) {
+            return next();
+        }
+        var query = req.env.query;
+        query.columnByTopicId(req.param("id"), function(rs) {
+			if(rs){
+	            req.result.data("column", rs);
+			}
+            next();
+        });
+	},
 
     share: function(req, res, next) {
 		res.locals.user = null;

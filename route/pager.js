@@ -15,11 +15,13 @@ module.exports = function wrap(app){
 		//data.share,
 		util.cookieLogin,
 		data.topicById,
+		data.columnByTopicId,
 		function(req,res){
 			var topic = req.result.data("topic");
-		
+			var column = req.result.data("column");
 			if(topic){
 				res.locals.topic = topic;
+				res.locals.column = column;
 				res.render("topic");
 			}else{
 				res.send(404);

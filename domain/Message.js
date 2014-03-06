@@ -1,5 +1,4 @@
 module.exports = wrap;
-var uid = require("node-uuid").v1;
 var createModel = require("model-brighthas");
 
 function wrap(my) {
@@ -41,7 +40,6 @@ function wrap(my) {
 
     Message.on("creating", function(msg) {
         msg.attrs.createTime = new Date();
-		msg.attrs.id = uid();
     })
 
     Message.className = "Message";

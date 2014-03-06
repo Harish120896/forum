@@ -9,8 +9,7 @@ var app = angular.module("forumapp", []).config([
       $locationProvider.html5Mode(true);
     }
   ]);
-  
-  
+
 (function() {
 
     function initForm(scope, form) {
@@ -101,6 +100,8 @@ var app = angular.module("forumapp", []).config([
 
     .controller("regCtrl", function($scope, $rootScope, $http) {
 
+		
+
         $("#regDialog").on('show.bs.modal', function(e) {
             initForm($scope, this);
             $rootScope.refreshNum();
@@ -147,6 +148,7 @@ var app = angular.module("forumapp", []).config([
         })
 		
 		$scope.findPassword = function(){
+			
             $http.post("/user/findPassword", {
             	email: $scope.email
             }).success(function(data){

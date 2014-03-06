@@ -42,6 +42,24 @@ module.exports = {
         })
     },
 
+	columnByTopicId:function(id,callback){
+        var tdb = dbs.getDB("Topic");
+		var cdb = dbs.getDB("Column");
+        tdb.findOne({
+            id: id
+        }).exec(function(err, rs) {
+			if(rs){
+		        cdb.findOne({
+		            id: rs.columnId
+		        }).exec(function(err, c) {
+					callback(c);
+				});
+			}else{
+				callback(null);
+			}
+        })
+	},
+
     topicById: function(id, callback) {
         var db = dbs.getDB("Topic");
         db.findOne({

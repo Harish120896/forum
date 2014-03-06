@@ -3,7 +3,7 @@
 <div ng-controller="columnCtrl">
 
 <%if(user && user.role === 1){%>
-<a href="#" data-toggle="modal" class="btn btn-default" data-target="#createColumnDialog">创建栏目</a>
+<a href="#" ng-click="openCreateDialog()">创建栏目</a>
 <%}%>
 
 <% columns.forEach(function(col){ %>
@@ -11,7 +11,7 @@
 	  <div class="panel-heading">
 		 <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a> <a ng-click='select("<%=col.id%>")'></a>
 		 <%if(user && user.role === 1){%>
-		 <a class="pull-right" href="" data-target="#updateColumnDialog" ng-click='updateColumn("<%=col.id%>")' data-toggle="modal" ><i class="glyphicon glyphicon-edit"></i></a>
+		 <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal" ><i class="glyphicon glyphicon-edit"></i></a>
 		 <%}%>
 	  </div>
 	  <div class="panel-body">
@@ -20,11 +20,7 @@
 	</div>		
 <% }) %>
 
-<% include mainscript.html %>
-
-<%if(user && user.role === 1){%>
-	<%include createColumn.html%>
-	<%include updateColumn.html%>
+<%if(user && user.role === 1){%>	
 	<script src="/js/index.js"></script>
 <%}%>
 

@@ -1,5 +1,4 @@
-var uid = require("node-uuid").v1,
-    Emit = require("events").EventEmitter,
+var Emit = require("events").EventEmitter,
     check = require('validator').check,
     inherits = require("util").inherits;
 
@@ -51,7 +50,6 @@ function wrap(my) {
             }
         })
         .on("creating", function(reply) {
-			reply.attrs.id = uid();
             reply.attrs.createTime = reply.attrs.updateTime = new Date();
         })
         .method("updateInfo", function(title, body) {

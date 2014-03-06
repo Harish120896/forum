@@ -1,6 +1,9 @@
 <% include header.html %>
-<% include breadcrumbs.html %>
 
+<ol class="breadcrumb">
+  <li><a href="/">社区主页</a></li>
+  <li class="active"><%=column.name%></li>
+</ol>
 
 <a href="#createTopic">添加主题</a>
 <div class="panel panel-info" ng-controller="topicCtrl">
@@ -44,10 +47,6 @@
   </div>		
 	
 </div>
-
-
-
-<% include mainscript.html %>
 
 <script src="/js/column.js"></script>
 

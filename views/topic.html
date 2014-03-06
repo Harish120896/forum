@@ -1,24 +1,45 @@
 <% include header.html %>
-<% include breadcrumbs.html %>
+<script src="/js/epiceditor.js"></script>
+<script src="/js/topic.js"></script>
+<ol class="breadcrumb">
+  <li><a href="/">社区主页</a></li>
+  <li><a href="/column/<%=column.id%>"><%=column.name%></a></li>
+  <li class="active"><%=topic.title%></li>
+</ol>
 
 <div  ng-controller="replyCtrl">
-<div class="panel panel-success">
-	<div class="panel-heading"> <%=topic.title%> </div>
-	<div calss="panel-body">
-		<%=topic.body%>
-	</div>
-	{{replyTree}}
-	<table class="table">
-		<tr ng-repeat="r in replyTree">
-			<td replyId="{{r.id}}" reply>{{r.id}}</td>
-		</tr>
-	</table>
-	
-</div>
-
-<div>
-    <div role="form" id="createTopic">
-  	<input type="hidden" ng-init='topicId="<%=topic.id%>"' />
+  <div parent="{{parent}}" class="col-md-5" reply ></div>
+	<div class="panel panel-success">
+		<div class="panel-heading"> <%=topic.title%> <a href="" class="btn btn-default btn-xs pull-right">删帖</a> <a href="#createReply" class="pull-right btn btn-default btn-xs pull-right">回帖</a></div>
+		<div class="panel-body row">
+			<div class="col-md-2">
+			      <img src="/logo.jpeg" class="img-circle"/>
+			      <p>利奥</p>
+			</div>
+			<div class="col-md-10">
+				<h1><%=topic.title%></h1>
+				<p><%=topic.body%></p>
+			</div>
+		</div>
+		
+	    <ul class="list-group">
+	      <li class="list-group-item" ng-repeat="r in replyTree" replyId="{{r.id}}" ng-show="replys[r.id]">
+			<div class="row">
+	  			<div class="col-md-2">
+	  			      <img src="/logo.jpeg" class="img-circle"/><!-- DOTO -->
+	  			      <p>利奥</p>
+	  			</div>
+	  			<div class="col-md-10" id="{{replys[r.id].id}}">
+					<p>{{replys[r.id].title}} <a href="" ng-click="toreply(replys[r.id].id)">回复</a></p>
+				 	<p>{{replys[r.id].body}}</p>
+				  </div>
+			</div>
+		  </li>
+	  	</ul>
+		
+    </div>
+    <div role="form" id="createReply">
+      <input type="hidden" ng-init='topicId="<%=topic.id%>"' />
       <div class="form-group">
       	<div class="alert alert-danger small" ng-show="!!titleMessage">
   			{{titleMessage}}
@@ -29,26 +50,26 @@
       	<div class="alert alert-danger small" ng-show="!!bodyMessage">
   			{{bodyMessage}}
       	</div>
-        <textarea class="form-control" ng-model="body" tabindex="2" placeholder="请输入Email">
-  	  </textarea>
+        <textarea class="form-control" ng-model="body" tabindex="2" placeholder="请输入Email"></textarea>
       </div>
-      <div class="form-group">
+      <div>
       	<div class="alert alert-danger small" ng-show="!!validat_numMessage">
   			{{validat_numMessage}}
       	</div>
   		<div class="row">
          <div class="col-sm-7">
-            <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3" placeholder="输入验证码">
+            <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3" placeholder="输入验证码" />
          </div>
-  	   <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" />
-  	   <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
+	  	   <label class="col-sm-5 control-label">
+			   <img ng-src="/refresh_num?{{time}}" />
+	  	   	   <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a>
+		   </label>
+	   </div>
      </div>
-       </div>
+
   	 <button type="button" ng-click="createReply()" tabindex="5" class="btn btn-primary" >回帖</button>
     </div>		
 </div>
-</div>
+<div id="epiceditor" ui-epic-editor startedit="{{ooo}}" content="txt"></div>
 
-<% include mainscript.html %>
-<script src="/js/topic.js"></script>
 <% include footer.html %>

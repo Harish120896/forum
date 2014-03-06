@@ -5,7 +5,6 @@ var crypto = require("crypto"),
     createModel = require("model-brighthas"),
     is = require("istype"),
     q = require("q"),
-    uid = require("node-uuid").v1,
     _ = require("underscore");
 
 function wrap(my) {
@@ -223,7 +222,6 @@ function wrap(my) {
     User.on("creating", function(user) {
         user.attrs.createTime = new Date();
         user.attrs.reportTime = new Date(0);
-		user.attrs.id = uid();
     })
 
 

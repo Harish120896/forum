@@ -24,15 +24,13 @@
   },
   "homepage": "https://github.com/brighthas/froum",
   "dependencies": {
-    "jsdm": "0.2.9",
+    "jsdm": "0.3.2",
     "node-uuid": "~1.4.1",
     "validator": "~2.0.0",
     "express": "3.4.4",
     "ejs": "*",
     "tree-node": "0.1.4",
     "mongoose": "~3.8.3",
-    "huskies": "0.0.9",
-    "huskies-lock": "0.0.1",
     "step": "0.0.5",
     "model-brighthas": "0.2.8",
     "jsdm.middle": "0.0.7",
@@ -44,8 +42,8 @@
     "node-validator": "~0.1.4",
     "q": "~1.0.0",
     "result-brighthas": "0.0.6",
-    "nedb": "~0.10.4"
-	
+    "nedb": "~0.10.4",
+    "shortid": "^2.0.0"
   },
   "devDependencies": {
     "should": "~2.1.0",

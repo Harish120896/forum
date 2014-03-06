@@ -1,5 +1,4 @@
-var uid = require("node-uuid").v1,
-    Emit = require("events").EventEmitter,
+var Emit = require("events").EventEmitter,
     check = require('validator').check,
     Node = require("tree-node"),
     Model = require("model-brighthas"),
@@ -54,7 +53,6 @@ function wrap(my) {
         .on("creating", function(topic) {
             topic.attrs.replyTree = new Node();
             topic.attrs.createTime = topic.attrs.updateTime = new Date();
-			topic.attrs.id = uid();
         })
         .on("changed", function(topic, attrs) {
             my.publish("*.*.update", "Topic", topic.id, this.toJSON(topic, Object.keys(attrs)));

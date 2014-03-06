@@ -1,5 +1,4 @@
-var uid = require("node-uuid").v1,
-    createModel = require("model-brighthas"),
+var createModel = require("model-brighthas"),
     _ = require("underscore");
 
 
@@ -25,7 +24,6 @@ function wrap(my) {
 
     .on("creating", function(column) {
         column.attrs.createTime = column.attrs.updateTime = new Date();
-		column.attrs.id = uid();
     })
 
     .on("changing", function(column, attrs) {
