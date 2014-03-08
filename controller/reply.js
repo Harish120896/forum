@@ -1,19 +1,21 @@
 module.exports = {
 
-    create: function(req, res, next) {
+    create: function (req, res, next) {
+        console.log(req.result.error())
+
         if (req.result.hasError()) {
             return next();
         }
         var query = req.env.query;
         var domain = req.env.domain;
         req.body.authorId = req.session.user.id;
-        domain.exec("create a reply", req.body, function(result) {
+        domain.exec("create a reply", req.body, function (result) {
             req.result.mix(result);
             next();
         });
     },
 
-    remove: function(req, res, next) {
+    remove: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -29,7 +31,7 @@ module.exports = {
 
     },
 
-    updateInfo: function(req, res, next) {
+    updateInfo: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -37,7 +39,7 @@ module.exports = {
         var id = req.param("id");
         var title = req.body.title;
         var body = req.body.body;
-        domain.call("Reply.updateInfo", id, [title, body], function(result) {
+        domain.call("Reply.updateInfo", id, [title, body], function (result) {
             req.result.mix(result);
             next();
         })

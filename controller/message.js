@@ -1,5 +1,5 @@
 module.exports = {
-    send: function(req, res, next) {
+    send: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }

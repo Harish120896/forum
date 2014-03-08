@@ -11,12 +11,12 @@ var transport = nodemailer.createTransport("SMTP", {
     }
 });
 
-module.exports = function env(req,res,next){
-	req.env = {
-		transport:transport,
-		domain:domain,
-		query:query,
-		config:config
-	}
-	next();
+module.exports = function env(req, res, next) {
+    req.env = {
+        transport: transport,
+        domain: domain,
+        query: query,
+        config: config
+    }
+    next();
 }

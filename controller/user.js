@@ -3,7 +3,7 @@ var _ = require("underscore");
 
 module.exports = {
 
-    findPassword: function(req, res, next) {
+    findPassword: function (req, res, next) {
 
         if (req.result.hasError()) {
             return next();
@@ -22,7 +22,7 @@ module.exports = {
             // HTML body
             html: '<a href="http://localhost:3000/setNewPassword?email=' + user.email + "&code=" + user.password + '">点击更改密码</a>'
 
-        }, function(err) {
+        }, function (err) {
             if (err)
                 req.result.error("email", "内部错误，请联系管理员");
             next();
@@ -30,7 +30,7 @@ module.exports = {
     },
 
     // must have req.user & req.body.password
-    login: function(req, res, next) {
+    login: function (req, res, next) {
 
         if (req.result.hasError()) {
             return next();
@@ -55,7 +55,7 @@ module.exports = {
         next();
     },
 
-    logout: function(req, res, next) {
+    logout: function (req, res, next) {
         res.clearCookie("user");
         req.session.user = null;
         next();
@@ -63,18 +63,18 @@ module.exports = {
 
     // return success or [error];
     // if success , req.user exist.
-    create: function(req, res, next) {
+    create: function (req, res, next) {
 
         if (req.result.hasError()) {
             return next();
         }
-		console.log(req.env.domain);
+        console.log(req.env.domain);
         var domain = req.env.domain;
         domain.exec("create a user", {
             nickname: req.body.nickname,
             email: req.body.email,
             password: req.body.password
-        }, function(result) {
+        }, function (result) {
             var user = result.data("user");
             if (user) {
                 if (user.email === req.env.config.admin) {
@@ -89,20 +89,20 @@ module.exports = {
         });
     },
 
-    update: function(req, res, next) {
+    update: function (req, res, next) {
 
         if (req.result.hasError()) {
             return next();
         }
 
         var domain = req.env.domain;
-        domain.call("User.updateInfo", req.session.user.id, [req.body], function(result) {
+        domain.call("User.updateInfo", req.session.user.id, [req.body], function (result) {
             req.result.mix(result);
             next();
         });
     },
 
-    seal: function(req, res, next) {
+    seal: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -111,7 +111,7 @@ module.exports = {
         next();
     },
 
-    follow: function(req, res, next) {
+    follow: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -121,7 +121,7 @@ module.exports = {
         next();
     },
 
-    unfollow: function(req, res, next) {
+    unfollow: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -131,7 +131,7 @@ module.exports = {
         next();
     },
 
-    becomeModerator: function(req, res, next) {
+    becomeModerator: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -141,7 +141,7 @@ module.exports = {
         next();
     },
 
-    becomeUser: function(req, res, next) {
+    becomeUser: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -149,14 +149,14 @@ module.exports = {
         domain.call("User.becomeUser", req.param("id"));
         next();
     },
-    updatePassword: function(req, res, next) {
+    updatePassword: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         var domain = req.env.domain;
         var user = req.result.data("user");
         if (user.password === req.body.code) {
-            domain.call("User.updatePassword", user.id, [req.param("password")], function(result) {
+            domain.call("User.updatePassword", user.id, [req.param("password")], function (result) {
                 next();
             })
         } else {
@@ -165,7 +165,7 @@ module.exports = {
         }
     },
 
-    plus: function(req, res, next) {
+    plus: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -174,7 +174,7 @@ module.exports = {
         next();
     },
 
-    remove: function(req, res, next) {
+    remove: function (req, res, next) {
 
         if (req.result.hasError()) {
             return next();

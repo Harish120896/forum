@@ -2,32 +2,32 @@ var Result = require("result-brighthas");
 
 module.exports = {
 
-    create: function(req, res, next) {
+    create: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         var domain = req.env.domain;
         req.body.authorId = req.session.user.id;
-        domain.exec("create a topic", req.body, function(result) {
+        domain.exec("create a topic", req.body, function (result) {
             req.result.mix(result);
             next();
         });
     },
 
-    update: function(req, res, next) {
+    update: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         var domain = req.env.domain;
         req.body.authorId = req.session.user.id;
-        domain.call("Topic.updateInfo", req.body.topicId, [req.body.title, req.body.body, req.body.columnId], function(result) {
+        domain.call("Topic.updateInfo", req.body.topicId, [req.body.title, req.body.body, req.body.columnId], function (result) {
             req.result.mix(result);
             next();
         });
     },
 
     // dev isLogin / isAdmin
-    remove: function(req, res, next) {
+    remove: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -40,7 +40,7 @@ module.exports = {
     },
 
     // dev isLogin / isTopicManager
-    seal: function(req, res, next) {
+    seal: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -51,7 +51,7 @@ module.exports = {
     },
 
     // dev isLogin / isTopicManager
-    unseal: function(req, res, next) {
+    unseal: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -61,7 +61,7 @@ module.exports = {
         next();
     },
 
-    access: function(req, res, next) {
+    access: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -71,7 +71,7 @@ module.exports = {
         next();
     },
 
-    removeReply: function(req, res, next) {
+    removeReply: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }

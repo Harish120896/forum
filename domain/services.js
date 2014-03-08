@@ -1,11 +1,11 @@
 var check = require('validator').check,
     huskies = require("huskies"),
     lock = require("huskies-lock"),
-    //Result = require("result-brighthas"),
+//Result = require("result-brighthas"),
     step = require("step");
 
 
-module.exports = function(query) {
+module.exports = function (query) {
 
 
     return function wrap(my) {
@@ -13,7 +13,7 @@ module.exports = function(query) {
         service1.serviceName = "existColumn";
 
         function service1(columnId, callback) {
-            query.columnById(columnId, function(col) {
+            query.columnById(columnId, function (col) {
                 if (col) {
                     callback(true);
                 } else {
@@ -25,7 +25,7 @@ module.exports = function(query) {
         service2.serviceName = "existUser";
 
         function service2(uid, callback) {
-            query.userById(uid, function(u) {
+            query.userById(uid, function (u) {
                 if (u) {
                     callback(true);
                 } else {
@@ -40,11 +40,11 @@ module.exports = function(query) {
 
         function service5(email, nickname, callback) {
             var result = [];
-            query.userByEmail(email, function(u) {
+            query.userByEmail(email, function (u) {
                 if (u) {
                     result.push("email");
                 }
-                query.userByNick(nickname, function(u2) {
+                query.userByNick(nickname, function (u2) {
                     if (u2) {
                         result.push("nickname");
                     }
@@ -59,9 +59,9 @@ module.exports = function(query) {
         service6.serviceName = "postTopicCheck";
 
         function service6(userId, callback) {
-            query.userById(userId, function(user) {
+            query.userById(userId, function (user) {
                 if (user) {
-                    query.topicCountByToday(userId, function(count) {
+                    query.topicCountByToday(userId, function (count) {
                         if (count > 50000) {
                             callback(false);
                         } else {
@@ -80,7 +80,7 @@ module.exports = function(query) {
 
         function service7(userId, callback) {
 
-            query.replyCountByToday(userId, function(count) {
+            query.replyCountByToday(userId, function (count) {
                 if (count > 5000) { //doto
                     callback(false);
                 } else {
@@ -93,7 +93,7 @@ module.exports = function(query) {
         service8.serviceName = "userByNick"
 
         function service8(nick, callback) {
-            query.userByNick(nick, function(rs) {
+            query.userByNick(nick, function (rs) {
                 callback(rs);
             });
         }

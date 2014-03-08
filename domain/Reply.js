@@ -41,18 +41,18 @@ function wrap(my) {
         .attr("createTime", {
             type: "date"
         })
-        .on("changed", function(reply, attrs) {
+        .on("changed", function (reply, attrs) {
             my.publish("*.*.update", "Reply", reply.id, this.toJSON(reply, Object.keys(attrs)));
         })
-        .on("changing", function(reply) {
+        .on("changing", function (reply) {
             if (Date.now() - reply.updateTime.getTime() > reply.updateTimeout) {
                 reply.result.error("timeout", "timeout");
             }
         })
-        .on("creating", function(reply) {
+        .on("creating", function (reply) {
             reply.attrs.createTime = reply.attrs.updateTime = new Date();
         })
-        .method("updateInfo", function(title, body) {
+        .method("updateInfo", function (title, body) {
             this.begin();
             this.updateTime = new Date();
             this.title = title;

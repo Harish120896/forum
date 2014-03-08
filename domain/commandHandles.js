@@ -9,9 +9,9 @@ function wrap(my) {
 
     function handle1(args, callback) {
         var result = new Result();
-        my.services.postTopicCheck(args.authorId, function(pass) {
+        my.services.postTopicCheck(args.authorId, function (pass) {
             if (pass) {
-                my.repos.Topic.create(args, function(err, topic) {
+                my.repos.Topic.create(args, function (err, topic) {
                     if (!err) {
                         result.data("topic", topic.toJSON());
                     } else {
@@ -37,12 +37,12 @@ function wrap(my) {
 
     function handle3(args, callback) {
         var result = new Result();
-        my.repos.Topic.get(args.topicId, function(err, topic) {
+        my.repos.Topic.get(args.topicId, function (err, topic) {
             if (topic) {
-                my.services.postReplyCheck(args.authorId, function(pass) {
+                my.services.postReplyCheck(args.authorId, function (pass) {
 
                     if (pass) {
-                        my.repos.Reply.create(args, function(err, reply) {
+                        my.repos.Reply.create(args, function (err, reply) {
                             if (!err) {
                                 topic.addReply(reply.parentId, reply.id);
                                 result.data("reply", reply.toJSON());
@@ -67,7 +67,7 @@ function wrap(my) {
     handle4.commandName = "create a user";
 
     function handle4(args, callback) {
-        my.repos.User.create(args, function(err, rs) {
+        my.repos.User.create(args, function (err, rs) {
             var result = new Result();
             if (!err) {
                 result.data("user", rs.toJSON());
@@ -79,12 +79,11 @@ function wrap(my) {
     }
 
 
-
     handle5.commandName = "remove a reply";
 
     function handle5(args, callback) {
 
-        my.repos.Topic.get(args.topicId, function(topic) {
+        my.repos.Topic.get(args.topicId, function (topic) {
             if (topic) {
                 topic.removeReply(args.replyId);
             }
@@ -97,7 +96,7 @@ function wrap(my) {
 
     function handle6(args, callback) {
         var result = new Result();
-        my.repos.Column.create(args, function(err, col) {
+        my.repos.Column.create(args, function (err, col) {
             if (col) {
                 result.data("column", col);
             } else {
@@ -114,15 +113,16 @@ function wrap(my) {
         var body = args.body;
         var authorId = args.authorId;
         if (body) {
-            filterNickname(body).forEach(function(name) {
-                my.services.userByNick(name, function(user) {
+            filterNickname(body).forEach(function (name) {
+                my.services.userByNick(name, function (user) {
                     if (user) {
                         my.repos.Message.create({
                             title: title,
                             body: body,
                             authorId: authorId,
                             targetId: user.id
-                        }, function(err) {});
+                        }, function (err) {
+                        });
                     }
                 });
             });
@@ -134,7 +134,7 @@ function wrap(my) {
 
     function handle8(args, callback) {
 
-        my.repos.Topic.get(args.id, function(err, topic) {
+        my.repos.Topic.get(args.id, function (err, topic) {
             if (topic) {
                 topic.begin();
                 topic.top = true;
@@ -149,7 +149,7 @@ function wrap(my) {
 
     function handle9(args, callback) {
 
-        my.repos.Topic.get(args.id, function(err, topic) {
+        my.repos.Topic.get(args.id, function (err, topic) {
             if (topic) {
                 topic.top = false;
             }

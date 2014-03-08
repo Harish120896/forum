@@ -4,24 +4,24 @@ var util = require("./util");
 
 module.exports = {
 
-    create: function(req, res, next) {
+    create: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         var domain = req.env.domain;
-        domain.exec("create a column", req.body, function(result) {
+        domain.exec("create a column", req.body, function (result) {
             req.result.mix(result);
             next();
         });
     },
 
-    update: function(req, res, next) {
+    update: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         var domain = req.env.domain;
         var columnId = req.param("id");
-        domain.call("Column.updateInfo", columnId, [req.body.name, req.body.des], function(result) {
+        domain.call("Column.updateInfo", columnId, [req.body.name, req.body.des], function (result) {
             if (Result.isResult(result)) {
                 req.result.mix(result);
             } else {
@@ -31,7 +31,7 @@ module.exports = {
         })
     },
 
-    up: function(req, res, next) {
+    up: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -41,7 +41,7 @@ module.exports = {
         next();
     },
 
-    setManager: function(req, res, next) {
+    setManager: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }

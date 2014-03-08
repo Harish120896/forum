@@ -2,28 +2,28 @@
 
 <div ng-controller="columnCtrl">
 
-<%if(user && user.role === 1){%>
-<a href="#" ng-click="openCreateDialog()">创建栏目</a>
-<%}%>
+    <%if(user && user.role === 1){%>
+    <a href="#" ng-click="openCreateDialog()">创建栏目</a>
+    <%}%>
 
-<% columns.forEach(function(col){ %>
-	<div class="panel panel-default">
-	  <div class="panel-heading">
-		 <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a> <a ng-click='select("<%=col.id%>")'></a>
-		 <%if(user && user.role === 1){%>
-		 <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal" ><i class="glyphicon glyphicon-edit"></i></a>
-		 <%}%>
-	  </div>
-	  <div class="panel-body">
-		  <a href="/column/<%=col.id%>"><div columnid="<%=col.id%>" coledit="des"><%=col.des%></div></a>
-	  </div>
-	</div>		
-<% }) %>
+    <% columns.forEach(function(col){ %>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a> <a
+                ng-click='select("<%=col.id%>")'></a>
+            <%if(user && user.role === 1){%>
+            <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
+                    class="glyphicon glyphicon-edit"></i></a>
+            <%}%>
+        </div>
+        <div class="panel-body">
+            <a href="/column/<%=col.id%>">
+                <div columnid="<%=col.id%>" coledit="des"><%=col.des%></div>
+            </a>
+        </div>
+    </div>
+    <% }) %>
 
-<%if(user && user.role === 1){%>	
-	<script src="/js/index.js"></script>
-<%}%>
-
-</div>	  
+</div>
 
 <% include footer.html %>

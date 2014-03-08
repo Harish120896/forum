@@ -32,13 +32,13 @@ function wrap(my) {
             type: "boolean",
             default: false
         })
-        .method("see", function() {
+        .method("see", function () {
             if (!this.havesee) {
                 this.havesee = true;
             }
         })
 
-    Message.on("creating", function(msg) {
+    Message.on("creating", function (msg) {
         msg.attrs.createTime = new Date();
     })
 

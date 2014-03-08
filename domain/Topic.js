@@ -50,50 +50,50 @@ function wrap(my) {
         .attr("createTime", {
             type: "date"
         })
-        .on("creating", function(topic) {
+        .on("creating", function (topic) {
             topic.attrs.replyTree = new Node();
             topic.attrs.createTime = topic.attrs.updateTime = new Date();
         })
-        .on("changed", function(topic, attrs) {
+        .on("changed", function (topic, attrs) {
             my.publish("*.*.update", "Topic", topic.id, this.toJSON(topic, Object.keys(attrs)));
         })
-        .method("removeReply", function(replyId) {
+        .method("removeReply", function (replyId) {
             var tree = this.replyTree;
             var node = tree.getNode(replyId);
             if (node) {
                 var ids = node.allChildIds;
                 if (tree === node) {
                     var cids = node.childIds;
-                    cids.forEach(function(cid) {
+                    cids.forEach(function (cid) {
                         node.removeChild(cid);
                     });
                 } else {
                     tree.removeChild(replyId);
                 }
                 ids.push(replyId);
-                ids.forEach(function(id) {
+                ids.forEach(function (id) {
                     my.repos.Reply.remove(id);
                 })
             }
         })
-        .method("access", function() {
+        .method("access", function () {
             var num = this.accessNum;
             this.accessNum = num + 1;
         })
-        .method("addReply", function(parentId, replyId) {
-			console.log(replyId)
+        .method("addReply", function (parentId, replyId) {
+            console.log(replyId)
             var tree = this.replyTree;
             var parent = tree.getNode(parentId);
-			if(parent){
-	            parent.appendChild(new Node(replyId));
-			}
-			
+            if (parent) {
+                parent.appendChild(new Node(replyId));
+            }
+
         })
-        .method("updateInfo", function(title, body, columnId) {
+        .method("updateInfo", function (title, body, columnId) {
             var deferred = Q.defer();
             var self = this;
 
-            my.services.existColumn(columnId, function(has) {
+            my.services.existColumn(columnId, function (has) {
                 if (has) {
                     self.begin();
                     self.title = title;
@@ -107,10 +107,10 @@ function wrap(my) {
             });
             return deferred.promise;
         })
-        .method("toseal", function() {
+        .method("toseal", function () {
             this.seal = true;
         })
-        .method("unseal", function() {
+        .method("unseal", function () {
             this.seal = false;
         })
 

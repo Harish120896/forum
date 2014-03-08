@@ -26,13 +26,13 @@ function wrap(my) {
             type: "boolean",
             default: false
         })
-        .method("see", function() {
+        .method("see", function () {
             if (!this.havesee) {
                 this.havesee = true;
             }
         })
 
-    Info.on("creating", function(info) {
+    Info.on("creating", function (info) {
         info.attrs.createTime = new Date();
     })
 

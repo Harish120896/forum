@@ -3,76 +3,73 @@
 <% include breadcrumbs.html %>
 
 <ul class="nav nav-tabs">
-  <li><a href="#info" data-toggle="tab">基本资料</a></li>
-  <li><a href="#profile" data-toggle="tab">主题帖</a></li>
-  <li><a href="#messages" data-toggle="tab">回复帖</a></li>
-  <li><a href="#settings" data-toggle="tab">私信</a></li>
-  <li><a href="#follows" data-toggle="tab">关注</a></li>
-  <li><a href="#watchers" data-toggle="tab">听众</a></li>
+    <li><a href="#info" data-toggle="tab">基本资料</a></li>
+    <li><a href="#profile" data-toggle="tab">主题帖</a></li>
+    <li><a href="#messages" data-toggle="tab">回复帖</a></li>
+    <li><a href="#settings" data-toggle="tab">私信</a></li>
+    <li><a href="#follows" data-toggle="tab">关注</a></li>
+    <li><a href="#watchers" data-toggle="tab">听众</a></li>
 </ul>
 
 <!-- Tab panes -->
-<div class="tab-content"> 
-  <div class="tab-pane active" id="info" ng-controller="infoCtrl">
-	  
-	  <table class="table table-striped">
-		  <tr>
-			  <td>昵称</td>
-			  <td>
-				  <div><%=user.nickname || ""%></div>
-			  </td>
-		  </tr>
-		  <tr>
-			  <td>个人简介</td>
-			  <td><%=user.des || ""%></td>
-		  </tr>
-		  <tr>
-			  <td>性别</td>
-			  <td>
-				  <%=user.sex?"男":"女"%>
-			  </td>
-		  </tr>
-		  <tr>
-			  <td>身份</td>
-			  <td>
-				  <%if(user.role === 0){%>
-					  用户
-				  <%}%>
-				  <%if(user.role === 1){%>
-					  终极管理员
-				  <%}%>
-				  <%if(user.role === 2){%>
-					  版主
-				  <%}%>
-			  </td>
-		  </tr>
-		  <tr>
-			  <td>所在地址</td>
-			  <td>
-				  <div><%=user.address || ""%></div>
-			  </td>
-		  </tr>		  
-	  </table>
-	  
-  </div>
-  <div class="tab-pane" id="profile">
-	  <%=user.role%>
-  </div>
-  <div class="tab-pane" id="messages">
-	  messages
-  </div>
-  <div class="tab-pane" id="settings">
-	  settings
-  </div>
-  <div class="tab-pane" id="follows">
-	  messages
-  </div>
-  <div class="tab-pane" id="watchers">
-	  settings
-  </div>
+<div class="tab-content">
+    <div class="tab-pane active" id="info" ng-controller="infoCtrl">
+
+        <table class="table table-striped">
+            <tr>
+                <td>昵称</td>
+                <td>
+                    <div><%=user.nickname || ""%></div>
+                </td>
+            </tr>
+            <tr>
+                <td>个人简介</td>
+                <td><%=user.des || ""%></td>
+            </tr>
+            <tr>
+                <td>性别</td>
+                <td>
+                    <%=user.sex?"男":"女"%>
+                </td>
+            </tr>
+            <tr>
+                <td>身份</td>
+                <td>
+                    <%if(user.role === 0){%>
+                    用户
+                    <%}%>
+                    <%if(user.role === 1){%>
+                    终极管理员
+                    <%}%>
+                    <%if(user.role === 2){%>
+                    版主
+                    <%}%>
+                </td>
+            </tr>
+            <tr>
+                <td>所在地址</td>
+                <td>
+                    <div><%=user.address || ""%></div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+    <div class="tab-pane" id="profile">
+        <%=user.role%>
+    </div>
+    <div class="tab-pane" id="messages">
+        messages
+    </div>
+    <div class="tab-pane" id="settings">
+        settings
+    </div>
+    <div class="tab-pane" id="follows">
+        messages
+    </div>
+    <div class="tab-pane" id="watchers">
+        settings
+    </div>
 </div>
 
-
-<% include mainscript.html %>
-<script src="/js/user.js"></script>
 <% include footer.html %>

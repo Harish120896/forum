@@ -86,37 +86,37 @@ function wrap(my) {
             type: "date"
         })
 
-    .method("updateInfo", function(data) {
+        .method("updateInfo", function (data) {
 
-        data = data || {}
+            data = data || {}
 
-        this.begin();
+            this.begin();
 
-        if (data.hasOwnProperty("address")) {
-            this.address = data.address;
-        }
+            if (data.hasOwnProperty("address")) {
+                this.address = data.address;
+            }
 
-        if (data.hasOwnProperty("des")) {
-            this.des = data.des;
-        }
+            if (data.hasOwnProperty("des")) {
+                this.des = data.des;
+            }
 
-        if (data.hasOwnProperty("sex")) {
-            this.sex = data.sex;
-        }
+            if (data.hasOwnProperty("sex")) {
+                this.sex = data.sex;
+            }
 
-        this.end();
-        return this.result;
+            this.end();
+            return this.result;
 
-    })
-        .method("updatePassword", function(npass) {
+        })
+        .method("updatePassword", function (npass) {
             this.password = npass;
             return this.result;
         })
-        .method("plus", function(num) {
+        .method("plus", function (num) {
             this.fraction = this.fraction + num;
             return this.result;
         })
-        .method("report", function() {
+        .method("report", function () {
             var reportTime = this.reportTime;
             var nowTime = new Date();
             if ("" + reportTime.getFullYear() + reportTime.getMonth() + reportTime.getDate() !== "" + nowTime.getFullYear() + nowTime.getMonth() + nowTime.getDate()) {
@@ -124,10 +124,10 @@ function wrap(my) {
                 this.reportTime = new Date();
             }
         })
-        .method("follow", function(uid) {
+        .method("follow", function (uid) {
             var self = this;
 
-            my.repos.User.get(uid, function(err, user) {
+            my.repos.User.get(uid, function (err, user) {
                 if (user) {
 
                     var follows = self.follows;
@@ -146,9 +146,9 @@ function wrap(my) {
                 }
             })
         })
-        .method("unfollow", function(uid) {
+        .method("unfollow", function (uid) {
             var self = this;
-            my.repos.User.get(uid, function(err, user) {
+            my.repos.User.get(uid, function (err, user) {
 
                 var follows = self.follows;
 
@@ -168,24 +168,24 @@ function wrap(my) {
                 }
             })
         })
-        .method("becomeModerator", function() {
+        .method("becomeModerator", function () {
             this.role = User.roles.MODERATOR;
         })
-        .method("becomeAdmin", function() {
+        .method("becomeAdmin", function () {
 
             this.role = User.roles.ADMIN;
         })
-        .method("becomeUser", function() {
+        .method("becomeUser", function () {
             this.role = User.roles.USER;
         })
-        .method("sealUser", function() {
+        .method("sealUser", function () {
             this.role = User.roles.SEAL;
         })
-        .on("changed", function(u, attrs) {
+        .on("changed", function (u, attrs) {
             passTransform(u);
             my.publish("*.*.update", "User", u.id, this.toJSON(u, Object.keys(attrs)));
         })
-        .validate(function(user, keys) {
+        .validate(function (user, keys) {
             if (keys.indexOf("role") !== -1) {
                 var role = user.attrs["role"];
                 if ([0, 1, 2, 3].indexOf(role) === -1) {
@@ -193,33 +193,33 @@ function wrap(my) {
                 }
             }
         })
-    // logo validat
-    //  image base64 must cut base64 type head
-    .validate(function(user, keys) {
+        // logo validat
+        //  image base64 must cut base64 type head
+        .validate(function (user, keys) {
 
-        var keys = []
+            var keys = []
 
-        if (keys.indexOf("logo") !== -1) {
+            if (keys.indexOf("logo") !== -1) {
 
-            var logo = user.attrs["logo"];
-            if (is.string(logo) && logo.length > 0) {
-                var buf = new Buffer(logo, "base64")
-                if (buf.length > 1024 * 150) {
+                var logo = user.attrs["logo"];
+                if (is.string(logo) && logo.length > 0) {
+                    var buf = new Buffer(logo, "base64")
+                    if (buf.length > 1024 * 150) {
+                        user.error("logo", "error");
+                    }
+                } else {
                     user.error("logo", "error");
                 }
-            } else {
-                user.error("logo", "error");
+
             }
 
-        }
+        })
 
-    })
-
-    User.on("created", function(user) {
+    User.on("created", function (user) {
         passTransform(user);
     })
 
-    User.on("creating", function(user) {
+    User.on("creating", function (user) {
         user.attrs.createTime = new Date();
         user.attrs.reportTime = new Date(0);
     })

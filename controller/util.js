@@ -3,12 +3,12 @@ var Result = require("result-brighthas");
 
 var util = {
 
-    result: function(req, res, next) {
+    result: function (req, res, next) {
         req.result = new Result();
         next();
     },
 
-    cookieLogin: function(req, res, next) {
+    cookieLogin: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -20,7 +20,7 @@ var util = {
             if (req.cookies.user) {
                 try {
                     var u = JSON.parse(req.cookies.user);
-                    query.userByEmail(u.email, function(user) {
+                    query.userByEmail(u.email, function (user) {
                         if (user && user.password === u.password) {
                             req.session.user = user;
                             next();
@@ -38,23 +38,20 @@ var util = {
 
     },
 
-    refreshValidatNum: function(req, res, next) {
-        if (req.result.hasError()) {
-            return next();
-        }
+    refreshValidatNum: function (req, res, next) {
         req.session.validat_num = r.random(4);
         next();
     },
 
-    end: function(req, res,next) {
-		if(req.result.hasError()){
-	        res.send(req.result.error());
-		}else{
-			res.send("success");
-		}
+    end: function (req, res, next) {
+        if (req.result.hasError()) {
+            res.send(req.result.error());
+        } else {
+            res.send("success");
+        }
     },
 
-    isLogin: function(req, res, next) {
+    isLogin: function (req, res, next) {
 
 
         if (req.result.hasError()) {
@@ -67,7 +64,7 @@ var util = {
 
     },
 
-    validat_num: function(req, res, next) {
+    validat_num: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -78,7 +75,7 @@ var util = {
 
     },
 
-    hasUser: function(req, res, next) {
+    hasUser: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -89,7 +86,7 @@ var util = {
     },
 
     // dev hasReqUser / isLogin
-    noSelf: function(req, res, next) {
+    noSelf: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -102,7 +99,7 @@ var util = {
     },
 
     // dev hasReqUser / isLogin
-    isSelf: function(req, res, next) {
+    isSelf: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -115,7 +112,7 @@ var util = {
     },
 
     // dev isLogin
-    isAdmin: function(req, res, next) {
+    isAdmin: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -125,7 +122,7 @@ var util = {
         next();
     },
 
-    hasTopic: function(req, res, next) {
+    hasTopic: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -137,7 +134,7 @@ var util = {
     },
 
     // dev isLogin / hasTopic
-    isTopicManager: function(req, res, next) {
+    isTopicManager: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -145,11 +142,12 @@ var util = {
 
         var topic = req.result.data("topic");
 
-        query.columnById(topic.columnId, function(col) {
+        query.columnById(topic.columnId, function (col) {
             if (
                 topic.authorId === req.session.user.id ||
-                col.managerId === req.session.user.id ||
-                req.session.user.role === 1) {} else {
+                    col.managerId === req.session.user.id ||
+                    req.session.user.role === 1) {
+            } else {
                 req.result.error("user", "非法操作");
             }
             next();
@@ -157,7 +155,7 @@ var util = {
 
     },
 
-    hasReply: function(req, res, next) {
+    hasReply: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -171,21 +169,22 @@ var util = {
     },
 
     // dev isLogin / hasReply
-    isReplyManager: function(req, res, next) {
+    isReplyManager: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         var query = req.env.query;
         var reply = req.result.data("reply");
 
-        query.topicById(reply.topicId, function(topic) {
+        query.topicById(reply.topicId, function (topic) {
             if (topic) {
-                query.columnById(topic.columnId, function(col) {
+                query.columnById(topic.columnId, function (col) {
                     if (col) {
                         if (
                             req.session.user.id === reply.authorId ||
-                            req.session.user.id === topic.authorId ||
-                            req.session.user.role === 1) {} else {
+                                req.session.user.id === topic.authorId ||
+                                req.session.user.role === 1) {
+                        } else {
                             req.result.error("error", "非法操作 ");
                         }
                     } else {
@@ -202,7 +201,7 @@ var util = {
     },
 
     //dev isLogin / hasReply
-    isReplyAuthor: function(req, res, next) {
+    isReplyAuthor: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
@@ -215,13 +214,13 @@ var util = {
         next();
     },
 
-    xhr: function(req, res, next) {
+    xhr: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
         }
         if (req.xhr || req.get("angular-request") === "ajaxRequest") {
-        }else{
-	        req.result.error("error", "非法操作 ");
+        } else {
+            req.result.error("error", "非法操作 ");
         }
 
         next();

@@ -36,56 +36,56 @@ var Topic = mongoose.model("Topic", new Schema({
     createTime: Number
 }));
 
-var User = mongoose.model("User",new Schema({
+var User = mongoose.model("User", new Schema({
     id: String,
-    role : Number,
-    nickname : String,
-    loginname : String,
-    fraction : Number,
-    password : String,
-    email : String,
-    createTime : Number,
-	reportTime : Number
+    role: Number,
+    nickname: String,
+    loginname: String,
+    fraction: Number,
+    password: String,
+    email: String,
+    createTime: Number,
+    reportTime: Number
 }));
 
-var Message = mongoose.model("Message",new Schema({
-	authorId:String,
+var Message = mongoose.model("Message", new Schema({
+    authorId: String,
     id: String,
-	title:String,
-	body:String,
-	targetId:String,
-	createTime:Number,
-	havesee:Boolean
+    title: String,
+    body: String,
+    targetId: String,
+    createTime: Number,
+    havesee: Boolean
 }));
 
 var dbs = {
-    User:User,
-    Topic:Topic,
-    Column:Column,
-    Reply:Reply,
-	Message:Message
+    User: User,
+    Topic: Topic,
+    Column: Column,
+    Reply: Reply,
+    Message: Message
 }
 
 module.exports = {
-    get: function(type, id, cb) {
+    get: function (type, id, cb) {
         dbs[type].findOne({
             "id": id
         }, cb);
     },
-    save: function(type, data, cb) {
+    save: function (type, data, cb) {
         dbs[type].create(data, cb);
     },
-    update: function(type, id, data, cb) {
+    update: function (type, id, data, cb) {
         dbs[type].update({
             "id": id
         }, data, cb);
     },
-    remove: function(type, id, cb) {
+    remove: function (type, id, cb) {
         dbs[type].remove({
             "id": id
         }, cb);
     },
-    getDB: function(type) {
+    getDB: function (type) {
         return dbs[type];
     }
 }

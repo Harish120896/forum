@@ -15,7 +15,7 @@ function oneday(date) {
 
 module.exports = {
 
-    clear: function() {
+    clear: function () {
 
         dbs.getDB("User").remove({}, {});
         dbs.getDB("Topic").remove({}, {});
@@ -25,60 +25,60 @@ module.exports = {
 
     },
 
-    columns: function(callback) {
+    columns: function (callback) {
         var db = dbs.getDB("Column");
-        db.find({}).exec(function(err, rs) {
+        db.find({}).exec(function (err, rs) {
             callback(rs || []);
         })
     },
 
 
-    columnById: function(id, callback) {
+    columnById: function (id, callback) {
         var db = dbs.getDB("Column");
         db.findOne({
             id: id
-        }).exec(function(err, rs) {
-            callback(rs);
-        })
+        }).exec(function (err, rs) {
+                callback(rs);
+            })
     },
 
-	columnByTopicId:function(id,callback){
+    columnByTopicId: function (id, callback) {
         var tdb = dbs.getDB("Topic");
-		var cdb = dbs.getDB("Column");
+        var cdb = dbs.getDB("Column");
         tdb.findOne({
             id: id
-        }).exec(function(err, rs) {
-			if(rs){
-		        cdb.findOne({
-		            id: rs.columnId
-		        }).exec(function(err, c) {
-					callback(c);
-				});
-			}else{
-				callback(null);
-			}
-        })
-	},
+        }).exec(function (err, rs) {
+                if (rs) {
+                    cdb.findOne({
+                        id: rs.columnId
+                    }).exec(function (err, c) {
+                            callback(c);
+                        });
+                } else {
+                    callback(null);
+                }
+            })
+    },
 
-    topicById: function(id, callback) {
+    topicById: function (id, callback) {
         var db = dbs.getDB("Topic");
         db.findOne({
             id: id
-        }).exec(function(err, rs) {
-            callback(rs);
-        })
+        }).exec(function (err, rs) {
+                callback(rs);
+            })
     },
 
-    replyById: function(id, callback) {
+    replyById: function (id, callback) {
         var db = dbs.getDB("Reply");
         db.findOne({
             id: id
-        }).exec(function(err, rs) {
-            callback(rs);
-        })
+        }).exec(function (err, rs) {
+                callback(rs);
+            })
     },
 
-    topicsByColumnId: function(page, columnId, callback) {
+    topicsByColumnId: function (page, columnId, callback) {
         if (columnId) {
             var page = is.number(page) && page > 0 && Number(page) === page ? page : 1;
             var db = dbs.getDB("Topic");
@@ -91,7 +91,7 @@ module.exports = {
                     createTime: -1
                 })
                 .skip((page - 1) * 3)
-                .exec(function(err, rs) {
+                .exec(function (err, rs) {
                     callback(rs || []);
                 })
         } else {
@@ -100,41 +100,41 @@ module.exports = {
 
     },
 
-    users: function(callback) {
+    users: function (callback) {
         var db = dbs.getDB("User");
-        db.find({}).exec(function(err, rs) {
+        db.find({}).exec(function (err, rs) {
             callback(rs);
         });
     },
 
-    userById: function(id, callback) {
+    userById: function (id, callback) {
         var db = dbs.getDB("User");
         db.findOne({
             id: id
-        }).exec(function(err, rs) {
-            callback(rs);
-        });
+        }).exec(function (err, rs) {
+                callback(rs);
+            });
     },
 
-    userByEmail: function(email, callback) {
+    userByEmail: function (email, callback) {
         var db = dbs.getDB("User");
         db.findOne({
             email: email
-        }).exec(function(err, rs) {
-            callback(rs);
-        });
+        }).exec(function (err, rs) {
+                callback(rs);
+            });
     },
 
-    userByNick: function(nick, callback) {
+    userByNick: function (nick, callback) {
         var db = dbs.getDB("User");
         db.findOne({
             nickname: nick
-        }).exec(function(err, rs) {
-            callback(rs);
-        });
+        }).exec(function (err, rs) {
+                callback(rs);
+            });
     },
 
-    userFuzzyExist: function(userInfo, callback) {
+    userFuzzyExist: function (userInfo, callback) {
         var db = dbs.getDB("User");
         var orq = [];
         for (var k in userInfo) {
@@ -144,12 +144,12 @@ module.exports = {
         }
         db.count({
             $or: orq
-        }).exec(function(err, num) {
-            callback(num ? true : false);
-        });
+        }).exec(function (err, num) {
+                callback(num ? true : false);
+            });
     },
 
-    replyCountByToday: function(authorId, callback) {
+    replyCountByToday: function (authorId, callback) {
         var date = new oneday();
         var db = dbs.getDB("Reply");
         db.count({
@@ -159,12 +159,12 @@ module.exports = {
                 $lt: date.endTime
             }
         })
-            .exec(function(err, num) {
+            .exec(function (err, num) {
                 callback(num || 0);
             });
     },
 
-    topicCountByToday: function(authorId, callback) {
+    topicCountByToday: function (authorId, callback) {
         var date = new oneday();
         var db = dbs.getDB("Topic");
         db.count({
@@ -174,7 +174,7 @@ module.exports = {
                 $lt: date.endTime
             }
         })
-            .exec(function(err, num) {
+            .exec(function (err, num) {
                 callback(num || 0);
             })
     }

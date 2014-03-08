@@ -1,38 +1,40 @@
 <div focus='{{tabindex}}'>
-	<div class="modal-header">
-	   <h4 class="modal-title" id="myModalLabel">登录</h4>
-	</div>
-	<div class="modal-body">
-	  <form role="form">
-	    <div class="form-group">
-	    	<div class="alert alert-danger small" ng-show="!!emailMessage">
-				{{emailMessage}}
-	    	</div>
-	      <input type="text" class="form-control" ng-model="data.email" tabindex="1" placeholder="请输入Email">
-	    </div>
-	    <div class="form-group">
-	    	<div class="alert alert-danger small" ng-show="!!passwordMessage">
-				{{passwordMessage}}
-	    	</div> 
-	      <input type="password" class="form-control" ng-model="data.password" tabindex="2" placeholder="请输入密码，长度6-14位字符，支持 a-z 0-9 字符。">
-	    </div>
-	    <div class="form-group">
-	    	<div class="alert alert-danger small" ng-show="!!validat_numMessage">
-				{{validat_numMessage}}
-	    	</div>
-			<div class="row">
-	       <div class="col-sm-7">
-	          <input type="text" class="form-control" ng-model="data.validat_num" tabindex="3" placeholder="输入验证码">
-	       </div>
-		   <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" />
-		   <a href="#" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
-	   </div>
-	     </div>
-	  </form>		  
-	</div>
-	<div class="modal-footer">
-	<button type="button" class="btn btn-default" ng-click="close()">取消</button>
-	<button type="button" tabindex="4" class="btn btn-primary" ng-click="login()">登录</button>
-	<a ng-click="findPassword()">找回密码</a>
-	</div>
+    <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel">登录</h4>
+    </div>
+    <div class="modal-body">
+        <form role="form">
+            <div class="form-group">
+                <div class="alert alert-danger small" ng-show="!!emailMessage">
+                    {{emailMessage}}
+                </div>
+                <input type="text" class="form-control" ng-model="data.email" tabindex="1" placeholder="请输入Email">
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger small" ng-show="!!passwordMessage">
+                    {{passwordMessage}}
+                </div>
+                <input type="password" class="form-control" ng-model="data.password" tabindex="2"
+                       placeholder="请输入密码，长度6-14位字符，支持 a-z 0-9 字符。">
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger small" ng-show="!!validat_numMessage">
+                    {{validat_numMessage}}
+                </div>
+                <div class="row">
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" ng-model="data.validat_num" tabindex="3"
+                               placeholder="输入验证码">
+                    </div>
+                    <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}"/>
+                        <a href="#" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="close()">取消</button>
+        <button type="button" tabindex="4" class="btn btn-primary" ng-click="login()">登录</button>
+        <a ng-click="findPassword()">找回密码</a>
+    </div>
 </div>
