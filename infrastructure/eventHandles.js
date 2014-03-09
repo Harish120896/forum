@@ -7,8 +7,6 @@ function wrap(my) {
     handle1.eventName = "*.*.create";
 
     function handle1(className, data) {
-        console.log(className, "---------------------");
-
         dbs.save(className, data, function () {
         })
     }

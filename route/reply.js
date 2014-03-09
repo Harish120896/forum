@@ -8,9 +8,7 @@ module.exports = function wrap(app) {
         util.isLogin,
         util.validat_num,
         replyCtrl.create,
-        function (req, res) {
-            res.send({result: req.result, topic: req.reply});
-        });
+        util.end);
 
     app.post("/reply/:id/remove",
         util.isLogin,

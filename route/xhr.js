@@ -45,20 +45,12 @@ module.exports = function wrap(app) {
         util.xhr,
         data.topicById,
         function (req, res) {
-
-            var replyTree = [];
+            var replyTree;
             var topic = req.result.data("topic");
             if (topic) {
-                console.log(topic)
-                var rt = Tree.reborn(topic.replyTree);
-                var ids = rt.childIds;
-                ids.forEach(function (rid) {
-                    replyTree.push({id: rid, childIds: rt.getNode(rid).allChildIds})
-                })
+                replyTree = topic.replyTree;
             }
-
             res.send(replyTree);
-
         }
     )
 

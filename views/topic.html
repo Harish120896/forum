@@ -5,12 +5,12 @@
     <li class="active"><%=topic.title%></li>
 </ol>
 
-<div ng-controller="replyCtrl">
-    <div parent="{{parent}}" class="col-md-5" topic="{{topicId}}" create-reply="createReply(option)" ng-show="parent"
-         reply></div>
+<div ng-controller="replyCtrl" ng-init='topicId="<%=topic.id%>"'>
+
     <div class="panel panel-success">
         <div class="panel-heading"> <%=topic.title%> <a href="" class="btn btn-default btn-xs pull-right">删帖</a> <a
-                href="#createReply" class="pull-right btn btn-default btn-xs pull-right">回帖</a></div>
+                href="#createReply" class="pull-right btn btn-default btn-xs pull-right"
+                ng-click="editorContainerId='createReply'">回帖</a></div>
         <div class="panel-body row">
             <div class="col-md-2">
                 <img src="/logo.jpeg" class="img-circle"/>
@@ -23,59 +23,36 @@
                 <p><%=topic.body%></p>
             </div>
         </div>
-
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="r in replyTree" replyId="{{r.id}}" ng-show="replys[r.id]">
+            <li class="list-group-item" ng-repeat="rid in replyIdsList" ng-show="replys[rid]">
                 <div class="row">
                     <div class="col-md-2">
-                        <img src="/logo.jpeg" class="img-circle"/><!-- DOTO -->
+                        <img src="/logo.jpeg" class="img-circle"/>
                         <p>利奥</p>
                     </div>
-                    <div class="col-md-10" id="{{replys[r.id].id}}">
-                        <p>{{replys[r.id].title}} <a href="" ng-click="toreply(replys[r.id].id)">回复</a></p>
+                    <div class="col-md-10"  id="{{rid}}">
+                        <p>{{replys[rid].title}} <a href="" ng-click="moveEditor(rid)">回复</a></p>
+                        <p>{{replys[rid].body}}</p>
 
-                        <p>{{replys[r.id].body}}</p>
-                        <ul>
-                            <li ng-repeat="sr in subReply(r.id)" replyId="{{sr}}" ng-show="replys[sr]">
-                                <p>{{replys[sr].title}} <a href="" ng-click="toreply(replys[r.id].id)">回复</a></p>
-
-                                <p>{{replys[sr].body}} </p>
+                        <ul class="list-group">
+                            <li ng-show="replys[sr]" class="list-group-item list-group-item-info" ng-repeat="sr in subReplyIds[rid]">
+                                <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,rs)">回复</a></p>
+                                <p>{{replys[sr].body}}</p>
                             </li>
                         </ul>
+                        <div> <a href="" ng-click="moreSubReply(rid)">更多...</a></div>
+
                     </div>
                 </div>
             </li>
+            <li><a href="" ng-click="moreReply()"> more ... </a></li>
         </ul>
 
     </div>
-    <div role="form" id="createReply">
-        <input type="hidden" ng-init='topicId="<%=topic.id%>"'/>
 
-        <div class="form-group">
-            <div class="alert alert-danger small" ng-show="!!bodyMessage">
-                {{bodyMessage}}
-            </div>
-            <div id="epiceditor" editor get-editor="getEditor(editor)" startedit="{{ooo}}" default-content="txt"></div>
-        </div>
-        <div>
-            <div class="alert alert-danger small" ng-show="!!validat_numMessage">
-                {{validat_numMessage}}
-            </div>
-            <div class="row">
-                <div class="col-sm-7">
-                    <input type="text" class="form-control" ng-click="refreshNum()" ng-keydown="tab()"
-                           ng-model="validat_num" tabindex="3" placeholder="输入验证码"/>
-                </div>
-                <label class="col-sm-5 control-label">
-                    <img ng-src="/refresh_num?{{time}}"/>
-                    <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a>
-                </label>
-            </div>
-        </div>
-
-        <button type="button" ng-click="createReply()" tabindex="5" class="btn btn-primary">回帖</button>
+    <div id="createReply">
+        <reply-editor ng-show="true"></reply-editor>
     </div>
-
 
 </div>
 

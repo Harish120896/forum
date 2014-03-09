@@ -1,4 +1,5 @@
 var app = angular.module('jseraApp', ['ui.bootstrap'])
+
     .config([
         '$httpProvider',
         '$locationProvider',
@@ -7,6 +8,23 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             $locationProvider.html5Mode(true);
         }
     ])
+
+    .run(function ($rootScope, $http) {
+        $rootScope.refreshNum = function () {
+            this.time = Date.now();
+        }
+        $rootScope.refreshNum();
+        $rootScope.checkLogined = function () {
+            var self = this;
+            $http.post("/user/logined").success(function (data) {
+                if (data.email) {
+                    self.user = data;
+                    self.logined = true;
+                }
+            })
+        }
+        $rootScope.checkLogined();
+    })
 
     .directive("focus", function ($timeout) {
         return {
@@ -41,22 +59,76 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             }
         };
     })
-    .run(function ($rootScope, $http) {
-        $rootScope.refreshNum = function () {
-            this.time = Date.now();
-        }
-        $rootScope.refreshNum();
-        $rootScope.checkLogined = function () {
-            var self = this;
-            $http.post("/user/logined").success(function (data) {
-                if (data.email) {
-                    self.user = data;
-                    self.logined = true;
+    .directive('epicEditor', function () {
+
+        return {
+            restrict: "E",
+            link: function (scope, element, attrs) {
+
+                var editor;
+                var content = "";
+
+                function refresh() {
+
+                    var opts = {
+                        container: element[0],
+                        basePath: '',
+                        file: {
+                            defaultContent: attrs.defaultContent || "",
+                            autoSave: 100
+                        }
+                    }
+
+                    editor = new EpicEditor(opts);
+                    editor.load(function () {
+                        editor.importFile(null, scope.content);
+                        editor.on("update", function (v) {
+                            content = v.content;
+                        })
+                    });
+
                 }
-            })
+
+                refresh();
+
+                scope.epicEditor = {
+                    content: function (v) {
+                        if (arguments.length === 0) {
+                            return content;
+                        } else {
+                            editor.editorIframe.body.innerText = v;
+                        }
+                    },
+                    refresh: refresh
+                }
+
+            }
         }
-        $rootScope.checkLogined();
     })
+
+    .directive("replyEditor", function ($rootScope) {
+
+        return {
+
+            templateUrl: "/template/reply.html",
+            restrict: "E",
+            link: function (scope, elem, attrs) {
+
+                scope.$watch("editorContainerId", function (v) {
+                    console.log(v)
+                    if (v) {
+                        var parent = document.querySelector("#" + v);
+                        parent.appendChild(elem[0]);
+                    }
+                    scope.epicEditor.refresh();
+                    $rootScope.refreshNum();
+                })
+
+            }
+        }
+
+    })
+
     .controller("headerCtrl", function ($scope, $modal, $http, $rootScope) {
         $scope.openLoginDialog = function () {
             $modal.open({
@@ -76,6 +148,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             })
         }
     })
+
     .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope) {
 
         $scope.data = {}
@@ -83,9 +156,11 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
         $modalInstance.opened.then(function () {
             $scope.tabindex = "1";
         })
+
         $scope.close = function () {
             $modalInstance.dismiss('cancel');
         }
+
         $scope.login = function () {
             $http.post("/user/login", {
                 email: $scope.data.email,
@@ -96,7 +171,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
                         $rootScope.checkLogined();
                         $modalInstance.dismiss('cancel');
                     } else {
-                        //clearErrors($scope);
                         var keys = Object.keys(data);
                         keys.forEach(function (key) {
                             if (key === "user") {
@@ -109,7 +183,9 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
                     }
                 })
         }
+
     })
+
     .controller("regCtrl", function ($scope, $modalInstance, $http, $rootScope) {
 
         $scope.data = {}
@@ -126,7 +202,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
                     $rootScope.checkLogined();
                     $modalInstance.dismiss('cancel');
                 } else {
-                    //clearErrors($scope);
                     var keys = Object.keys(data);
                     keys.forEach(function (key) {
                         if (key === "user") {
@@ -140,237 +215,237 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             })
         }
     })
-    .directive("reply", function ($rootScope, $sce) {
 
-        return {
-            scope: {
-                parent: "@",
-                topic: "@",
-                createReply: "&"
-            },
-            templateUrl: "/template/reply.html",
-            controller: function ($scope) {
+    .factory("Result",function(){
 
-                $scope.content = "";
+        function Result(){
+            this._errors = {};
+            this._data = {};
+        }
 
-                $scope.refreshNum = $rootScope.refreshNum;
+        Result.isResult = function(obj){
+            return obj instanceof this;
+        }
 
-                $scope.getEditor = function (editor) {
-                    $scope.editor = editor;
-                }
-
-            },
-            link: function (scope, elem, attrs, ctrl) {
-
-                scope.$watch("parent", function () {
-                    if (scope.parent) {
-                        var parent = document.querySelector("#" + scope.parent);
-                        parent.appendChild(elem[0]);
-                        scope.editor.refresh();
-                        scope.refreshNum();
+        Result.prototype = {
+            error:function(attr,msg){
+                if(arguments.length === 2){
+                    if(!this._errors[attr]){
+                        this._errors[attr] = [];
                     }
+                    this._errors[attr].push(msg);
+                    return this;
+                }else if(arguments.length === 1){
+                    return this._errors[attr];
+                }else{
+                    return this._errors;
+                }
+            },
+            hasError:function(){
+                return Object.keys(this._errors).length > 0;
+            },
+            data:function(k,v){
+                if(arguments.length === 2){
+                    this._data[k] = v;
+                    return this;
+                }else if(arguments.length === 1){
+                    return this._data[k];
+                }else{
+                    return this._data;
+                }
+            },
+            mix:function(result){
+
+                var errKeys = Object.keys(result._errors);
+                var self = this;
+
+                errKeys.forEach(function(k){
+                    if(!self._errors[k]){
+                        self._errors[k] = [];
+                    }
+                    self._errors[k] = self._errors[k].concat(result._errors[k]);
                 })
+
+                var dataKeys = Object.keys(result._data);
+                dataKeys.forEach(function(k){
+                    self._data[k] = result._data[k];
+                })
+
+                return this;
+            },
+            clearError:function(){
+                this._errors = {};
+            },
+            json:function(){
+                return {errors:this._errors,data:this._data};
+            },
+            reborn:function(json){
+                this._errors = json.errors || {};
+                this._data = json.data || {};
             }
         }
 
-    })
-    .factory("DATA", function ($http) {
+        return Result;
 
     })
-    .directive('editor', function () {
+    .factory("DATA", function ($http, $q) {
+
+        var replys = {}
 
         return {
-            scope: {
-                defaultContent: "=",
-                getEditor: "&"
-            },
-            template: '<div class="epic-editor"></div>',
-            link: function (scope, element, attrs) {
-
-                var editor;
-
-                var content;
-
-                function refresh() {
-
-                    var opts = {
-                        container: element[0],
-                        basePath: '',
-                        file: {
-                            defaultContent: scope.defaultContent,
-                            autoSave: 100
-                        }
-                    }
-
-                    editor = new EpicEditor(opts);
-                    editor.load(function () {
-                        editor.importFile(null, scope.content);
-                        editor.on("update", function (v) {
-                            content = v.content;
-                        })
+            reply: function (id) {
+                var deferred = $q.defer();
+                if (replys[id]) {
+                    deferred.resolve(replys[id]);
+                } else {
+                    $http.get("/reply/" + id).success(function (data) {
+                        replys[id] = data;
+                        deferred.resolve(replys[id]);
                     });
-
                 }
+                return deferred.promise;
+            },
+            replyTree: function (id) {
+                var deferred = $q.defer();
+                $http.get("/replyTree/" + id).success(function (data) {
 
-                refresh();
+                    var replyIdsList = data.childIdsList;
+                    var subReplyIds = [];
 
-                scope.getEditor({
-                    editor: {
-                        content: function (v) {
-                            if (arguments.length === 0) {
-                                return content;
-                            } else {
-                                editor.editorIframe.body.innerText = v;
-                            }
-                        },
-                        refresh: refresh
+                    function getSubIdsList(child) {
+                        var rs = child.childIdsList.concat([]);
+                        child.childIdsList.forEach(function(rid){
+                            rs = rs.concat(getSubIdsList(child.childs[rid]));
+                        })
+                        return rs;
                     }
-                })
 
+                    replyIdsList.forEach(function (rid) {
+                        subReplyIds[rid] = getSubIdsList(data.childs[rid]);
+                    })
+
+                    deferred.resolve({replyIdsList:replyIdsList,subReplyIds:subReplyIds});
+                })
+                return deferred.promise;
             }
         }
-    })
-    .controller("replyCtrl", function ($scope, $http, $rootScope) {
 
-        $scope.$watch("topicId", function () {
-            $http.get("/replyTree/" + $scope.topicId).success(function (data) {
-                $scope.replyTree = data;
-                $scope.render();
+    })
+
+    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA ,Result) {
+
+
+        // skip reply num
+        var replySkipNum = 2;
+        var showReplyPosition = 0;
+        var showSubReplyPositions = {};
+
+        // clear error message
+        function clearErrorMessage(){
+            $scope.bodyMessage = false;
+            $scope.validat_numMessage = false;
+        }
+
+        // show replys
+        $scope.replys = {};
+
+        // init topicId
+        $scope.$watch("topicId", function (topicId) {
+            DATA.replyTree(topicId).then(function (replyTree) {
+                $scope.replyIdsList = replyTree.replyIdsList;
+                $scope.subReplyIds = replyTree.subReplyIds;
+                $scope.moreReply();
             })
         })
 
-        var editor;
+        $scope.showEditor = false;
+        $scope.editorContainerId = null;
 
-        $scope.getEditor = function (edt) {
-            editor = edt;
+        $scope.moveEditor = function(cid,parentId){
+            $scope.editorContainerId = cid;
+            $scope.parentId = parentId || cid;
         }
 
-        $scope.toreply = function (id) {
-            $scope.parent = id;
-        }
+        $scope.moreReply = function () {
+            showReplyPosition += replySkipNum;
+            if(showReplyPosition > $scope.replyIdsList.length){
+                showReplyPosition = $scope.replyIdsList.length;
+            }
+            var ids = $scope.replyIdsList.slice(0,showReplyPosition);
 
-        $scope.render = function () {
-            var rs = $scope.replyTree.slice(0, $scope.shownum);
+            ids.forEach(function(rid){
+                DATA.reply(rid).then(function(r){
 
-            for (var i = 0, len = rs.length; i < len; i++) {
-
-                (function (id) {
-                    var ids = $scope.subReply(id);
-                    for (var i = 0, len = ids.length; i < len; i++) {
-
-                        (function (id) {
-
-                            $http.get("/reply/" + id).success(function (data) {
-                                $scope.replys[id] = data;
-                            });
-                        })(ids[i]);
+                    if(r){
+                        $scope.moreSubReply(r.id);
+                        $scope.replys[r.id] = r;
                     }
+                })
+            })
+        }
 
-                    $http.get("/reply/" + id).success(function (data) {
-                        $scope.replys[id] = data;
-                    });
-                })(rs[i].id);
+        $scope.moreSubReply = function (rid) {
+
+            // init showSubReplyPositions[rid]
+            if(showSubReplyPositions[rid] === undefined){
+                showSubReplyPositions[rid] = 0;
             }
-        }
 
-        $scope.subReply = function (rid) {
-            var rs = $scope.replyTree;
-            for (var i = 0, len = rs.length; i < len; i++) {
-                if (rs[i].id === rid) {
-                    return rs[i].childIds;
-                }
+            showSubReplyPositions[rid] += replySkipNum;
+            if(showSubReplyPositions[rid] > $scope.subReplyIds[rid].length){
+                showSubReplyPositions[rid] = $scope.subReplyIds[rid].length;
             }
+            var ids = $scope.subReplyIds[rid].slice(0,showSubReplyPositions[rid]);
+            ids.forEach(function(rid){
+                DATA.reply(rid).then(function(r){
+                    if(r){
+                        $scope.replys[r.id] = r;
+                    }
+                })
+            })
         }
 
-        $scope.shownum = 3;
-        $scope.replys = {}
+        $scope.createReply = function () {
 
-        $scope.more = function () {
+            clearErrorMessage();
 
-            this.shownum += 3;
-            this.render();
-        }
+            var parentId = $scope.parentId;
 
-        var showReplyId = null;
-
-
-        $scope.openReplyTextarea = function (id) {
-            showReplyId = id;
-            this.content = "";
-        }
-
-        $scope.showTextarea = function (id) {
-            if (showReplyId === id) {
-                return true;
-            }
-        }
-
-        $scope.reply = function () {
-
-            var option = {
-                title: "回帖",
-                body: $scope.body,
+            var data = {
+                body: $scope.epicEditor.content(),
                 validat_num: $scope.validat_num,
                 topicId: $scope.topicId,
-                parentId: showReplyId
+                parentId: $scope.parentId
             }
 
-            $http.post("/reply/create", option).success(function (data) {
-                if (data.result === "success") {
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 1000)
-                } else {
-                    var keys = Object.keys(data.result);
+            $http.post("/reply/create", data).success(function (rs) {
+
+                var result = new Result();
+                result.reborn(rs);
+                if (result.hasError()) {
+                    var errors = result.error();
+                    var keys = Object.keys(errors);
                     keys.forEach(function (key) {
-                        $scope[key + "Message"] = data.result[key][0];
+                        $scope[key + "Message"] = errors[key][0];
                     })
                     $rootScope.refreshNum();
-                }
-            })
-        }
 
-
-        $scope.createReply = function (option) {
-            console.log(option);
-            $http.post("/reply/create", option).success(function (data) {
-                if (data.result === "success") {
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 1000)
                 } else {
-                    var keys = Object.keys(data.result);
-                    keys.forEach(function (key) {
-                        $scope[key + "Message"] = data.result[key][0];
-                    })
-                    $rootScope.refreshNum();
+                    var reply = result.data("reply");
+                    if(reply.parentId){
+                        $scope.subReplyIds[parentId].push(reply.id);
+                    }else{
+                        $scope.replyIdsList.push(reply.id);
+                        $scope.subReplyIds[reply.id] = [];
+
+                    }
+                    $scope.replys[reply.id] = reply;
+
                 }
-            })
+            });
 
         }
 
-        $scope.createReply2 = function () {
-            var option = {
-                title: $scope.title,
-                body: editor.content(),
-                validat_num: $scope.validat_num,
-                topicId: $scope.topicId
-            }
-
-            $http.post("/reply/create", option).success(function (data) {
-                if (data.result === "success") {
-                    setTimeout(function () {
-                        window.location.reload();
-                    }, 1000)
-                } else {
-                    var keys = Object.keys(data.result);
-                    keys.forEach(function (key) {
-                        $scope[key + "Message"] = data.result[key][0];
-                    })
-                    $rootScope.refreshNum();
-                }
-            })
-        }
     })
     .controller("columnCtrl",function ($scope, $modal) {
 

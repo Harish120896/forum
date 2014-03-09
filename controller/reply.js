@@ -1,7 +1,6 @@
 module.exports = {
 
     create: function (req, res, next) {
-        console.log(req.result.error())
 
         if (req.result.hasError()) {
             return next();
