@@ -3,6 +3,16 @@ html, body, iframe, div {
   padding:0;
 }
 
+.epic-editor iframe{
+    width:100%;
+}
+
+#epiceditor-wrapper,#epiceditor-editor-frame,#epiceditor-previewer-frame{
+    width:100%;
+}
+
+
+
 #epiceditor-utilbar {
   position:fixed;
   bottom:10px;

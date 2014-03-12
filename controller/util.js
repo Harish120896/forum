@@ -49,7 +49,6 @@ var util = {
 
     isLogin: function (req, res, next) {
 
-
         if (req.result.hasError()) {
             return next();
         }

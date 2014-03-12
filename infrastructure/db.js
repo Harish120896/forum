@@ -25,10 +25,10 @@ module.exports = {
             $set: data
         }, {}, cb);
     },
-    remove: function (type, id, cb) {
+    remove: function (type, id) {
         dbs[type].remove({
             "id": id
-        }, {}, cb);
+        }, {}, function(){});
     },
     getDB: function (type) {
         return dbs[type];

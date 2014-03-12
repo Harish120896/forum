@@ -12,7 +12,6 @@ module.exports = function wrap(app) {
 
     app.post("/reply/:id/remove",
         util.isLogin,
-        util.validat_num,
         data.replyById,
         util.hasReply,
         util.isReplyManager,

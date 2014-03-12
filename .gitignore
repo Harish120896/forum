@@ -5,4 +5,4 @@ infrastructure/config.json
 infrastructure/db
 infrastructure/dbs
 test/util/config.json
-
+public/logo/*

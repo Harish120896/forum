@@ -29,7 +29,12 @@ function wrap(my) {
     handle2.commandName = "remove a topic";
 
     function handle2(args, callback) {
-        my.repos.Topic.remove(args.id);
+        my.repos.Topic.get(args.id).then(function(topic){
+            if(topic){
+                topic.removeReply();
+                my.repos.Topic.remove(args.id);
+            }
+        })
         callback();
     }
 
@@ -157,13 +162,26 @@ function wrap(my) {
         callback();
     }
 
-    handle5.commandName = "remove a user";
+    handle10.commandName = "remove a user";
 
     function handle10(args, callback) {
 
         my.repos.Topic.remove(args.id, callback)
     }
 
-    return [handle1, handle2, handle3, handle4, handle5, handle6, handle7, handle8, handle9, handle10];
+
+    handle11.commandName = "isCustomLogo";
+
+    function handle11(args, callback) {
+        my.repos.User.get(args.id).then(function(user){
+
+            if(user){
+                var custom = args.custom === true || false;
+                user.isCustomLogo = custom;
+            }
+        })
+    }
+
+    return [handle1, handle2, handle3, handle4, handle5, handle6, handle7, handle8, handle9, handle10,handle11];
 
 }

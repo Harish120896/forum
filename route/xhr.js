@@ -27,10 +27,13 @@ module.exports = function wrap(app) {
     )
 
     app.get("/user/:id/get",
-        util.xhr,
         data.userById,
         function (req, res) {
-            res.send(req.user);
+            var user = req.result.data("user");
+            if(user){
+                delete user.password;
+            }
+            res.send(user);
         });
 
     app.get("/reply/:id",
@@ -60,5 +63,15 @@ module.exports = function wrap(app) {
         function (req, res) {
             res.send(req.result.data("validatNumPng"));
         })
-
+//
+//    app.get("/user/logo/:nickname",
+//        data.userByNick,
+//        function(req,res){
+//            var user = req.result.data("user");
+//            if(user){
+//
+//            }else{
+//                res.send(404);
+//            }
+//    })
 }

@@ -1,4 +1,5 @@
 var dbs = require("./db");
+var crypto = require("crypto");
 
 module.exports = wrap;
 
@@ -7,6 +8,9 @@ function wrap(my) {
     handle1.eventName = "*.*.create";
 
     function handle1(className, data) {
+        if(className === "User"){
+            data.logo = crypto.createHash("md5").update(data.email).digest("hex");
+        }
         dbs.save(className, data, function () {
         })
     }
@@ -23,4 +27,5 @@ function wrap(my) {
     }
 
     return [handle1, handle2, handle3];
+
 }

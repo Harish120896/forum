@@ -2,11 +2,7 @@ var express = require('express');
 var http = require('http');
 var fs = require("fs");
 var path = require("path");
-var result = require("./controller/util").result;
 var app = express();
-
-// config domain
-var env = require("./infrastructure/env");
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -17,11 +13,12 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+app.use(express.bodyParser());
 app.use(express.cookieParser('your secret here'));
 app.use(express.session());
 
-app.use(result);
-app.use(env);
+app.use(require("./controller/util").result);
+app.use(require("./infrastructure/env"));
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));

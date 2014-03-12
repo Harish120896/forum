@@ -33,8 +33,12 @@ module.exports = function wrap(app) {
         data.userById,
         util.hasUser,
         function (req, res) {
-            res.locals.user = req.user;
-            res.render("user");
+            if(req.result.hasError()){
+                res.send(404);
+            }else{
+                res.locals.user = req.result.data("user");
+                res.render("user");
+            }
         });
 
     app.get("/column/:id",

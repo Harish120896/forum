@@ -116,4 +116,15 @@ module.exports = function wrap(app) {
             res.send(req.user);
         })
 
+    app.post("/user/updateLogo",
+        util.isLogin,
+        userCtrl.updateLogo
+    )
+
+    app.post("/user/isCustomLogo",
+        util.isLogin,
+        userCtrl.isCustomLogo,
+        util.end
+    )
+
 }

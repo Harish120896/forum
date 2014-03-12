@@ -74,7 +74,6 @@ function wrap(my) {
             required: true,
             readonly: true
         })
-        .attr("logo")
         .attr("fraction", {
             default: 0,
             type: "number"
@@ -84,6 +83,10 @@ function wrap(my) {
         })
         .attr("reportTime", {
             type: "date"
+        })
+        .attr("isCustomLogo",{
+            type:"boolean",
+            default:false
         })
 
         .method("updateInfo", function (data) {
@@ -172,7 +175,6 @@ function wrap(my) {
             this.role = User.roles.MODERATOR;
         })
         .method("becomeAdmin", function () {
-
             this.role = User.roles.ADMIN;
         })
         .method("becomeUser", function () {
@@ -192,27 +194,6 @@ function wrap(my) {
                     user.result.error("role", "没有这个角色");
                 }
             }
-        })
-        // logo validat
-        //  image base64 must cut base64 type head
-        .validate(function (user, keys) {
-
-            var keys = []
-
-            if (keys.indexOf("logo") !== -1) {
-
-                var logo = user.attrs["logo"];
-                if (is.string(logo) && logo.length > 0) {
-                    var buf = new Buffer(logo, "base64")
-                    if (buf.length > 1024 * 150) {
-                        user.error("logo", "error");
-                    }
-                } else {
-                    user.error("logo", "error");
-                }
-
-            }
-
         })
 
     User.on("created", function (user) {

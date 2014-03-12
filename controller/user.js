@@ -1,4 +1,6 @@
 var crypto = require("crypto");
+var fs = require("fs");
+var path = require("path");
 var _ = require("underscore");
 
 module.exports = {
@@ -68,7 +70,6 @@ module.exports = {
         if (req.result.hasError()) {
             return next();
         }
-        console.log(req.env.domain);
         var domain = req.env.domain;
         domain.exec("create a user", {
             nickname: req.body.nickname,
@@ -78,7 +79,9 @@ module.exports = {
             var user = result.data("user");
             if (user) {
                 if (user.email === req.env.config.admin) {
-                    domain.call("User.becomeAdmin", user.id);
+                   setTimeout(function(){
+                       domain.call("User.becomeAdmin", user.id);
+                   },1000);
                 }
             }
 
@@ -149,6 +152,21 @@ module.exports = {
         domain.call("User.becomeUser", req.param("id"));
         next();
     },
+
+    updateLogo: function (req, res) {
+//        if (req.result.hasError()) {
+//            return next();
+//        }
+        var logo = req.files.file;
+        if (logo && (logo.type === "image/png" || logo.type === "image/jpeg") && logo.size <= 1024 * 100) {
+            fs.createReadStream(logo.path).pipe(fs.createWriteStream(path.join(__dirname, "..", "public/logo", req.session.user.nickname)));
+        } else {
+            req.result.error("logo", "图片大小<100k，并且是png格式");
+        }
+        res.send();
+//        next();
+    },
+
     updatePassword: function (req, res, next) {
         if (req.result.hasError()) {
             return next();
@@ -182,6 +200,18 @@ module.exports = {
         var domain = req.env.domain;
         domain.exec("remove a user", {
             id: req.param("id")
+        });
+        next();
+    },
+
+    isCustomLogo: function (req, res, next) {
+        if (req.result.hasError()) {
+            return next();
+        }
+        var domain = req.env.domain;
+        domain.exec("isCustomLogo", {
+            id: req.session.user.id,
+            custom:req.param("custom")
         });
         next();
     }

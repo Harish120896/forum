@@ -90,6 +90,20 @@ module.exports = {
         })
     },
 
+    userByNick: function (req, res, next) {
+        if (req.result.hasError()) {
+            return next();
+        }
+        var query = req.env.query;
+
+        query.userByNick(req.param("nickname"), function (rs) {
+            if (rs) {
+                req.result.data("user", rs);
+            }
+            next();
+        })
+    },
+
     topicById: function (req, res, next) {
         if (req.result.hasError()) {
             return next();

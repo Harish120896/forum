@@ -72,21 +72,22 @@ function wrap(my) {
                 }
                 ids.push(replyId);
                 ids.forEach(function (id) {
-                    my.repos.Reply.remove(id);
+                   my.repos.Reply.remove(id);
                 })
             }
+            this.replyTree = this.replyTree;
         })
         .method("access", function () {
             var num = this.accessNum;
             this.accessNum = num + 1;
         })
         .method("addReply", function (parentId, replyId) {
-            console.log(replyId)
             var tree = this.replyTree;
             var parent = tree.getNode(parentId);
             if (parent) {
                 parent.appendChild(new Node(replyId));
             }
+            this.replyTree = tree;
 
         })
         .method("updateInfo", function (title, body, columnId) {

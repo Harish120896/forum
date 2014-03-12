@@ -1,4 +1,4 @@
-var app = angular.module('jseraApp', ['ui.bootstrap'])
+var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
 
     .config([
         '$httpProvider',
@@ -85,6 +85,9 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
                         editor.on("update", function (v) {
                             content = v.content;
                         })
+                        element.find("iframe").css("width","100%");
+                        console.log(element.find("iframe").css("width"));
+
                     });
 
                 }
@@ -115,7 +118,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             link: function (scope, elem, attrs) {
 
                 scope.$watch("editorContainerId", function (v) {
-                    console.log(v)
                     if (v) {
                         var parent = document.querySelector("#" + v);
                         parent.appendChild(elem[0]);
@@ -132,13 +134,13 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
     .controller("headerCtrl", function ($scope, $modal, $http, $rootScope) {
         $scope.openLoginDialog = function () {
             $modal.open({
-                templateUrl: 'template/login.html',
+                templateUrl: '/template/login.html',
                 controller: "loginCtrl"
             });
         };
         $scope.openRegDialog = function () {
             $modal.open({
-                templateUrl: 'template/reg.html',
+                templateUrl: '/template/reg.html',
                 controller: "regCtrl"
             });
         };
@@ -149,9 +151,11 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
         }
     })
 
-    .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope) {
+    .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope,shareCode) {
 
         $scope.data = {}
+
+        var handle = shareCode.getResultHandle($scope,$modalInstance);
 
         $modalInstance.opened.then(function () {
             $scope.tabindex = "1";
@@ -162,33 +166,15 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
         }
 
         $scope.login = function () {
-            $http.post("/user/login", {
-                email: $scope.data.email,
-                password: $scope.data.password,
-                validat_num: $scope.data.validat_num
-            }).success(function (data) {
-                    if (data === "success") {
-                        $rootScope.checkLogined();
-                        $modalInstance.dismiss('cancel');
-                    } else {
-                        var keys = Object.keys(data);
-                        keys.forEach(function (key) {
-                            if (key === "user") {
-                                $scope["emailMessage"] = data[key][0];
-                            } else {
-                                $scope[key + "Message"] = data[key][0];
-                            }
-                        })
-                        $rootScope.refreshNum();
-                    }
-                })
+            $http.post("/user/login",$scope.data).success(handle);
         }
 
     })
 
-    .controller("regCtrl", function ($scope, $modalInstance, $http, $rootScope) {
+    .controller("regCtrl", function ($scope, $modalInstance, $http, $rootScope, shareCode) {
 
         $scope.data = {}
+        var handle = shareCode.getResultHandle($scope,$modalInstance);
 
         $modalInstance.opened.then(function () {
             $scope.tabindex = "1";
@@ -197,89 +183,101 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             $modalInstance.dismiss('cancel');
         }
         $scope.reg = function () {
-            $http.post("/user/reg", $scope.data).success(function (data) {
-                if (data === "success") {
-                    $rootScope.checkLogined();
-                    $modalInstance.dismiss('cancel');
-                } else {
-                    var keys = Object.keys(data);
-                    keys.forEach(function (key) {
-                        if (key === "user") {
-                            $scope["emailMessage"] = data[key][0];
-                        } else {
-                            $scope[key + "Message"] = data[key][0];
-                        }
-                    })
-                    $rootScope.refreshNum();
-                }
-            })
+            $http.post("/user/reg", $scope.data).success(handle);
         }
     })
+    .factory("shareCode", function (Result, $rootScope) {
 
-    .factory("Result",function(){
+        return {
+            getResultHandle: function ($scope, $modalInstance) {
+                return function resultHandle(data) {
+                    var result = new Result();
+                    result.reborn(data);
+                    if (!result.hasError()) {
+                        $rootScope.checkLogined();
+                        $modalInstance.dismiss('cancel');
+                    } else {
+                        var errors = result.error();
+                        var keys = Object.keys(errors);
+                        keys.forEach(function (key) {
+                            if (key === "user") {
+                                $scope["emailMessage"] = errors[key][0];
+                            } else {
+                                $scope[key + "Message"] = errors[key][0];
+                            }
+                        })
+                        $rootScope.refreshNum();
+                    }
+                }
+            }
+        }
 
-        function Result(){
+
+    })
+    .factory("Result", function () {
+
+        function Result() {
             this._errors = {};
             this._data = {};
         }
 
-        Result.isResult = function(obj){
+        Result.isResult = function (obj) {
             return obj instanceof this;
         }
 
         Result.prototype = {
-            error:function(attr,msg){
-                if(arguments.length === 2){
-                    if(!this._errors[attr]){
+            error: function (attr, msg) {
+                if (arguments.length === 2) {
+                    if (!this._errors[attr]) {
                         this._errors[attr] = [];
                     }
                     this._errors[attr].push(msg);
                     return this;
-                }else if(arguments.length === 1){
+                } else if (arguments.length === 1) {
                     return this._errors[attr];
-                }else{
+                } else {
                     return this._errors;
                 }
             },
-            hasError:function(){
+            hasError: function () {
                 return Object.keys(this._errors).length > 0;
             },
-            data:function(k,v){
-                if(arguments.length === 2){
+            data: function (k, v) {
+                if (arguments.length === 2) {
                     this._data[k] = v;
                     return this;
-                }else if(arguments.length === 1){
+                } else if (arguments.length === 1) {
                     return this._data[k];
-                }else{
+                } else {
                     return this._data;
                 }
             },
-            mix:function(result){
+            mix: function (result) {
 
                 var errKeys = Object.keys(result._errors);
                 var self = this;
 
-                errKeys.forEach(function(k){
-                    if(!self._errors[k]){
+                errKeys.forEach(function (k) {
+                    if (!self._errors[k]) {
                         self._errors[k] = [];
                     }
                     self._errors[k] = self._errors[k].concat(result._errors[k]);
                 })
 
                 var dataKeys = Object.keys(result._data);
-                dataKeys.forEach(function(k){
+                dataKeys.forEach(function (k) {
                     self._data[k] = result._data[k];
                 })
 
                 return this;
             },
-            clearError:function(){
+            clearError: function () {
                 this._errors = {};
             },
-            json:function(){
-                return {errors:this._errors,data:this._data};
+            json: function () {
+                return {errors: this._errors, data: this._data};
             },
-            reborn:function(json){
+            reborn: function (json) {
                 this._errors = json.errors || {};
                 this._data = json.data || {};
             }
@@ -290,9 +288,29 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
     })
     .factory("DATA", function ($http, $q) {
 
-        var replys = {}
+        var replys = {},users = {}
 
         return {
+            user:function(uid){
+                var deferred = $q.defer();
+                if(users[uid]){
+                    deferred.resolve(users[uid]);
+                }else{
+                    $http.get("/user/" + uid+"/get").success(function (data) {
+                        if(data){
+                            users[uid] = data;
+                            deferred.resolve(users[uid]);
+                        }else{
+                            deferred.resolve(null);
+                        }
+                    });
+                }
+                return deferred.promise;
+            },
+            removeReply: function (id) {
+                $http.post("/reply/" + id + "/remove");
+                delete replys[id];
+            },
             reply: function (id) {
                 var deferred = $q.defer();
                 if (replys[id]) {
@@ -314,7 +332,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
 
                     function getSubIdsList(child) {
                         var rs = child.childIdsList.concat([]);
-                        child.childIdsList.forEach(function(rid){
+                        child.childIdsList.forEach(function (rid) {
                             rs = rs.concat(getSubIdsList(child.childs[rid]));
                         })
                         return rs;
@@ -324,7 +342,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
                         subReplyIds[rid] = getSubIdsList(data.childs[rid]);
                     })
 
-                    deferred.resolve({replyIdsList:replyIdsList,subReplyIds:subReplyIds});
+                    deferred.resolve({replyIdsList: replyIdsList, subReplyIds: subReplyIds});
                 })
                 return deferred.promise;
             }
@@ -332,22 +350,30 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
 
     })
 
-    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA ,Result) {
-
+    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA, Result) {
 
         // skip reply num
         var replySkipNum = 2;
-        var showReplyPosition = 0;
-        var showSubReplyPositions = {};
+        $scope.showReplyPosition = 0;
+        $scope.showSubReplyPositions = {};
+
+        $scope.loadUser = function(uid){
+            DATA.user(uid).then(function(u){
+                $scope.users[uid] = u;
+            })
+        }
 
         // clear error message
-        function clearErrorMessage(){
+        function clearErrorMessage() {
             $scope.bodyMessage = false;
             $scope.validat_numMessage = false;
         }
 
         // show replys
         $scope.replys = {};
+        $scope.users = {};
+        $scope.showEditor = false;
+        $scope.editorContainerId = null;
 
         // init topicId
         $scope.$watch("topicId", function (topicId) {
@@ -358,55 +384,73 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
             })
         })
 
-        $scope.showEditor = false;
-        $scope.editorContainerId = null;
+        $scope.moveEditor = function (cid, parentId) {
+            if(cid === "createReply"){
+                $scope.editorContainerId = cid;
+                $scope.parentId = null;
+            }else{
+                $scope.editorContainerId = cid;
+                $scope.parentId = parentId || cid;
+            }
+        }
 
-        $scope.moveEditor = function(cid,parentId){
-            $scope.editorContainerId = cid;
-            $scope.parentId = parentId || cid;
+        $scope.removeReply = function (rid) {
+            delete $scope.replys[rid];
+            DATA.removeReply(rid);
+        }
+
+        $scope.removeTopic = function(){
+            $http.post("/topic/"+$scope.topicId+"/remove").success(function(data){
+                window.location.href = "/column/"+$scope.columnId;
+            })
         }
 
         $scope.moreReply = function () {
-            showReplyPosition += replySkipNum;
-            if(showReplyPosition > $scope.replyIdsList.length){
-                showReplyPosition = $scope.replyIdsList.length;
+
+            var old_showReplyPosition = $scope.showReplyPosition;
+            $scope.showReplyPosition += replySkipNum;
+            if ($scope.showReplyPosition > $scope.replyIdsList.length) {
+                $scope.showReplyPosition = $scope.replyIdsList.length;
             }
-            var ids = $scope.replyIdsList.slice(0,showReplyPosition);
-
-            ids.forEach(function(rid){
-                DATA.reply(rid).then(function(r){
-
-                    if(r){
+            var ids = $scope.replyIdsList.slice(old_showReplyPosition, $scope.showReplyPosition);
+            ids.forEach(function (rid) {
+                DATA.reply(rid).then(function (r) {
+                    if (r) {
                         $scope.moreSubReply(r.id);
                         $scope.replys[r.id] = r;
+                        $scope.loadUser(r.authorId);
                     }
                 })
             })
         }
 
+
         $scope.moreSubReply = function (rid) {
 
-            // init showSubReplyPositions[rid]
-            if(showSubReplyPositions[rid] === undefined){
-                showSubReplyPositions[rid] = 0;
+            // init $scope.showSubReplyPositions[rid]
+            if ($scope.showSubReplyPositions[rid] === undefined) {
+                $scope.showSubReplyPositions[rid] = 0;
             }
 
-            showSubReplyPositions[rid] += replySkipNum;
-            if(showSubReplyPositions[rid] > $scope.subReplyIds[rid].length){
-                showSubReplyPositions[rid] = $scope.subReplyIds[rid].length;
+            $scope.showSubReplyPositions[rid] += replySkipNum;
+            if ($scope.showSubReplyPositions[rid] > $scope.subReplyIds[rid].length) {
+                $scope.showSubReplyPositions[rid] = $scope.subReplyIds[rid].length;
             }
-            var ids = $scope.subReplyIds[rid].slice(0,showSubReplyPositions[rid]);
-            ids.forEach(function(rid){
-                DATA.reply(rid).then(function(r){
-                    if(r){
+
+            //console.log($scope.showSubReplyPositions[rid]);
+
+            var ids = $scope.subReplyIds[rid].slice(0, $scope.showSubReplyPositions[rid]);
+            ids.forEach(function (rid) {
+                DATA.reply(rid).then(function (r) {
+                    if (r) {
                         $scope.replys[r.id] = r;
+                        $scope.loadUser(r.authorId);
                     }
                 })
             })
         }
 
         $scope.createReply = function () {
-
             clearErrorMessage();
 
             var parentId = $scope.parentId;
@@ -432,18 +476,18 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
 
                 } else {
                     var reply = result.data("reply");
-                    if(reply.parentId){
-                        $scope.subReplyIds[parentId].push(reply.id);
-                    }else{
+                    if (reply.parentId) {
+                        $scope.subReplyIds[$scope.editorContainerId].push(reply.id);
+                        $scope.showSubReplyPositions[$scope.editorContainerId] += 1;
+                    } else {
                         $scope.replyIdsList.push(reply.id);
                         $scope.subReplyIds[reply.id] = [];
-
+                        $scope.showReplyPosition += 1;
                     }
                     $scope.replys[reply.id] = reply;
-
+                    $scope.loadUser(reply.authorId);
                 }
-            });
-
+            })
         }
 
     })
@@ -489,7 +533,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
 
     }).controller("updateColumnCtrl", function ($scope, $http, $modalInstance) {
 
-        console.log($modalInstance.id)
         $http.get("/column/" + $modalInstance.id + "/get")
             .success(function (data) {
                 $scope.data = data;
@@ -515,13 +558,50 @@ var app = angular.module('jseraApp', ['ui.bootstrap'])
         }
 
     })
-    .controller("infoCtrl", function ($scope, $http) {
+    .controller("userCtrl", function ($scope, $http,$upload) {
 
         $scope.nickEditShow = false;
 
         $scope.edit = function () {
             this.nickEditShow = true;
         }
+
+        var isCustomLog_init = false;
+        $scope.$watch("isCustomLogo",function(v){
+            if(isCustomLog_init){
+                $http.post("/user/isCustomLogo",{custom:v});
+            }else{
+                isCustomLog_init = true;
+            }
+        });
+
+        $scope.onFileSelect = function($files) {
+            //$files: an array of files selected, each file has name, size, and type.
+            for (var i = 0; i < $files.length; i++) {
+                var file = $files[i];
+                $scope.upload = $upload.upload({
+                    url: '/user/updateLogo', //upload.php script, node.js route, or servlet url
+                    // method: POST or PUT,
+                    // headers: {'headerKey': 'headerValue'},
+                    // withCredentials: true,
+                    data: {myObj: $scope.myModelObj},
+                    file: file,
+                    // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
+                    /* set file formData name for 'Content-Desposition' header. Default: 'file' */
+                    //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
+                    /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
+                    //formDataAppender: function(formData, key, val){} //#40#issuecomment-28612000
+                }).progress(function(evt) {
+                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                    }).success(function(data, status, headers, config) {
+                        // file is uploaded successfully
+                        console.log(data);
+                    });
+                //.error(...)
+                //.then(success, error, progress);
+            }
+            // $scope.upload = $upload.upload({...}) alternative way of uploading, sends the the file content directly with the same content-type of the file. Could be used to upload files to CouchDB, imgur, etc... for HTML5 FileReader browsers.
+        };
 
         $scope.nickEditOk = function () {
             var oldnick = this.nickname;
