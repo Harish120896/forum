@@ -11,9 +11,35 @@
     <table class="table">
         <% topics.forEach(function(topic){ %>
         <tr>
-            <td><a href="/topic/<%=topic.id%>"><%=topic.title%></td>
+            <td><a href="/topic/<%=topic.id%>" ng-non-bindable><%=topic.title%></a></td>
         </tr>
         <% }) %>
+        <tr>
+            <td>
+            <ul class="pagination">
+
+                <%if(page!==1){%>
+                    <li><a href="/column/<%=column.id%>/1">首页</a></li>
+                    <li><a href="/column/<%=column.id%>/<%=page-1%>">上一页</a></li>
+                <%}%>
+
+                <% var startPage = 1+ (groupNum-1)*(groupMaxPageNum-1)%>
+                <%for(var j=0;startPage<pagenum+1 && j<groupMaxPageNum;startPage++,j++){%>
+                    <% if(startPage===page){%>
+                    <li class="active"><a href="#" ><%=startPage%></a></li>
+                    <%}else{%>
+                    <li ><a href="/column/<%=column.id%>/<%=startPage%>" ><%=startPage%></a></li>
+                    <%}%>
+                <%}%>
+
+                <%if(page!==pagenum){%>
+                <li><a href="/column/<%=column.id%>/<%=page+1%>">下一页</a></li>
+                <li><a href="/column/<%=column.id%>/<%=pagenum%>">尾页</a></li>
+                <%}%>
+
+            </ul>
+            </td>
+        </tr>
     </table>
 
     <div role="form" id="createTopic">

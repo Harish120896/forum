@@ -9,7 +9,15 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
     ])
 
+    .filter('markdown', function ($sce) {
+        return function (value) {
+            var html = marked(value || '');
+            return $sce.trustAsHtml(html);
+        };
+    })
+
     .run(function ($rootScope, $http) {
+        $rootScope.users = {}
         $rootScope.refreshNum = function () {
             this.time = Date.now();
         }
@@ -19,11 +27,203 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             $http.post("/user/logined").success(function (data) {
                 if (data.email) {
                     self.user = data;
+                    $rootScope.users[data.id] = data;
                     self.logined = true;
                 }
             })
         }
+        $rootScope.hash = window.location.hash;
         $rootScope.checkLogined();
+    })
+
+    .factory('$position', ['$document', '$window', function ($document, $window) {
+
+        function getStyle(el, cssprop) {
+            if (el.currentStyle) { //IE
+                return el.currentStyle[cssprop];
+            } else if ($window.getComputedStyle) {
+                return $window.getComputedStyle(el)[cssprop];
+            }
+            // finally try and get inline style
+            return el.style[cssprop];
+        }
+
+        /**
+         * Checks if a given element is statically positioned
+         * @param element - raw DOM element
+         */
+        function isStaticPositioned(element) {
+            return (getStyle(element, 'position') || 'static' ) === 'static';
+        }
+
+        /**
+         * returns the closest, non-statically positioned parentOffset of a given element
+         * @param element
+         */
+        var parentOffsetEl = function (element) {
+            var docDomEl = $document[0];
+            var offsetParent = element.offsetParent || docDomEl;
+            while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
+                offsetParent = offsetParent.offsetParent;
+            }
+            return offsetParent || docDomEl;
+        };
+
+        return {
+            /**
+             * Provides read-only equivalent of jQuery's position function:
+             * http://api.jquery.com/position/
+             */
+            position: function (element) {
+                var elBCR = this.offset(element);
+                var offsetParentBCR = { top: 0, left: 0 };
+                var offsetParentEl = parentOffsetEl(element[0]);
+                if (offsetParentEl != $document[0]) {
+                    offsetParentBCR = this.offset(angular.element(offsetParentEl));
+                    offsetParentBCR.top += offsetParentEl.clientTop - offsetParentEl.scrollTop;
+                    offsetParentBCR.left += offsetParentEl.clientLeft - offsetParentEl.scrollLeft;
+                }
+
+                var boundingClientRect = element[0].getBoundingClientRect();
+                return {
+                    width: boundingClientRect.width || element.prop('offsetWidth'),
+                    height: boundingClientRect.height || element.prop('offsetHeight'),
+                    top: elBCR.top - offsetParentBCR.top,
+                    left: elBCR.left - offsetParentBCR.left
+                };
+            },
+
+            /**
+             * Provides read-only equivalent of jQuery's offset function:
+             * http://api.jquery.com/offset/
+             */
+            offset: function (element) {
+                var boundingClientRect = element[0].getBoundingClientRect();
+                return {
+                    width: boundingClientRect.width || element.prop('offsetWidth'),
+                    height: boundingClientRect.height || element.prop('offsetHeight'),
+                    top: boundingClientRect.top + ($window.pageYOffset || $document[0].documentElement.scrollTop),
+                    left: boundingClientRect.left + ($window.pageXOffset || $document[0].documentElement.scrollLeft)
+                };
+            },
+
+            /**
+             * Provides coordinates for the targetEl in relation to hostEl
+             */
+            positionElements: function (hostEl, targetEl, positionStr, appendToBody) {
+
+                var positionStrParts = positionStr.split('-');
+                var pos0 = positionStrParts[0], pos1 = positionStrParts[1] || 'center';
+
+                var hostElPos,
+                    targetElWidth,
+                    targetElHeight,
+                    targetElPos;
+
+                hostElPos = appendToBody ? this.offset(hostEl) : this.position(hostEl);
+
+                targetElWidth = targetEl.prop('offsetWidth');
+                targetElHeight = targetEl.prop('offsetHeight');
+
+                var shiftWidth = {
+                    center: function () {
+                        return hostElPos.left + hostElPos.width / 2 - targetElWidth / 2;
+                    },
+                    left: function () {
+                        return hostElPos.left;
+                    },
+                    right: function () {
+                        return hostElPos.left + hostElPos.width;
+                    }
+                };
+
+                var shiftHeight = {
+                    center: function () {
+                        return hostElPos.top + hostElPos.height / 2 - targetElHeight / 2;
+                    },
+                    top: function () {
+                        return hostElPos.top;
+                    },
+                    bottom: function () {
+                        return hostElPos.top + hostElPos.height;
+                    }
+                };
+
+                switch (pos0) {
+                    case 'right':
+                        targetElPos = {
+                            top: shiftHeight[pos1](),
+                            left: shiftWidth[pos0]()
+                        };
+                        break;
+                    case 'left':
+                        targetElPos = {
+                            top: shiftHeight[pos1](),
+                            left: hostElPos.left - targetElWidth
+                        };
+                        break;
+                    case 'bottom':
+                        targetElPos = {
+                            top: shiftHeight[pos0](),
+                            left: shiftWidth[pos1]()
+                        };
+                        break;
+                    default:
+                        targetElPos = {
+                            top: hostElPos.top - targetElHeight,
+                            left: shiftWidth[pos1]()
+                        };
+                        break;
+                }
+
+                return targetElPos;
+            }
+        };
+    }])
+    .directive("usercode",function($http,$compile,$timeout,$modal,$position,$rootScope){
+
+        return {
+            scope:{
+                "userId":"@"
+            },
+            link:function(scope,elem,attrs){
+            $http.get("/template/usercode.html").then(function(rs){
+                scope.users = $rootScope.users;
+                scope.$watch("userId",function(v){
+                    var code = $compile(angular.element(rs.data))(scope);
+                    var closefn;
+                    angular.element(document.body).append(code);
+
+                    elem.bind("mouseenter",function(event){
+                        code.bind("mouseenter",function(event){
+                            code.bind("mouseleave",function(){
+                                scope.showcode = false;
+                                scope.$apply();
+                            })
+
+                        });
+                        scope.showcode = true;
+                        scope.$apply();
+                        var pos = $position.offset(elem);
+                        code.css("left",pos.left+"px").css("top",pos.top+17+"px");
+                        scope.sendMessage = function(){
+                            $modal.open({
+                                scope:scope,
+                                templateUrl: '/template/message.html',
+                                controller: "messageCtrl"
+                            });
+                        }
+                        scope.follow = function(){
+                            $http.post("/user/"+v+"/follow");
+                        }
+                    })
+
+
+                })
+
+            });
+        }
+        }
     })
 
     .directive("focus", function ($timeout) {
@@ -65,8 +265,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             restrict: "E",
             link: function (scope, element, attrs) {
 
-                var editor;
-                var content = "";
+                var editor,content;
 
                 function refresh() {
 
@@ -82,12 +281,10 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     editor = new EpicEditor(opts);
                     editor.load(function () {
                         editor.importFile(null, scope.content);
-                        editor.on("update", function (v) {
-                            content = v.content;
-                        })
                         element.find("iframe").css("width","100%");
-                        console.log(element.find("iframe").css("width"));
-
+                        editor.on("update",function(v){
+                            content = v.content;
+                        });
                     });
 
                 }
@@ -151,7 +348,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
     })
 
-    .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope,shareCode) {
+    .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope,shareCode ) {
 
         $scope.data = {}
 
@@ -196,6 +393,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     if (!result.hasError()) {
                         $rootScope.checkLogined();
                         $modalInstance.dismiss('cancel');
+                        $rootScope.tipone = true;
                     } else {
                         var errors = result.error();
                         var keys = Object.keys(errors);
@@ -286,9 +484,9 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         return Result;
 
     })
-    .factory("DATA", function ($http, $q) {
+    .factory("DATA", function ($http, $q,$rootScope) {
 
-        var replys = {},users = {}
+        var replys = {},users = $rootScope.users;
 
         return {
             user:function(uid){
@@ -345,17 +543,62 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     deferred.resolve({replyIdsList: replyIdsList, subReplyIds: subReplyIds});
                 })
                 return deferred.promise;
+            },
+            topicTitles:function(uid,page){
+                var deferred = $q.defer();
+                $http.get("/topicTitleListByUserId/"+uid+"/"+page).success(function(rs){
+                    deferred.resolve(rs);
+                });
+                return deferred.promise;
+            },
+            topicCount:function(uid){
+                var deferred = $q.defer();
+                $http.get("/topicCountByUserId/"+uid).success(function(rs){
+                    rs = rs.topicCount || 0;
+                    deferred.resolve(rs);
+                });
+                return deferred.promise;
+            },
+            replysByUserId:function(uid,page){
+                var deferred = $q.defer();
+                $http.get("/replyIdsByUserId/"+uid+"/"+page).success(function(rs){
+                    deferred.resolve(rs);
+                });
+                return deferred.promise;
+            },
+            topicById:function(tid){
+                var deferred = $q.defer();
+                $http.get("/topicById/"+tid).success(function(rs){
+                    deferred.resolve(rs);
+                });
+                return deferred.promise;
+            },
+            replyCount:function(uid){
+                var deferred = $q.defer();
+                $http.get("/replyCountByUserId/"+uid).success(function(rs){
+                    rs = rs.topicCount || 0;
+                    deferred.resolve(rs);
+                });
+                return deferred.promise;
+            },
+            messageList:function(page){
+                var deferred = $q.defer();
+                $http.get("/messageList/"+page).success(function(rs){
+                    deferred.resolve(rs);
+                });
+                return deferred.promise;
             }
         }
 
     })
 
-    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA, Result) {
+    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA, Result,ability) {
 
         // skip reply num
         var replySkipNum = 2;
         $scope.showReplyPosition = 0;
         $scope.showSubReplyPositions = {};
+        $scope.ability = ability;
 
         $scope.loadUser = function(uid){
             DATA.user(uid).then(function(u){
@@ -375,16 +618,60 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         $scope.showEditor = false;
         $scope.editorContainerId = null;
 
-        // init topicId
+         // init topicId
         $scope.$watch("topicId", function (topicId) {
             DATA.replyTree(topicId).then(function (replyTree) {
                 $scope.replyIdsList = replyTree.replyIdsList;
                 $scope.subReplyIds = replyTree.subReplyIds;
                 $scope.moreReply();
+                // show reply by location.hash
+                if($rootScope.hash){
+
+                    var replyId = $rootScope.hash.substr(1),parent,sub;
+
+                    // find parent reply
+                    for(var i= 0,len= $scope.replyIdsList.length;i<len;i++){
+                       var pid = $scope.replyIdsList[i];
+                        if(pid === replyId){
+                            parent = pid;
+                            break;
+                       }
+                       var sids = $scope.subReplyIds[pid];
+
+                       for(var k= 0,len = sids.length ; k<len;k++){
+                          var sid = sids[k];
+                          if(sid === replyId){
+                              parent = pid;
+                              sub = sid;
+                              break;
+                          }
+                       }
+                    }
+
+                    if(parent){
+                        DATA.reply(parent).then(function (r) {
+                            if (r) {
+                                $scope.moreSubReply(r.id);
+                                $scope.replys[r.id] = r;
+                                $scope.loadUser(r.authorId);
+                            }
+                        })
+                    }
+                    if(sub){
+                        DATA.reply(sub).then(function (r) {
+                            if (r) {
+                                $scope.replys[r.id] = r;
+                                $scope.loadUser(r.authorId);
+                            }
+                        })
+                    }
+
+                }
             })
         })
 
         $scope.moveEditor = function (cid, parentId) {
+            $scope.validat_numMessage = null;
             if(cid === "createReply"){
                 $scope.editorContainerId = cid;
                 $scope.parentId = null;
@@ -395,14 +682,21 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
 
         $scope.removeReply = function (rid) {
-            delete $scope.replys[rid];
-            DATA.removeReply(rid);
+            var bool = window.confirm("确定删除这条回复吗？");
+            if(bool){
+                delete $scope.replys[rid];
+                DATA.removeReply(rid);
+            }
+
         }
 
         $scope.removeTopic = function(){
-            $http.post("/topic/"+$scope.topicId+"/remove").success(function(data){
-                window.location.href = "/column/"+$scope.columnId;
-            })
+            var bool = window.confirm("确定删除主题帖吗？");
+            if(bool){
+                $http.post("/topic/"+$scope.topicId+"/remove").success(function(data){
+                    window.location.href = "/column/"+$scope.columnId;
+                })
+            }
         }
 
         $scope.moreReply = function () {
@@ -463,7 +757,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             }
 
             $http.post("/reply/create", data).success(function (rs) {
-
                 var result = new Result();
                 result.reborn(rs);
                 if (result.hasError()) {
@@ -472,7 +765,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     keys.forEach(function (key) {
                         $scope[key + "Message"] = errors[key][0];
                     })
-                    $rootScope.refreshNum();
 
                 } else {
                     var reply = result.data("reply");
@@ -487,6 +779,10 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     $scope.replys[reply.id] = reply;
                     $scope.loadUser(reply.authorId);
                 }
+                $scope.validat_num = "";
+                $scope.epicEditor.refresh();
+                $rootScope.refreshNum();
+
             })
         }
 
@@ -558,15 +854,13 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
 
     })
-    .controller("userCtrl", function ($scope, $http,$upload) {
+    .controller("userCtrl", function ($scope, $http,$upload,DATA,$tooltip) {
 
-        $scope.nickEditShow = false;
-
-        $scope.edit = function () {
-            this.nickEditShow = true;
-        }
 
         var isCustomLog_init = false;
+        $scope.replys = [];
+        $scope.topics = [];
+
         $scope.$watch("isCustomLogo",function(v){
             if(isCustomLog_init){
                 $http.post("/user/isCustomLogo",{custom:v});
@@ -595,7 +889,9 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     }).success(function(data, status, headers, config) {
                         // file is uploaded successfully
-                        console.log(data);
+                        setTimeout(function(){
+                            window.location.reload()
+                        },1000);
                     });
                 //.error(...)
                 //.then(success, error, progress);
@@ -603,21 +899,92 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             // $scope.upload = $upload.upload({...}) alternative way of uploading, sends the the file content directly with the same content-type of the file. Could be used to upload files to CouchDB, imgur, etc... for HTML5 FileReader browsers.
         };
 
-        $scope.nickEditOk = function () {
-            var oldnick = this.nickname;
-            $http.post("/user/updateNickname", {nickname: $scope.nickname}).success(function (err) {
-                if (err) {
-                    $scope.nickEditErrorShow = true;
-                } else {
-                    $scope.nickEditShow = false;
-                    $scope.nickEditErrorShow = false;
+        $scope.setManager = function(uid,cid){
+            $http.post("/column/"+cid+"/setManager",{userId:uid});
+            setTimeout(function(){
+                window.location.reload()
+            },1000);
+        }
 
+        $scope.selectTopicPage = function(page){
+            DATA.topicTitles($scope.userId,page).then(function(rs){
+                $scope.topicTitles = rs;
+            })
+        }
+
+        $scope.selectReplyPage = function(page){
+                DATA.replysByUserId($scope.userId,page).then(function(rs){
+                    $scope.replys = rs;
+                    for(var i= 0,len = rs.length; i<len ; i++){
+                        DATA.topicById(rs[i].topicId).then(function(t){
+                            if(t){
+                                $scope.topics[t.id] = t;
+                            }
+                        })
+                    }
+                });
+        }
+
+        $scope.loadTopicList = function(){
+            DATA.topicCount($scope.userId).then(function(rs){
+                $scope.bigTotalItems = rs;
+                $scope.bigCurrentPage = 1;
+                $scope.perPage = 3;
+
+            })
+            DATA.topicTitles($scope.userId,0).then(function(rs){
+                $scope.topicTitles = rs;
+            })
+        }
+
+        $scope.loadReplyList = function(){
+            DATA.replyCount($scope.userId).then(function(rs){
+                $scope.bigTotalItems2 = rs;
+                $scope.bigCurrentPage2 = 1;
+                $scope.perPage2 = 3;
+            })
+            DATA.replysByUserId($scope.userId,0).then(function(rs){
+                $scope.replys = rs;
+                for(var i= 0,len = rs.length; i<len ; i++){
+                    DATA.topicById(rs[i].topicId).then(function(t){
+                        if(t){
+                            $scope.topics[t.id] = t;
+                        }
+                    })
+                }
+            })
+        }
+
+        // DOTO
+        $scope.loadMessageList = function(){
+//            DATA.topicCount($scope.userId).then(function(rs){
+//                $scope.bigTotalItems = rs;
+//                $scope.bigCurrentPage = 1;
+//                $scope.perPage = 3;
+//
+//            })
+            DATA.messageList(0).then(function(rs){
+                $scope.messageList = rs;
+            })
+        }
+
+        $scope.$watch("userId",function(v){
+
+            DATA.user($scope.userId).then(function(user){
+                $scope.user = user;
+                for(var i= 0,len=user.follows.length;i<len;i++){
+                    DATA.user(user.follows[i]);
+                }
+                for(var i= 0,len=user.watchers.length;i<len;i++){
+                    DATA.user(user.watchers[i]);
                 }
             })
 
-        }
+        })
+
+
     })
-    .controller("topicCtrl", function ($scope, $http, $rootScope) {
+    .controller("topicCtrl", function ($scope, $http, $rootScope,Result) {
         $scope.createTopic = function () {
             $http.post("/topic/create", {
                 title: $scope.title,
@@ -625,17 +992,33 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                 validat_num: $scope.validat_num,
                 columnId: $scope.columnId
             }).success(function (data) {
-                    if (data === "success") {
+                    var result = new Result();
+                    result.reborn(data);
+                    if (!result.hasError()) {
                         setTimeout(function () {
                             window.location.reload();
                         }, 1000)
                     } else {
-                        var keys = Object.keys(data);
+                        var errors= result.error();
+                        var keys = Object.keys(errors);
                         keys.forEach(function (key) {
-                            $scope[key + "Message"] = data[key][0];
+                            $scope[key + "Message"] = errors[key][0];
                         })
                         $rootScope.refreshNum();
                     }
                 })
+        }
+    })
+    .controller("messageCtrl",function($scope,$http,$modalInstance,Result,$rootScope){
+        $scope.data = {};
+        $scope.close = function(){
+            $modalInstance.dismiss('cancel');
+        }
+        $scope.send = function(){
+
+            $scope.data.body += " @" + $rootScope.users[$scope.userId].nickname;
+            $http.post("/message/send",$scope.data).success(function(rs){
+
+            })
         }
     })

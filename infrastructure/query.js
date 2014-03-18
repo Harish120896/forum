@@ -79,8 +79,10 @@ module.exports = {
     },
 
     topicsByColumnId: function (page, columnId, callback) {
+
         if (columnId) {
-            var page = is.number(page) && page > 0 && Number(page) === page ? page : 1;
+            page = parseInt(page);
+            page = page > 0 ? page : 1;
             var db = dbs.getDB("Topic");
             db
                 .find({
@@ -98,6 +100,13 @@ module.exports = {
             callback([]);
         }
 
+    },
+
+    topicCountByColumnId: function(columnId,callback){
+        var db = dbs.getDB("Topic");
+        db.count({columnId:columnId}).exec(function(err,count){
+            callback(count || 0);
+        })
     },
 
     users: function (callback) {
@@ -177,6 +186,103 @@ module.exports = {
             .exec(function (err, num) {
                 callback(num || 0);
             })
+    },
+
+    topicTitleListByUserId: function (userId, page, callback) {
+        if (userId) {
+            page = parseInt(page);
+            page = page > 0 ? page : 1;
+            var db = dbs.getDB("Topic");
+            db
+                .find({
+                    authorId: userId
+                })
+                .limit(3)
+                .sort({
+                    createTime: -1
+                })
+                .skip((page - 1) * 3)
+                .exec(function (err, rs) {
+                    callback(rs || []);
+                })
+        } else {
+            callback([]);
+        }
+    },
+
+    topicCountByUserId: function (userId, callback) {
+        if (userId) {
+            var db = dbs.getDB("Topic");
+            db
+                .count({
+                    authorId: userId
+                })
+                .exec(function (err, rs) {
+                    callback(rs || 0);
+                })
+        } else {
+            callback(0);
+        }
+    },
+
+    replyIdsByUserId: function (userId, page, callback) {
+        if (userId) {
+            page = parseInt(page);
+            page = page > 0 ? page : 1;
+            var db = dbs.getDB("Reply");
+            db
+                .find({
+                    authorId: userId
+                })
+                .limit(3)
+                .sort({
+                    createTime: -1
+                })
+                .skip((page - 1) * 3)
+                .exec(function (err, rs) {
+                    callback(rs || []);
+                })
+        } else {
+            callback([]);
+        }
+    },
+
+
+    replyCountByUserId: function (userId, callback) {
+        if (userId) {
+            var db = dbs.getDB("Reply");
+            db
+                .count({
+                    authorId: userId
+                })
+                .exec(function (err, rs) {
+                    callback(rs || 0);
+                })
+        } else {
+            callback(0);
+        }
+    },
+
+    messageListByUserId: function (page, userId, callback) {
+        if (userId) {
+            page = parseInt(page);
+            page = page > 0 ? page : 1;
+            var db = dbs.getDB("Message");
+            db
+                .find({
+                    targetId: userId
+                })
+                .limit(3)
+                .sort({
+                    createTime: -1
+                })
+                .skip((page - 1) * 3)
+                .exec(function (err, rs) {
+                    callback(rs || []);
+                })
+        } else {
+            callback([]);
+        }
     }
 
 }

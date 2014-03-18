@@ -39,7 +39,6 @@ function wrap(my) {
         })
 
         .method("setManager", function (uid) {
-
             var self = this;
             my.services.existUser(uid, function (exist) {
                 if (exist)

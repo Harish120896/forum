@@ -5,21 +5,21 @@
     <li class="active"><%=topic.title%></li>
 </ol>
 
-<div ng-controller="replyCtrl" ng-init='topicAuthorId = "<%=topic.authorId%>";topicId="<%=topic.id%>" ; columnId = "<%=column.id%>"'>
+<div ng-controller="replyCtrl" ng-init='topic = {authorId:"<%=topic.authorId%>",top:<%=topic.top%>,id:"<%=topic.id%>"};column=<%=JSON.stringify(column)%> ; topicAuthorId = "<%=topic.authorId%>";topicId="<%=topic.id%>" ; columnId = "<%=column.id%>"'>
 
     <div class="panel panel-success">
-        <div class="panel-heading"> <%=topic.title%> <a href="" ng-click="removeTopic()" class="btn btn-default btn-xs pull-right">删帖</a> <a
+        <div class="panel-heading"><span ng-non-bindable><%=topic.title%></span> <a href="" ng-click="removeTopic()" ng-show="logined && ability.canRemoveTopic(user,topic,column)" class="btn btn-default btn-xs pull-right">删帖</a> <a
                 href="#createReply" class="pull-right btn btn-default btn-xs pull-right"
-                ng-click="moveEditor('createReply')">回帖</a></div>
+                ng-click="moveEditor('createReply')" ng-show="logined">回帖</a></div>
         <div class="panel-body row">
             <div class="col-sm-2" ng-init="loadUser(topicAuthorId)">
-                <img class="img-circle" width="100" height="100" ng-src='{{users[topicAuthorId].isCustomLogo ? "/logo/"+users[topicAuthorId].nickname : "http://www.gravatar.com/avatar/"+users[topicAuthorId].logo}}'/>
-                <p>{{users[topicAuthorId].nickname}}</p>
+                <img class="img-rounded" width="100" height="100" ng-src='{{users[topicAuthorId].isCustomLogo ? "/logo/"+users[topicAuthorId].nickname : "http://www.gravatar.com/avatar/"+users[topicAuthorId].logo}}'/>
+                <p><a href="/user/{{topicAuthorId}}"  usercode user-id="{{topicAuthorId}}">{{users[topicAuthorId].nickname}}</a></p>
             </div>
-            <div class="col-sm-10">
-                <h1><%=topic.title%></h1>
+            <div class="col-sm-10" ng-non-bindable>
+                <h1 ng-non-bindable><%=topic.title%></h1>
 
-                <p><%=topic.body%></p>
+                <p><%- markdown(topic.body) %></p>
             </div>
         </div>
         <ul class="list-group">
@@ -27,21 +27,20 @@
                 <div class="row">
                     <div class="col-sm-2">
 
-                        <img class="img-circle" width="100" height="100" ng-src='{{users[replys[rid].authorId].isCustomLogo ? "/logo/"+users[replys[rid].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[rid].authorId].logo}}'/>
-                        <p>{{users[replys[rid].authorId].nickname}}</p>
+                        <img class="img-rounded" width="100" height="100" ng-src='{{users[replys[rid].authorId].isCustomLogo ? "/logo/"+users[replys[rid].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[rid].authorId].logo}}'/>
+                        <p><a href="/user/{{replys[rid].authorId}}" usercode user-id="{{replys[rid].authorId}}">{{users[replys[rid].authorId].nickname}}</a></p>
                     </div>
                     <div class="col-sm-10" id="{{rid}}">
-                        <p>{{replys[rid].title}} <a href="" ng-click="moveEditor(rid)">回复</a> <a href="" ng-click="removeReply(rid)">删除</a></p>
+                        <p>{{replys[rid].title}} <a href="" ng-show="logined" ng-click="moveEditor(rid)">回复</a> <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[rid],column)" ng-click="removeReply(rid)">删除</a></p>
 
-                        <p>{{replys[rid].body}}</p>
+                        <p ng-bind-html="replys[rid].body | markdown"></p>
 
                         <ul class="list-group">
                             <li ng-show="replys[sr]" class="list-group-item list-group-item-info"
-                                ng-repeat="sr in subReplyIds[rid]">
-                                <img class="img-circle" width="40" height="40" ng-src='{{users[replys[sr].authorId].isCustomLogo ? "/logo/"+users[replys[sr].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/>
-                                <p>{{users[replys[sr].authorId].nickname}}</p>
-                                <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href="" ng-click="removeReply(sr)">删除</a> </p>
-                                <p>{{replys[sr].body}}</p>
+                                ng-repeat="sr in subReplyIds[rid]" id="{{sr}}">
+                                <a usercode user-id="{{replys[sr].authorId}}" ><img class="img-rounded" width="40" height="40" ng-src='{{users[replys[sr].authorId].isCustomLogo ? "/logo/"+users[replys[sr].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/></a>
+                                <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[sr],column)" ng-click="removeReply(sr)">删除</a> </p>
+                                <p ng-bind-html="replys[sr].body | markdown"></p>
                             </li>
                         </ul>
                         <div><a href="" class="btn btn-default btn-xs" ng-show="showSubReplyPositions[rid] !== subReplyIds[rid].length" ng-click="moreSubReply(rid)">更多</a></div>
@@ -56,7 +55,7 @@
             <a
                     href="#createReply" class=" btn btn-default btn-xs"
                     ng-click="moveEditor('createReply')">回帖</a>
-            <a href="" class="btn btn-default btn-xs">删帖</a>
+            <a href="" ng-click="removeTopic()" ng-show="logined && ability.canRemoveTopic(user,topic,column)" class="btn btn-default btn-xs pull-right">删帖</a>
         </div>
     </div>
 

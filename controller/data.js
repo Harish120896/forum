@@ -122,14 +122,18 @@ module.exports = {
             return next();
         }
         var query = req.env.query;
-
-        query.topicsByColumnId(req.param("page"), req.param("id"), function (rs) {
-            if (rs) {
+        var cid = req.param("id");
+        query.topicCountByColumnId(cid,function(count){
+            query.topicsByColumnId(req.param("page"), cid, function (rs) {
+                var page = req.param("page");
+                page = parseInt(page);
+                page = page > 0 ? page : 1;
+                req.result.data("count",count);
+                req.result.data("page",page);
                 req.result.data("topics", rs);
-            }
-            next();
+                next();
+            });
         });
-
     },
 
     replyById: function (req, res, next) {
@@ -144,6 +148,56 @@ module.exports = {
             }
             next();
         })
+    },
+
+    topicTitleListByUserId:function(req,res,next){
+        var query = req.env.query;
+        var userId = req.param("id");
+        var page = req.param("page");
+        query.topicTitleListByUserId(userId,page,function(rs){
+            req.result.data("topicTitleList",rs);
+            next();
+        });
+    },
+
+    topicCountByUserId:function(req,res,next){
+        var query = req.env.query;
+        query.topicCountByUserId(req.param("id"),function(count){
+            req.result.data("topicCount",count);
+            next();
+        })
+    },
+
+    replyIdsByUserId:function(req,res,next){
+        var query = req.env.query;
+        var userId = req.param("id");
+        var page = req.param("page");
+        query.replyIdsByUserId(userId,page,function(rs){
+            req.result.data("replyIds",rs);
+            next();
+        });
+    },
+
+    replyCountByUserId:function(req,res,next){
+        var query = req.env.query;
+        query.replyCountByUserId(req.param("id"),function(count){
+            req.result.data("replyCount",count);
+            next();
+        })
+    },
+
+
+    messageListByUserId:function(req,res,next){
+        if(req.result.hasError()){
+            next();
+        }
+        var query = req.env.query;
+        query.messageListByUserId(req.param("page"), req.session.user.id, function (rs) {
+            if (rs) {
+                req.result.data("messageList", rs);
+            }
+            next();
+        });
     },
 
     // DOTO

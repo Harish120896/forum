@@ -7,5 +7,6 @@ module.exports = function wrap(app) {
     app.post("/message/send",
         util.isLogin,
         util.validat_num,
-        messageCtrl.send);
+        messageCtrl.send,
+    util.end);
 }

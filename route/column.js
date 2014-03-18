@@ -15,4 +15,10 @@ module.exports = function wrap(app) {
         util.isAdmin,
         columnCtrl.update,
         util.end);
+
+    app.post("/column/:id/setManager",
+        util.isLogin,
+        util.isAdmin,
+        columnCtrl.setManager,
+        util.end)
 }

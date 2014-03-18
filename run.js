@@ -19,6 +19,8 @@ app.use(express.session());
 
 app.use(require("./controller/util").result);
 app.use(require("./infrastructure/env"));
+app.locals.markdown = require("marked");
+
 
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));

@@ -48,6 +48,7 @@ module.exports = {
         var domain = req.env.domain;
         var columnId = req.param("id");
         var userId = req.body.userId;
+        console.log(req.body,columnId);
         if (userId)
             domain.call("Column.setManager", columnId, [userId]);
         next();

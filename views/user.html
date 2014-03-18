@@ -4,30 +4,21 @@
     <li><a href="/">社区主页</a></li>
     <li class="active"><%=user.nickname%>的个人中心</li>
 </ol>
-
-<ul class="nav nav-tabs">
-    <li><a href="#info" data-toggle="tab">基本资料</a></li>
-    <li><a href="#profile" data-toggle="tab">主题帖</a></li>
-    <li><a href="#messages" data-toggle="tab">回复帖</a></li>
-    <li><a href="#settings" data-toggle="tab">私信</a></li>
-    <li><a href="#follows" data-toggle="tab">关注</a></li>
-    <li><a href="#watchers" data-toggle="tab">听众</a></li>
-</ul>
-
-<!-- Tab panes -->
-<div class="tab-content">
-    <div class="tab-pane active" id="info" ng-controller="userCtrl" ng-init="isCustomLogo = <%=user.isCustomLogo%> === true || false ">
-
+<div ng-controller="userCtrl" ng-init="userId='<%=user.id%>';isCustomLogo = <%=user.isCustomLogo%> === true || false ">
+  <tabset>
+    <tab heading="基本资料">
         <table class="table table-striped">
             <tr>
                 <td>头像</td>
                 <td>
                     <img class="img-circle" width="100" height="100" ng-src='{{isCustomLogo ? "/logo/<%=user.nickname%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
+                    <%if(loginUser && loginUser.id === user.id){%>
                     <input type="file" name="logo" ng-file-select="onFileSelect($files)" >
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary"  ng-model="isCustomLogo" btn-radio="true">使用自定义头像</button>
                         <button type="button" class="btn btn-primary"  ng-model="isCustomLogo" btn-radio="false">使用Gravatar头像</button>
                     </div>
+                    <%}%>
                 </td>
 
             </tr>
@@ -48,17 +39,26 @@
                 </td>
             </tr>
             <tr>
+
                 <td>身份</td>
+
                 <td>
+
                     <%if(user.role === 0){%>
                     用户
                     <%}%>
                     <%if(user.role === 1){%>
                     终极管理员
                     <%}%>
-                    <%if(user.role === 2){%>
-                    版主
+
+                    <%columnList.forEach(function(col){%>
+                    <%if(col.managerId === user.id){%>
+                    <p><strong><%=col.name%></strong>版主</p>
+                    <%}else{%>
+                    <p ng-show="user.role === 1" ><string><%=col.name%></string><a href="" ng-click="setManager('<%=user.id%>','<%=col.id%>')">设置管理员</a></p>
                     <%}%>
+                    <%})%>
+
                 </td>
             </tr>
             <tr>
@@ -68,23 +68,47 @@
                 </td>
             </tr>
         </table>
+    </tab>
+    <tab heading="主题帖" ng-click="loadTopicList()">
+        <ul class="list-group">
+            <li ng-repeat=" t in topicTitles" class="list-group-item">
+                <a href="/topic/{{t.id}}">{{t.title}}</a>
+            </li>
+            <li  class="list-group-item">
+                <pagination on-select-page="selectTopicPage(page)" total-items="bigTotalItems" page="bigCurrentPage" items-per-page="perPage" class="pagination-sm" boundary-links="true"></pagination>
+            </li>
+        </ul>
 
-    </div>
-    <div class="tab-pane" id="profile">
-        <%=user.role%>
-    </div>
-    <div class="tab-pane" id="messages">
-        messages
-    </div>
-    <div class="tab-pane" id="settings">
-        settings
-    </div>
-    <div class="tab-pane" id="follows">
-        messages
-    </div>
-    <div class="tab-pane" id="watchers">
-        settings
-    </div>
+    </tab>
+    <tab heading="回复帖" ng-click="loadReplyList()">
+        <ul class="list-group">
+            <li ng-repeat=" r in replys" class="list-group-item">
+                <a href="/topic/{{r.topicId}}#{{r.id}}">回复：{{topics[r.topicId].title}}</a>
+            </li>
+            <li  class="list-group-item">
+                <pagination on-select-page="selectReplyPage(page)" total-items="bigTotalItems2" page="bigCurrentPage2" items-per-page="perPage2" class="pagination-sm" boundary-links="true"></pagination>
+            </li>
+        </ul>
+    </tab>
+    <%if(loginUser && loginUser.id === user.id){%>
+    <tab heading="私信" ng-click="loadMessageList()">
+        <ul class="list-group">
+            <li ng-repeat="m in messageList" class="list-group-item">
+                {{m.body}}
+            </li>
+        </ul>
+    </tab>
+    <%}%>
+    <tab heading="关注" ng-click="loadFollowList()">
+        <a usercode user-id="{{uid}}" href="/user/{{uid}}" ng-repeat="uid in user.follows">
+            <img class="img-circle" width="40" height="40" ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+        </a>
+    </tab>
+    <tab heading="听众">
+        <a usercode user-id="{{uid}}" href="/user/{{uid}}" ng-repeat="uid in user.watchers">
+            <img class="img-circle" width="40" height="40" ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
+        </a>
+    </tab>
+  </tabset>
 </div>
-
 <% include footer.html %>

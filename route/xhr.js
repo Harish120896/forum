@@ -3,6 +3,7 @@ var data = require("../controller/data"),
     util = require("../controller/util");
 
 module.exports = function wrap(app) {
+
     // app.get("/info",
     // 	util.xhr,
     // 	data.infoList,
@@ -17,6 +18,38 @@ module.exports = function wrap(app) {
     //
     // 	});
 
+    app.get("/topicTitleListByUserId/:id/:page",
+        data.topicTitleListByUserId,
+        function(req,res){
+            res.send(req.result.data("topicTitleList"))
+        }
+    )
+
+    app.get("/topicCountByUserId/:id",
+        data.topicCountByUserId,
+        function(req,res){
+            res.send(req.result.data())
+        })
+
+    app.get("/replyIdsByUserId/:id/:page",
+        data.replyIdsByUserId,
+        function(req,res){
+            res.send(req.result.data("replyIds"))
+        }
+    )
+
+    app.get("/topicById/:id",
+        data.topicById,
+        function(req,res){
+            res.send(req.result.data("topic"));
+        }
+    )
+
+    app.get("/replyCountByUserId/:id",
+        data.topicCountByUserId,
+        function(req,res){
+            res.send(req.result.data())
+        })
 
     app.get("/column/:id/get",
         data.columnById,
@@ -63,6 +96,14 @@ module.exports = function wrap(app) {
         function (req, res) {
             res.send(req.result.data("validatNumPng"));
         })
+
+    app.get("/messageList/:page",
+        util.isLogin,
+        data.messageListByUserId,
+        function (req, res) {
+            res.send(req.result.data("messageList"));
+        }
+    )
 //
 //    app.get("/user/logo/:nickname",
 //        data.userByNick,

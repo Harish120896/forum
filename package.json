@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/brighthas/froum",
   "dependencies": {
-    "jsdm": "0.3.2",
+    "jsdm": "0.3.3",
     "node-uuid": "~1.4.1",
     "validator": "~2.0.0",
     "express": "3.4.4",
@@ -37,13 +37,14 @@
     "istype": "0.0.2",
     "png-word": "0.0.5",
     "random-word": "git://github.com/brighthas/random-word",
-    "underscore": "~1.5.2",
+    "underscore": "^1.5.2",
     "nodemailer": "~0.6.0",
     "node-validator": "~0.1.4",
     "q": "~1.0.0",
     "result-brighthas": "0.0.6",
     "nedb": "~0.10.4",
-    "shortid": "^2.0.0"
+    "shortid": "^2.0.0",
+    "marked": "^0.3.2"
   },
   "devDependencies": {
     "should": "~2.1.0",

@@ -21,7 +21,6 @@ module.exports = function wrap(app) {
         util.isLogin,
         data.topicById,
         util.hasTopic,
-        util.isAdmin,
         topicCtrl.remove,
         util.end);
 

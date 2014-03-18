@@ -1,4 +1,5 @@
 var Result = require("result-brighthas");
+var escape = require("./escape");
 
 module.exports = {
 
@@ -8,6 +9,9 @@ module.exports = {
         }
         var domain = req.env.domain;
         req.body.authorId = req.session.user.id;
+        if(req.body.body){
+            req.body.body = escape(req.body.body);
+        }
         domain.exec("create a topic", req.body, function (result) {
             req.result.mix(result);
             next();
@@ -20,6 +24,9 @@ module.exports = {
         }
         var domain = req.env.domain;
         req.body.authorId = req.session.user.id;
+        if(req.body.body){
+            req.body.body = escape(req.body.body);
+        }
         domain.call("Topic.updateInfo", req.body.topicId, [req.body.title, req.body.body, req.body.columnId], function (result) {
             req.result.mix(result);
             next();

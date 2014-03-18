@@ -33,7 +33,6 @@ function wrap(my) {
     var replyRepo = new my.Repository("Reply");
 
     replyRepo._create = function (args, callback) {
-
         var selfUser, parentUser;
         my.repos.Topic.get(args.topicId)
             .then(function (p) {

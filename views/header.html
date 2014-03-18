@@ -8,6 +8,7 @@
         .navbar {
             margin-bottom: 0;
         }
+
     </style>
 </head>
 <body>
@@ -27,23 +28,19 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#" ng-click="openRegDialog()" ng-show="!logined">注册</a></li>
                 <li><a href="#" ng-click="openLoginDialog()" ng-show="!logined">登录</a></li>
-                <li id="userInfo" data-toggle="manual" data-placement="bottom"><a href="/user/{{user.id}}" href="/user"
-                                                                                  ng-show="logined">{{user.nickname ||
-                    user.email}}</a></li>
+                <li id="userInfo"><a href="/user/{{user.id}}" href="/user"
+                                                                                  ng-show="logined">{{user.nickname || user.email}}</a></li>
                 <li><a href="#" ng-click="logout()" ng-show="logined">退出</a></li>
             </ul>
         </div>
     </div>
 </div>
-<div class="jumbotron">
-    <div class="container">
-        <h2>HTML5 \ Node.js社区</h2>
 
-        <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
-    </div>
-</div>
 
 <div class="container">
-
+    <div class="jumbotron">
+            <h2>HTML5 \ Node.js社区</h2>
+            <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
+    </div>
     <div class="row">
         <div class="col-xs-12 col-lg-9">

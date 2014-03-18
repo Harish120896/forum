@@ -47,11 +47,24 @@ function wrap(my) {
                 my.services.postReplyCheck(args.authorId, function (pass) {
 
                     if (pass) {
+
                         my.repos.Reply.create(args, function (err, reply) {
+
                             if (!err) {
-                                topic.addReply(reply.parentId, reply.id);
+
+                                try{
+                                    topic.addReply(reply.parentId, reply.id);
+
+                                }catch(e){
+                                    console.log(e);
+                                    throw e;
+                                }
+
+
                                 result.data("reply", reply.toJSON());
+
                             } else {
+
                                 result.mix(err);
                             }
                             callback(result);
@@ -121,6 +134,7 @@ function wrap(my) {
             filterNickname(body).forEach(function (name) {
                 my.services.userByNick(name, function (user) {
                     if (user) {
+
                         my.repos.Message.create({
                             title: title,
                             body: body,

@@ -28,6 +28,8 @@ domain.register(
         "Column.updateName",
         "Column.updateDes",
         "Column.updateInfo",
+        "Column.setManager",
+
 
         "Topic.updateInfo",
         "Topic.removeReply",

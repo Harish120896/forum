@@ -15,7 +15,6 @@ function wrap(my) {
     User.roles = {
         USER: 0,
         ADMIN: 1,
-        MODERATOR: 2,
         SEAL: 3
     };
 
@@ -128,8 +127,9 @@ function wrap(my) {
             }
         })
         .method("follow", function (uid) {
+         //   console.log(uid,"----------------->")
             var self = this;
-
+            if(uid === this.id) return;
             my.repos.User.get(uid, function (err, user) {
                 if (user) {
 
@@ -151,6 +151,7 @@ function wrap(my) {
         })
         .method("unfollow", function (uid) {
             var self = this;
+            if(uid === this.id) return;
             my.repos.User.get(uid, function (err, user) {
 
                 var follows = self.follows;
@@ -170,9 +171,6 @@ function wrap(my) {
                     }
                 }
             })
-        })
-        .method("becomeModerator", function () {
-            this.role = User.roles.MODERATOR;
         })
         .method("becomeAdmin", function () {
             this.role = User.roles.ADMIN;

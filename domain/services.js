@@ -98,7 +98,7 @@ module.exports = function (query) {
             });
         }
 
-        return [service1, service5, service6, service7, service8];
+        return [service1,service2, service5, service6, service7, service8];
 
     }
 

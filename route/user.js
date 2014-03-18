@@ -48,39 +48,12 @@ module.exports = function wrap(app) {
 
     app.post("/user/:id/follow",
         util.isLogin,
-        util.isAdmin,
-        data.userById,
-        util.hasUser,
-        util.noSelf,
         userCtrl.follow,
         util.end);
 
     app.post("/user/:id/unfollow",
         util.isLogin,
-        util.isAdmin,
-        data.userById,
-        util.hasUser,
-        util.noSelf,
         userCtrl.unfollow,
-        util.end);
-
-
-    app.post("/user/:id/becomeModerator",
-        util.isLogin,
-        util.isAdmin,
-        data.userById,
-        util.hasUser,
-        util.noSelf,
-        userCtrl.becomeModerator,
-        util.end);
-
-    app.post("/user/:id/becomeUser",
-        util.isLogin,
-        util.isAdmin,
-        data.userById,
-        util.hasUser,
-        util.noSelf,
-        userCtrl.becomeUser,
         util.end);
 
     app.post("/user/findPassword",
@@ -107,7 +80,11 @@ module.exports = function wrap(app) {
     app.post("/user/logined",
         util.isLogin,
         function (req, res) {
-            res.send(req.session.user);
+            if(req.result.hasError()){
+                res.send();
+            }else{
+                res.redirect("/user/"+req.session.user.id+"/get")
+            }
         })
 
     app.post("/user/:id/get",

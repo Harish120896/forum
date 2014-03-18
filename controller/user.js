@@ -118,9 +118,10 @@ module.exports = {
         if (req.result.hasError()) {
             return next();
         }
+
         var domain = req.env.domain;
 
-        domain.call("User.follow", req.session.id, [req.param("id")]);
+        domain.call("User.follow", req.session.user.id, [req.param("id")]);
         next();
     },
 

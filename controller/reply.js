@@ -1,3 +1,5 @@
+var escape = require("./escape");
+
 module.exports = {
 
     create: function (req, res, next) {
@@ -7,6 +9,9 @@ module.exports = {
         var query = req.env.query;
         var domain = req.env.domain;
         req.body.authorId = req.session.user.id;
+        if(req.body.body){
+            req.body.body = escape(req.body.body);
+        }
         domain.exec("create a reply", req.body, function (result) {
             req.result.mix(result);
             next();
@@ -36,6 +41,9 @@ module.exports = {
         var domain = req.env.domain;
         var id = req.param("id");
         var title = req.body.title;
+        if(req.body.body){
+            req.body.body = escape(req.body.body);
+        }
         var body = req.body.body;
         domain.call("Reply.updateInfo", id, [title, body], function (result) {
             req.result.mix(result);

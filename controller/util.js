@@ -1,5 +1,6 @@
 var r = require("random-word")("0123456789");
 var Result = require("result-brighthas");
+var ability = require("../public/js/ability");
 
 var util = {
 
@@ -161,6 +162,10 @@ var util = {
         }
         next();
 
+    },
+
+    canRemoveTopic:function(req,res,next){
+        //doto
     },
 
     // dev isLogin / hasReply

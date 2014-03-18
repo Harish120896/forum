@@ -1,7 +1,6 @@
 module.exports = wrap;
 
 function wrap(my) {
-
     handle1.eventName = "Topic.*.create";
 
     function handle1(topic) {
