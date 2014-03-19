@@ -1,4 +1,4 @@
-var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
+var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
     .config([
         '$httpProvider',
@@ -63,7 +63,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         var parentOffsetEl = function (element) {
             var docDomEl = $document[0];
             var offsetParent = element.offsetParent || docDomEl;
-            while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent) ) {
+            while (offsetParent && offsetParent !== docDomEl && isStaticPositioned(offsetParent)) {
                 offsetParent = offsetParent.offsetParent;
             }
             return offsetParent || docDomEl;
@@ -180,89 +180,104 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             }
         };
     }])
-    .directive("usercode",function($http,$compile,$timeout,$modal,$position,$rootScope){
+    .directive("editor", function ($sce) {
+        return {
+            scope: {
+                content: "=",
+                height: "@"
+            },
+            templateUrl: "/template/editor.html",
+            link: function (scope, elem, attrs) {
+                scope.editing = true;
+                scope.top = function () {
+                    elem[0].scrollIntoView(false);
+                }
+            }
+        }
+    })
+    .directive("usercode", function ($http, $compile, $timeout, $modal, $position, $rootScope) {
 
         return {
-            scope:{
-                "userId":"@"
+            scope: {
+                "userId": "@"
             },
-            link:function(scope,elem,attrs){
-            $http.get("/template/usercode.html").then(function(rs){
-                scope.users = $rootScope.users;
-                scope.logined = false;
-                scope.loginUser= {};
-                $rootScope.$watch("user",function(user){
-                    if(user){
-                        scope.loginUser= user;
-                    }
-                });
-
-                $rootScope.$watch("logined",function(logined){
-                    if(logined){
-                        scope.logined= logined;
-                    }
-                });
-
-                scope.hasFollow = function(){
-                    var has = false;
-                    var follows = scope.loginUser.follows || [];
-                    for(var i= 0,len = follows.length;i<len;i++){
-                        if(scope.userId ===  follows[i]){
-                            has = true;
-                            break;
+            link: function (scope, elem, attrs) {
+                $http.get("/template/usercode.html").then(function (rs) {
+                    scope.users = $rootScope.users;
+                    scope.logined = false;
+                    scope.loginUser = {};
+                    $rootScope.$watch("user", function (user) {
+                        if (user) {
+                            scope.loginUser = user;
                         }
-                    }
-                    return has;
-                }
+                    });
 
-                scope.$watch("userId",function(v){
-                    var code = $compile(angular.element(rs.data))(scope);
-                    var closefn;
-                    angular.element(document.body).append(code);
+                    $rootScope.$watch("logined", function (logined) {
+                        if (logined) {
+                            scope.logined = logined;
+                        }
+                    });
 
-                    elem.bind("mouseenter",function(event){
-                        var toid;
-                        toid = setTimeout(function(){
-                            scope.showcode = false;
-                            scope.$apply();
-                        },1000);
-                        code.bind("mouseenter",function(event){
-                            clearTimeout(toid);
-                            code.bind("mouseleave",function(){
-                                scope.showcode = false;
-                                scope.$apply();
-                            })
-                        });
-                        scope.showcode = true;
-                        scope.$apply();
-                        var pos = $position.offset(elem);
-                        code.css("left",pos.left+"px").css("top",pos.top+17+"px");
-                        scope.sendMessage = function(){
-                            $modal.open({
-                                scope:scope,
-                                templateUrl: '/template/message.html',
-                                controller: "messageCtrl"
-                            });
-                        }
-                        scope.follow = function(){
-                            $http.post("/user/"+v+"/follow");
-                            scope.loginUser.follows.push(scope.userId);
-                        }
-                        scope.unfollow = function(){
-                            $http.post("/user/"+v+"/unfollow");
-                            for(var i= 0,len = scope.loginUser.follows.length;i<len;i++){
-                                if(scope.userId ===  scope.loginUser.follows[i]){
-                                    scope.loginUser.follows.splice(i,1);
-                                }
+                    scope.hasFollow = function () {
+                        var has = false;
+                        var follows = scope.loginUser.follows || [];
+                        for (var i = 0, len = follows.length; i < len; i++) {
+                            if (scope.userId === follows[i]) {
+                                has = true;
+                                break;
                             }
                         }
+                        return has;
+                    }
+
+                    scope.$watch("userId", function (v) {
+                        var code = $compile(angular.element(rs.data))(scope);
+                        var closefn;
+                        angular.element(document.body).append(code);
+
+                        elem.bind("mouseenter", function (event) {
+                            var toid;
+                            toid = setTimeout(function () {
+                                scope.showcode = false;
+                                scope.$apply();
+                            }, 1000);
+                            code.bind("mouseenter", function (event) {
+                                clearTimeout(toid);
+                                code.bind("mouseleave", function () {
+                                    scope.showcode = false;
+                                    scope.$apply();
+                                })
+                            });
+                            scope.showcode = true;
+                            scope.$apply();
+                            var pos = $position.offset(elem);
+                            code.css("left", pos.left + "px").css("top", pos.top + 17 + "px");
+                            scope.sendMessage = function () {
+                                $modal.open({
+                                    scope: scope,
+                                    templateUrl: '/template/message.html',
+                                    controller: "messageCtrl"
+                                });
+                            }
+                            scope.follow = function () {
+                                $http.post("/user/" + v + "/follow");
+                                scope.loginUser.follows.push(scope.userId);
+                            }
+                            scope.unfollow = function () {
+                                $http.post("/user/" + v + "/unfollow");
+                                for (var i = 0, len = scope.loginUser.follows.length; i < len; i++) {
+                                    if (scope.userId === scope.loginUser.follows[i]) {
+                                        scope.loginUser.follows.splice(i, 1);
+                                    }
+                                }
+                            }
+                        })
+
+
                     })
 
-
-                })
-
-            });
-        }
+                });
+            }
         }
     })
 
@@ -299,52 +314,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             }
         };
     })
-    .directive('epicEditor', function () {
-
-        return {
-            restrict: "E",
-            link: function (scope, element, attrs) {
-
-                var editor,content;
-
-                function refresh() {
-
-                    var opts = {
-                        container: element[0],
-                        basePath: '',
-                        file: {
-                            defaultContent: attrs.defaultContent || "",
-                            autoSave: 100
-                        }
-                    }
-
-                    editor = new EpicEditor(opts);
-                    editor.load(function () {
-                        editor.importFile(null, scope.content);
-                        element.find("iframe").css("width","100%");
-                        editor.on("update",function(v){
-                            content = v.content;
-                        });
-                    });
-
-                }
-
-                refresh();
-
-                scope.epicEditor = {
-                    content: function (v) {
-                        if (arguments.length === 0) {
-                            return content;
-                        } else {
-                            editor.editorIframe.body.innerText = v;
-                        }
-                    },
-                    refresh: refresh
-                }
-
-            }
-        }
-    })
 
     .directive("replyEditor", function ($rootScope) {
 
@@ -359,7 +328,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                         var parent = document.querySelector("#" + v);
                         parent.appendChild(elem[0]);
                     }
-                    scope.epicEditor.refresh();
                     $rootScope.refreshNum();
                 })
 
@@ -388,11 +356,11 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
     })
 
-    .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope,shareCode ) {
+    .controller("loginCtrl", function ($scope, $modalInstance, $http, $rootScope, shareCode) {
 
         $scope.data = {}
 
-        var handle = shareCode.getResultHandle($scope,$modalInstance);
+        var handle = shareCode.getResultHandle($scope, $modalInstance);
 
         $modalInstance.opened.then(function () {
             $scope.tabindex = "1";
@@ -403,7 +371,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
 
         $scope.login = function () {
-            $http.post("/user/login",$scope.data).success(handle);
+            $http.post("/user/login", $scope.data).success(handle);
         }
 
     })
@@ -411,7 +379,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
     .controller("regCtrl", function ($scope, $modalInstance, $http, $rootScope, shareCode) {
 
         $scope.data = {}
-        var handle = shareCode.getResultHandle($scope,$modalInstance);
+        var handle = shareCode.getResultHandle($scope, $modalInstance);
 
         $modalInstance.opened.then(function () {
             $scope.tabindex = "1";
@@ -524,23 +492,23 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         return Result;
 
     })
-    .factory("DATA", function ($http, $q,$rootScope) {
+    .factory("DATA", function ($http, $q, $rootScope) {
 
-        var replys = {},users = $rootScope.users;
-        var infoList = [],messageList = [];
+        var replys = {}, users = $rootScope.users;
+        var infoList = [], messageList = [];
 
 
         return {
-            user:function(uid){
+            user: function (uid) {
                 var deferred = $q.defer();
-                if(users[uid]){
+                if (users[uid]) {
                     deferred.resolve(users[uid]);
-                }else{
-                    $http.get("/user/" + uid+"/get").success(function (data) {
-                        if(data){
+                } else {
+                    $http.get("/user/" + uid + "/get").success(function (data) {
+                        if (data) {
                             users[uid] = data;
                             deferred.resolve(users[uid]);
-                        }else{
+                        } else {
                             deferred.resolve(null);
                         }
                     });
@@ -586,54 +554,54 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                 })
                 return deferred.promise;
             },
-            topicTitles:function(uid,page){
+            topicTitles: function (uid, page) {
                 var deferred = $q.defer();
-                $http.get("/topicTitleListByUserId/"+uid+"/"+page).success(function(rs){
+                $http.get("/topicTitleListByUserId/" + uid + "/" + page).success(function (rs) {
                     deferred.resolve(rs);
                 });
                 return deferred.promise;
             },
-            topicCount:function(uid){
+            topicCount: function (uid) {
                 var deferred = $q.defer();
-                $http.get("/topicCountByUserId/"+uid).success(function(rs){
+                $http.get("/topicCountByUserId/" + uid).success(function (rs) {
                     rs = rs.topicCount || 0;
                     deferred.resolve(rs);
                 });
                 return deferred.promise;
             },
-            replysByUserId:function(uid,page){
+            replysByUserId: function (uid, page) {
                 var deferred = $q.defer();
-                $http.get("/replyIdsByUserId/"+uid+"/"+page).success(function(rs){
+                $http.get("/replyIdsByUserId/" + uid + "/" + page).success(function (rs) {
                     deferred.resolve(rs);
                 });
                 return deferred.promise;
             },
-            topicById:function(tid){
+            topicById: function (tid) {
                 var deferred = $q.defer();
-                $http.get("/topicById/"+tid).success(function(rs){
+                $http.get("/topicById/" + tid).success(function (rs) {
                     deferred.resolve(rs);
                 });
                 return deferred.promise;
             },
-            replyCount:function(uid){
+            replyCount: function (uid) {
                 var deferred = $q.defer();
-                $http.get("/replyCountByUserId/"+uid).success(function(rs){
+                $http.get("/replyCountByUserId/" + uid).success(function (rs) {
                     rs = rs.topicCount || 0;
                     deferred.resolve(rs);
                 });
                 return deferred.promise;
             },
-            messageList:function(page){
+            messageList: function (page) {
                 var deferred = $q.defer();
-                $http.get("/messageList/"+page).success(function(rs){
+                $http.get("/messageList/" + page).success(function (rs) {
                     messageList = messageList.concat(rs);
                     deferred.resolve(messageList);
                 });
                 return deferred.promise;
             },
-            infoList:function(page){
+            infoList: function (page) {
                 var deferred = $q.defer();
-                $http.get("/infoList/"+page).success(function(rs){
+                $http.get("/infoList/" + page).success(function (rs) {
                     infoList = infoList.concat(rs);
                     deferred.resolve(infoList);
                 });
@@ -643,7 +611,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
 
     })
 
-    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA, Result,ability) {
+    .controller("replyCtrl", function ($scope, $http, $rootScope, DATA, Result, ability) {
 
         // skip reply num
         var replySkipNum = 2;
@@ -651,8 +619,8 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         $scope.showSubReplyPositions = {};
         $scope.ability = ability;
 
-        $scope.loadUser = function(uid){
-            DATA.user(uid).then(function(u){
+        $scope.loadUser = function (uid) {
+            DATA.user(uid).then(function (u) {
                 $scope.users[uid] = u;
             })
         }
@@ -669,37 +637,37 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         $scope.showEditor = false;
         $scope.editorContainerId = null;
 
-         // init topicId
+        // init topicId
         $scope.$watch("topicId", function (topicId) {
             DATA.replyTree(topicId).then(function (replyTree) {
                 $scope.replyIdsList = replyTree.replyIdsList;
                 $scope.subReplyIds = replyTree.subReplyIds;
                 $scope.moreReply();
                 // show reply by location.hash
-                if($rootScope.hash){
+                if ($rootScope.hash) {
 
-                    var replyId = $rootScope.hash.substr(1),parent,sub;
+                    var replyId = $rootScope.hash.substr(1), parent, sub;
 
                     // find parent reply
-                    for(var i= 0,len= $scope.replyIdsList.length;i<len;i++){
-                       var pid = $scope.replyIdsList[i];
-                        if(pid === replyId){
+                    for (var i = 0, len = $scope.replyIdsList.length; i < len; i++) {
+                        var pid = $scope.replyIdsList[i];
+                        if (pid === replyId) {
                             parent = pid;
                             break;
-                       }
-                       var sids = $scope.subReplyIds[pid];
+                        }
+                        var sids = $scope.subReplyIds[pid];
 
-                       for(var k= 0,len = sids.length ; k<len;k++){
-                          var sid = sids[k];
-                          if(sid === replyId){
-                              parent = pid;
-                              sub = sid;
-                              break;
-                          }
-                       }
+                        for (var k = 0, len = sids.length; k < len; k++) {
+                            var sid = sids[k];
+                            if (sid === replyId) {
+                                parent = pid;
+                                sub = sid;
+                                break;
+                            }
+                        }
                     }
 
-                    if(parent){
+                    if (parent) {
                         DATA.reply(parent).then(function (r) {
                             if (r) {
                                 $scope.moreSubReply(r.id);
@@ -708,7 +676,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                             }
                         })
                     }
-                    if(sub){
+                    if (sub) {
                         DATA.reply(sub).then(function (r) {
                             if (r) {
                                 $scope.replys[r.id] = r;
@@ -723,10 +691,10 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
 
         $scope.moveEditor = function (cid, parentId) {
             $scope.validat_numMessage = null;
-            if(cid === "createReply"){
+            if (cid === "createReply") {
                 $scope.editorContainerId = cid;
                 $scope.parentId = null;
-            }else{
+            } else {
                 $scope.editorContainerId = cid;
                 $scope.parentId = parentId || cid;
             }
@@ -734,18 +702,18 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
 
         $scope.removeReply = function (rid) {
             var bool = window.confirm("确定删除这条回复吗？");
-            if(bool){
+            if (bool) {
                 delete $scope.replys[rid];
                 DATA.removeReply(rid);
             }
 
         }
 
-        $scope.removeTopic = function(){
+        $scope.removeTopic = function () {
             var bool = window.confirm("确定删除主题帖吗？");
-            if(bool){
-                $http.post("/topic/"+$scope.topicId+"/remove").success(function(data){
-                    window.location.href = "/column/"+$scope.columnId;
+            if (bool) {
+                $http.post("/topic/" + $scope.topicId + "/remove").success(function (data) {
+                    window.location.href = "/column/" + $scope.columnId;
                 })
             }
         }
@@ -905,38 +873,38 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
 
     })
-    .controller("userCtrl", function ($rootScope,$scope, $http,$upload,DATA,$tooltip,$sce,Result) {
+    .controller("userCtrl", function ($rootScope, $scope, $http, $upload, DATA, $tooltip, $sce, Result) {
 
 
         var isCustomLog_init = false;
         $scope.replys = [];
         $scope.topics = [];
 
-        $rootScope.$watch("logined",function(u){
-            if(u){
+        $rootScope.$watch("logined", function (u) {
+            if (u) {
                 $scope.user = $rootScope.user;
             }
         })
 
         // update user info
-        $scope.updateUser = function(){
+        $scope.updateUser = function () {
             $scope.canEditUser = "ccc";
-            $http.post("/user/update",{
-                des:$scope.user.des,
-                address:$scope.user.address,
-                sex:$scope.user.sex === "true"?true:false
+            $http.post("/user/update", {
+                des: $scope.user.des,
+                address: $scope.user.address,
+                sex: $scope.user.sex === "true" ? true : false
             })
         }
 
-        $scope.$watch("isCustomLogo",function(v){
-            if(isCustomLog_init){
-                $http.post("/user/isCustomLogo",{custom:v});
-            }else{
+        $scope.$watch("isCustomLogo", function (v) {
+            if (isCustomLog_init) {
+                $http.post("/user/isCustomLogo", {custom: v});
+            } else {
                 isCustomLog_init = true;
             }
         });
 
-        $scope.onFileSelect = function($files) {
+        $scope.onFileSelect = function ($files) {
             //$files: an array of files selected, each file has name, size, and type.
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
@@ -952,18 +920,18 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
                     /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
                     //formDataAppender: function(formData, key, val){} //#40#issuecomment-28612000
-                }).progress(function(evt) {
+                }).progress(function (evt) {
                         //console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
-                    }).success(function(data, status, headers, config) {
+                    }).success(function (data, status, headers, config) {
                         // file is uploaded successfully
                         var result = new Result();
                         result.reborn(data);
-                        if(result.hasError()){
+                        if (result.hasError()) {
                             alert(result.error().logo);
-                        }else{
-                            setTimeout(function(){
+                        } else {
+                            setTimeout(function () {
                                 window.location.reload()
-                            },1000);
+                            }, 1000);
                         }
 
                     });
@@ -973,55 +941,55 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             // $scope.upload = $upload.upload({...}) alternative way of uploading, sends the the file content directly with the same content-type of the file. Could be used to upload files to CouchDB, imgur, etc... for HTML5 FileReader browsers.
         };
 
-        $scope.setManager = function(uid,cid){
-            $http.post("/column/"+cid+"/setManager",{userId:uid});
-            setTimeout(function(){
+        $scope.setManager = function (uid, cid) {
+            $http.post("/column/" + cid + "/setManager", {userId: uid});
+            setTimeout(function () {
                 window.location.reload()
-            },1000);
+            }, 1000);
         }
 
-        $scope.selectTopicPage = function(page){
-            DATA.topicTitles($scope.userId,page).then(function(rs){
+        $scope.selectTopicPage = function (page) {
+            DATA.topicTitles($scope.userId, page).then(function (rs) {
                 $scope.topicTitles = rs;
             })
         }
 
-        $scope.selectReplyPage = function(page){
-                DATA.replysByUserId($scope.userId,page).then(function(rs){
-                    $scope.replys = rs;
-                    for(var i= 0,len = rs.length; i<len ; i++){
-                        DATA.topicById(rs[i].topicId).then(function(t){
-                            if(t){
-                                $scope.topics[t.id] = t;
-                            }
-                        })
-                    }
-                });
+        $scope.selectReplyPage = function (page) {
+            DATA.replysByUserId($scope.userId, page).then(function (rs) {
+                $scope.replys = rs;
+                for (var i = 0, len = rs.length; i < len; i++) {
+                    DATA.topicById(rs[i].topicId).then(function (t) {
+                        if (t) {
+                            $scope.topics[t.id] = t;
+                        }
+                    })
+                }
+            });
         }
 
-        $scope.loadTopicList = function(){
-            DATA.topicCount($scope.userId).then(function(rs){
+        $scope.loadTopicList = function () {
+            DATA.topicCount($scope.userId).then(function (rs) {
                 $scope.bigTotalItems = rs;
                 $scope.bigCurrentPage = 1;
                 $scope.perPage = 3;
 
             })
-            DATA.topicTitles($scope.userId,0).then(function(rs){
+            DATA.topicTitles($scope.userId, 0).then(function (rs) {
                 $scope.topicTitles = rs;
             })
         }
 
-        $scope.loadReplyList = function(){
-            DATA.replyCount($scope.userId).then(function(rs){
+        $scope.loadReplyList = function () {
+            DATA.replyCount($scope.userId).then(function (rs) {
                 $scope.bigTotalItems2 = rs;
                 $scope.bigCurrentPage2 = 1;
                 $scope.perPage2 = 3;
             })
-            DATA.replysByUserId($scope.userId,0).then(function(rs){
+            DATA.replysByUserId($scope.userId, 0).then(function (rs) {
                 $scope.replys = rs;
-                for(var i= 0,len = rs.length; i<len ; i++){
-                    DATA.topicById(rs[i].topicId).then(function(t){
-                        if(t){
+                for (var i = 0, len = rs.length; i < len; i++) {
+                    DATA.topicById(rs[i].topicId).then(function (t) {
+                        if (t) {
                             $scope.topics[t.id] = t;
                         }
                     })
@@ -1033,12 +1001,12 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         $scope.messageList = [];
         $scope.showMessageMoreButton = true;
 
-        $scope.loadMessageList = function(){
+        $scope.loadMessageList = function () {
             messagePage += 1;
-            DATA.messageList(messagePage).then(function(rs){
-                if(rs.length <= $scope.messageList.length){
+            DATA.messageList(messagePage).then(function (rs) {
+                if (rs.length <= $scope.messageList.length) {
                     $scope.showMessageMoreButton = false;
-                }else{
+                } else {
                     $scope.messageList = rs;
                 }
             })
@@ -1048,29 +1016,29 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         $scope.infoList = [];
         $scope.showInfoMoreButton = true;
 
-        $scope.loadInfoList = function(){
+        $scope.loadInfoList = function () {
             infoPage += 1;
-            DATA.infoList(infoPage).then(function(rs){
-                if(rs.length<=$scope.infoList.length){
+            DATA.infoList(infoPage).then(function (rs) {
+                if (rs.length <= $scope.infoList.length) {
                     $scope.showInfoMoreButton = false;
-                }else{
+                } else {
                     $scope.infoList = rs;
                 }
             })
         }
 
-        $scope.sce = function(htmltxt){
+        $scope.sce = function (htmltxt) {
             return $sce.trustAsHtml(htmltxt);
         }
 
-        $scope.$watch("userId",function(v){
+        $scope.$watch("userId", function (v) {
 
-            DATA.user($scope.userId).then(function(user){
+            DATA.user($scope.userId).then(function (user) {
                 $scope.user = user;
-                for(var i= 0,len=user.follows.length;i<len;i++){
+                for (var i = 0, len = user.follows.length; i < len; i++) {
                     DATA.user(user.follows[i]);
                 }
-                for(var i= 0,len=user.watchers.length;i<len;i++){
+                for (var i = 0, len = user.watchers.length; i < len; i++) {
                     DATA.user(user.watchers[i]);
                 }
             })
@@ -1079,7 +1047,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
 
 
     })
-    .controller("topicCtrl", function ($scope, $http, $rootScope,Result) {
+    .controller("topicCtrl", function ($scope, $http, $rootScope, Result) {
         $scope.createTopic = function () {
             $http.post("/topic/create", {
                 title: $scope.title,
@@ -1094,7 +1062,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                             window.location.reload();
                         }, 1000)
                     } else {
-                        var errors= result.error();
+                        var errors = result.error();
                         var keys = Object.keys(errors);
                         keys.forEach(function (key) {
                             $scope[key + "Message"] = errors[key][0];
@@ -1104,15 +1072,15 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                 })
         }
     })
-    .controller("messageCtrl",function($scope,$http,$modalInstance,Result,$rootScope){
+    .controller("messageCtrl", function ($scope, $http, $modalInstance, Result, $rootScope) {
         $scope.data = {};
-        $scope.close = function(){
+        $scope.close = function () {
             $modalInstance.dismiss('cancel');
         }
-        $scope.send = function(){
+        $scope.send = function () {
 
             $scope.data.body += " @" + $rootScope.users[$scope.userId].nickname;
-            $http.post("/message/send",$scope.data).success(function(rs){
+            $http.post("/message/send", $scope.data).success(function (rs) {
                 $scope.close();
                 alert("私信发送成功")
             })
