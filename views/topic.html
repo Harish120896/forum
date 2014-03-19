@@ -5,7 +5,7 @@
     <li class="active"><%=topic.title%></li>
 </ol>
 
-<div ng-controller="replyCtrl" ng-init='topic = {authorId:"<%=topic.authorId%>",top:<%=topic.top%>,id:"<%=topic.id%>"};column=<%=JSON.stringify(column)%> ; topicAuthorId = "<%=topic.authorId%>";topicId="<%=topic.id%>" ; columnId = "<%=column.id%>"'>
+<div ng-controller="replyCtrl" ng-init='topic = {createTime:<%=topic.createTime%>,authorId:"<%=topic.authorId%>",top:<%=topic.top%>,id:"<%=topic.id%>"};column=<%=JSON.stringify(column)%> ; topicAuthorId = "<%=topic.authorId%>";topicId="<%=topic.id%>" ; columnId = "<%=column.id%>"'>
 
     <div class="panel panel-success">
         <div class="panel-heading"><span ng-non-bindable><%=topic.title%></span> <a href="" ng-click="removeTopic()" ng-show="logined && ability.canRemoveTopic(user,topic,column)" class="btn btn-default btn-xs pull-right">删帖</a> <a
@@ -16,10 +16,13 @@
                 <img class="img-rounded" width="100" height="100" ng-src='{{users[topicAuthorId].isCustomLogo ? "/logo/"+users[topicAuthorId].nickname : "http://www.gravatar.com/avatar/"+users[topicAuthorId].logo}}'/>
                 <p><a href="/user/{{topicAuthorId}}"  usercode user-id="{{topicAuthorId}}">{{users[topicAuthorId].nickname}}</a></p>
             </div>
-            <div class="col-sm-10" ng-non-bindable>
+            <div class="col-sm-10">
                 <h1 ng-non-bindable><%=topic.title%></h1>
 
-                <p><%- markdown(topic.body) %></p>
+                <p ng-non-bindable><%- markdown(topic.body) %></p>
+                <p>
+                    <span class="pull-right">{{topic.createTime | date:"MM-dd"}}</span>
+                </p>
             </div>
         </div>
         <ul class="list-group">
@@ -31,7 +34,12 @@
                         <p><a href="/user/{{replys[rid].authorId}}" usercode user-id="{{replys[rid].authorId}}">{{users[replys[rid].authorId].nickname}}</a></p>
                     </div>
                     <div class="col-sm-10" id="{{rid}}">
-                        <p>{{replys[rid].title}} <a href="" ng-show="logined" ng-click="moveEditor(rid)">回复</a> <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[rid],column)" ng-click="removeReply(rid)">删除</a></p>
+                        <p>
+                            {{replys[rid].title}}
+                            <a href="" ng-show="logined" ng-click="moveEditor(rid)">回复</a>
+                            <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[rid],column)" ng-click="removeReply(rid)">删除</a>
+                            <span class="pull-right">{{replys[rid].createTime | date:"MM-dd"}}</span>
+                        </p>
 
                         <p ng-bind-html="replys[rid].body | markdown"></p>
 
@@ -39,7 +47,9 @@
                             <li ng-show="replys[sr]" class="list-group-item list-group-item-info"
                                 ng-repeat="sr in subReplyIds[rid]" id="{{sr}}">
                                 <a usercode user-id="{{replys[sr].authorId}}" ><img class="img-rounded" width="40" height="40" ng-src='{{users[replys[sr].authorId].isCustomLogo ? "/logo/"+users[replys[sr].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/></a>
-                                <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[sr],column)" ng-click="removeReply(sr)">删除</a> </p>
+                                <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[sr],column)" ng-click="removeReply(sr)">删除</a>
+                                    <span class="pull-right">{{replys[sr].createTime | date:"MM-dd"}}</span>
+                                </p>
                                 <p ng-bind-html="replys[sr].body | markdown"></p>
                             </li>
                         </ul>

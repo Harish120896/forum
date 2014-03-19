@@ -129,6 +129,7 @@ function wrap(my) {
     function handle7(args, callback) {
         var title = args.title;
         var body = args.body;
+        var body2 = body.replace(/(?:@)\w*(?=\s|$)/gi,"");
         var authorId = args.authorId;
         if (body) {
             filterNickname(body).forEach(function (name) {
@@ -137,7 +138,7 @@ function wrap(my) {
 
                         my.repos.Message.create({
                             title: title,
-                            body: body,
+                            body: body2,
                             authorId: authorId,
                             targetId: user.id
                         }, function (err) {

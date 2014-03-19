@@ -131,7 +131,7 @@ module.exports = {
         }
         var domain = req.env.domain;
 
-        domain.call("User.unfollow", req.session.id, [req.param("id")]);
+        domain.call("User.unfollow", req.session.user.id, [req.param("id")]);
         next();
     },
 
@@ -164,7 +164,7 @@ module.exports = {
         } else {
             req.result.error("logo", "图片大小<100k，并且是png格式");
         }
-        res.send();
+        res.send(req.result.json());
 //        next();
     },
 

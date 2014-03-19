@@ -11,6 +11,14 @@
                     </div>
                 </div>
             </li>
-            <li class="list-group-item"><i class="glyphicon glyphicon-envelope"></i> <a ng-click="sendMessage()" href="">私信TA</a> @ <a href="" ng-click="follow()">关注TA</a> <i class="glyphicon glyphicon-hand-right"></i> <a href="">投诉TA</a></li>
+            <li class="list-group-item" ng-show="logined">
+                <i class="glyphicon glyphicon-envelope"></i> <a ng-click="sendMessage()" href="">私信TA</a>
+                <span ng-show="hasFollow()">
+                    @ <a href="" ng-click="unfollow()">取消关注TA</a>
+                </span>
+                <span ng-show="!hasFollow()">
+                    @ <a href="" ng-click="follow()">关注TA</a>
+                </span>
+                <i class="glyphicon glyphicon-hand-right"></i> <a href="">投诉TA</a></li>
         </ul>
 </div>

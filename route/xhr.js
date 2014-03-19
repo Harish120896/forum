@@ -104,6 +104,15 @@ module.exports = function wrap(app) {
             res.send(req.result.data("messageList"));
         }
     )
+
+    app.get("/infoList/:page",
+        util.isLogin,
+        data.infoListByUserId,
+        function(req,res){
+            res.send(req.result.data("infoList"));
+        }
+    )
+
 //
 //    app.get("/user/logo/:nickname",
 //        data.userByNick,

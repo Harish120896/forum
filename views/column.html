@@ -11,7 +11,9 @@
     <table class="table">
         <% topics.forEach(function(topic){ %>
         <tr>
-            <td><a href="/topic/<%=topic.id%>" ng-non-bindable><%=topic.title%></a></td>
+            <td><a href="/topic/<%=topic.id%>" ng-non-bindable><%=topic.title%></a>
+                <span class="pull-right">{{<%=topic.createTime %> | date:"MM-dd"}}</span>
+            </td>
         </tr>
         <% }) %>
         <tr>

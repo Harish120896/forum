@@ -24,7 +24,6 @@ module.exports = function wrap(app) {
 
     app.post("/user/update",
         util.isLogin,
-        util.validat_num,
         userCtrl.update,
         util.end);
 

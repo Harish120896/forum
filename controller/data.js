@@ -200,8 +200,16 @@ module.exports = {
         });
     },
 
-    // DOTO
-    infoList: function (req, res, next) {
-        next();
+    infoListByUserId: function (req, res, next) {
+        if(req.result.hasError()){
+            next();
+        }
+        var query = req.env.query;
+        query.infoListByUserId(req.param("page"), req.session.user.id, function (rs) {
+            if (rs) {
+                req.result.data("infoList", rs);
+            }
+            next();
+        });
     }
 }

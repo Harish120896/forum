@@ -8,6 +8,7 @@ domain.register(
         require("./Topic"),
         require("./Reply"),
         require("./Message"),
+        require("./Info"),
         "listener", require("./eventHandles"),
         "repository", require("./repos"),
         "commandHandle", require("./commandHandles")

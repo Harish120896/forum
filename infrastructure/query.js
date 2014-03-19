@@ -283,6 +283,29 @@ module.exports = {
         } else {
             callback([]);
         }
+    },
+
+    infoListByUserId: function (page, userId, callback) {
+        if (userId) {
+            page = parseInt(page);
+            page = page > 0 ? page : 1;
+            var db = dbs.getDB("Info");
+            db
+                .find({
+                    targetId: userId
+                })
+                .limit(3)
+                .sort({
+                    createTime: -1
+                })
+                .skip((page - 1) * 3)
+                .exec(function (err, rs) {
+                    callback(rs || []);
+                })
+        } else {
+            callback([]);
+        }
     }
+
 
 }

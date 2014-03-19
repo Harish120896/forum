@@ -9,6 +9,38 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
     ])
 
+    .run(function ($rootScope, $http) {
+
+        // share init
+
+        $rootScope.users = {}
+        $rootScope.user = null;
+        $rootScope.logined = false;
+
+        $rootScope.refreshNum = function () {
+            this.time = Date.now();
+        }
+
+        $rootScope.refreshNum();
+
+        $rootScope.checkLogined = function () {
+            var self = this;
+            $http.post("/user/logined").success(function (data) {
+                if (data.email) {
+                    $rootScope.user = data;
+                    $rootScope.users[data.id] = data;
+                    $rootScope.logined = true;
+                }
+            })
+        }
+
+        $rootScope.checkLogined();
+
+        $rootScope.hash = window.location.hash;
+
+    })
+
+
     .filter('markdown', function ($sce) {
         return function (value) {
             var html = marked(value || '');
@@ -16,25 +48,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         };
     })
 
-    .run(function ($rootScope, $http) {
-        $rootScope.users = {}
-        $rootScope.refreshNum = function () {
-            this.time = Date.now();
-        }
-        $rootScope.refreshNum();
-        $rootScope.checkLogined = function () {
-            var self = this;
-            $http.post("/user/logined").success(function (data) {
-                if (data.email) {
-                    self.user = data;
-                    $rootScope.users[data.id] = data;
-                    self.logined = true;
-                }
-            })
-        }
-        $rootScope.hash = window.location.hash;
-        $rootScope.checkLogined();
-    })
 
     .factory('$position', ['$document', '$window', function ($document, $window) {
 
@@ -180,6 +193,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             }
         };
     }])
+
     .directive("usercode",function($http,$compile,$timeout,$modal,$position,$rootScope){
 
         return {
@@ -189,49 +203,18 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
             link:function(scope,elem,attrs){
             $http.get("/template/usercode.html").then(function(rs){
                 scope.users = $rootScope.users;
-                scope.logined = false;
-                scope.loginUser= {};
-                $rootScope.$watch("user",function(user){
-                    if(user){
-                        scope.loginUser= user;
-                    }
-                });
-
-                $rootScope.$watch("logined",function(logined){
-                    if(logined){
-                        scope.logined= logined;
-                    }
-                });
-
-                scope.hasFollow = function(){
-                    var has = false;
-                    var follows = scope.loginUser.follows || [];
-                    for(var i= 0,len = follows.length;i<len;i++){
-                        if(scope.userId ===  follows[i]){
-                            has = true;
-                            break;
-                        }
-                    }
-                    return has;
-                }
-
                 scope.$watch("userId",function(v){
                     var code = $compile(angular.element(rs.data))(scope);
                     var closefn;
                     angular.element(document.body).append(code);
 
                     elem.bind("mouseenter",function(event){
-                        var toid;
-                        toid = setTimeout(function(){
-                            scope.showcode = false;
-                            scope.$apply();
-                        },1000);
                         code.bind("mouseenter",function(event){
-                            clearTimeout(toid);
                             code.bind("mouseleave",function(){
                                 scope.showcode = false;
                                 scope.$apply();
                             })
+
                         });
                         scope.showcode = true;
                         scope.$apply();
@@ -246,15 +229,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                         }
                         scope.follow = function(){
                             $http.post("/user/"+v+"/follow");
-                            scope.loginUser.follows.push(scope.userId);
-                        }
-                        scope.unfollow = function(){
-                            $http.post("/user/"+v+"/unfollow");
-                            for(var i= 0,len = scope.loginUser.follows.length;i<len;i++){
-                                if(scope.userId ===  scope.loginUser.follows[i]){
-                                    scope.loginUser.follows.splice(i,1);
-                                }
-                            }
                         }
                     })
 
@@ -905,28 +879,12 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
         }
 
     })
-    .controller("userCtrl", function ($rootScope,$scope, $http,$upload,DATA,$tooltip,$sce,Result) {
+    .controller("userCtrl", function ($scope, $http,$upload,DATA,$tooltip,$sce) {
 
 
         var isCustomLog_init = false;
         $scope.replys = [];
         $scope.topics = [];
-
-        $rootScope.$watch("logined",function(u){
-            if(u){
-                $scope.user = $rootScope.user;
-            }
-        })
-
-        // update user info
-        $scope.updateUser = function(){
-            $scope.canEditUser = "ccc";
-            $http.post("/user/update",{
-                des:$scope.user.des,
-                address:$scope.user.address,
-                sex:$scope.user.sex === "true"?true:false
-            })
-        }
 
         $scope.$watch("isCustomLogo",function(v){
             if(isCustomLog_init){
@@ -953,19 +911,12 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
                     /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
                     //formDataAppender: function(formData, key, val){} //#40#issuecomment-28612000
                 }).progress(function(evt) {
-                        //console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
+                        console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     }).success(function(data, status, headers, config) {
                         // file is uploaded successfully
-                        var result = new Result();
-                        result.reborn(data);
-                        if(result.hasError()){
-                            alert(result.error().logo);
-                        }else{
-                            setTimeout(function(){
-                                window.location.reload()
-                            },1000);
-                        }
-
+                        setTimeout(function(){
+                            window.location.reload()
+                        },1000);
                     });
                 //.error(...)
                 //.then(success, error, progress);
@@ -1113,8 +1064,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap','angularFileUpload'])
 
             $scope.data.body += " @" + $rootScope.users[$scope.userId].nickname;
             $http.post("/message/send",$scope.data).success(function(rs){
-                $scope.close();
-                alert("私信发送成功")
+
             })
         }
     })
