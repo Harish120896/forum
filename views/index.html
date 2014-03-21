@@ -2,24 +2,26 @@
 
 <div ng-controller="columnCtrl">
 
-    <%if(user && user.role === 1){%>
+    <%if(loginUser && loginUser.role === 1){%>
     <a href="#" ng-click="openCreateDialog()">创建栏目</a>
     <%}%>
 
-    <% columns.forEach(function(col){ %>
-    <div class="panel panel-default">
+    <% columnList.forEach(function(col){ %>
+    <div class="panel panel-success" ng-init="DATA.user('<%=col.managerId%>')">
         <div class="panel-heading">
-            <a href="/column/<%=col.id%>"><span columnid="<%=col.id%>" coledit="name"><%=col.name%></span></a> <a
+            <a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>" coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a> <a
                 ng-click='select("<%=col.id%>")'></a>
-            <%if(user && user.role === 1){%>
+            <%if(loginUser && loginUser.role === 1){%>
             <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
                     class="glyphicon glyphicon-edit"></i></a>
             <%}%>
         </div>
         <div class="panel-body">
-            <a href="/column/<%=col.id%>">
                 <div columnid="<%=col.id%>" coledit="des"><%=col.des%></div>
-            </a>
+        </div>
+        <div class="panel-footer">
+            版主
+            <a usercode user-id='{{users["<%=col.managerId%>"].id}}' href='/user/{{users["<%=col.managerId%>"].id}}'>{{users["<%=col.managerId%>"].nickname}}</a>
         </div>
     </div>
     <% }) %>

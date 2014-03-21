@@ -1,9 +1,4 @@
 <% include header.html %>
-<ol class="breadcrumb">
-    <li><a href="/">社区主页</a></li>
-    <li><a href="/column/<%=column.id%>"><%=column.name%></a></li>
-    <li class="active"><%=topic.title%></li>
-</ol>
 
 <div ng-controller="replyCtrl" ng-init='topic = {createTime:<%=topic.createTime%>,authorId:"<%=topic.authorId%>",top:<%=topic.top%>,id:"<%=topic.id%>"};column=<%=JSON.stringify(column)%> ; topicAuthorId = "<%=topic.authorId%>";topicId="<%=topic.id%>" ; columnId = "<%=column.id%>"'>
 

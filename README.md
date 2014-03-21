@@ -1,23 +1,11 @@
-Note
-====
 
-Just started, but will soon you can see the demo.
 
-Forum
+介绍
 =====
 
-Forum for node.js , use CQRS framework [JSDM](https://github.com/brighthas/jsdm) develop core.
+论坛核心采用CQRS框架[JSDM](https://github.com/brighthas/jsdm)开发，应用层采用MVC Express框架，UI前端采用Angular。
 
-Domain Layer API
-================
-
-### domain.exec
-
-#### domain.exec("send message", args , callback )
-
-+ args { authorId , title , body , targetId } 
-
-+ callback
+这是个开始，更多文档逐步完善。
 
 
 

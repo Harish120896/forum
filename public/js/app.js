@@ -195,7 +195,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             }
         }
     })
-    .directive("usercode", function ($http, $compile, $timeout, $modal, $position, $rootScope) {
+    .directive("usercode", function ($http, $compile, $timeout, $modal, $position, $rootScope,$timeout) {
 
         return {
             scope: {
@@ -264,12 +264,15 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                                 scope.loginUser.follows.push(scope.userId);
                             }
                             scope.unfollow = function () {
+                                this.showcode = false;
                                 $http.post("/user/" + v + "/unfollow");
-                                for (var i = 0, len = scope.loginUser.follows.length; i < len; i++) {
-                                    if (scope.userId === scope.loginUser.follows[i]) {
-                                        scope.loginUser.follows.splice(i, 1);
+                                $timeout(function(){
+                                    for (var i = 0, len = scope.loginUser.follows.length; i < len; i++) {
+                                        if (scope.userId === scope.loginUser.follows[i]) {
+                                            scope.loginUser.follows.splice(i, 1);
+                                        }
                                     }
-                                }
+                                })
                             }
                         })
 
@@ -500,18 +503,21 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         return {
             user: function (uid) {
+
                 var deferred = $q.defer();
-                if (users[uid]) {
-                    deferred.resolve(users[uid]);
-                } else {
-                    $http.get("/user/" + uid + "/get").success(function (data) {
-                        if (data) {
-                            users[uid] = data;
-                            deferred.resolve(users[uid]);
-                        } else {
-                            deferred.resolve(null);
-                        }
-                    });
+                if(uid){
+                    if (users[uid]) {
+                        deferred.resolve(users[uid]);
+                    } else {
+                        $http.get("/user/" + uid + "/get").success(function (data) {
+                            if (data) {
+                                users[uid] = data;
+                                deferred.resolve(users[uid]);
+                            } else {
+                                deferred.resolve(null);
+                            }
+                        });
+                    }
                 }
                 return deferred.promise;
             },
@@ -691,6 +697,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         $scope.moveEditor = function (cid, parentId) {
             $scope.validat_numMessage = null;
+            $scope.body = "";
             if (cid === "createReply") {
                 $scope.editorContainerId = cid;
                 $scope.parentId = null;
@@ -769,7 +776,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             var parentId = $scope.parentId;
 
             var data = {
-                body: $scope.epicEditor.content(),
+                body: $scope.body,
                 validat_num: $scope.validat_num,
                 topicId: $scope.topicId,
                 parentId: $scope.parentId
@@ -799,14 +806,14 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                     $scope.loadUser(reply.authorId);
                 }
                 $scope.validat_num = "";
-                $scope.epicEditor.refresh();
+                $scope.body = "";
                 $rootScope.refreshNum();
 
             })
         }
 
     })
-    .controller("columnCtrl",function ($scope, $modal) {
+    .controller("columnCtrl",function ($scope, $modal,DATA) {
 
         $scope.openCreateDialog = function () {
             $modal.open({
@@ -814,6 +821,8 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                 controller: "createColumnCtrl"
             });
         }
+
+        $scope.DATA = DATA;
 
         $scope.openUpdateDialog = function (id) {
 
@@ -875,6 +884,10 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
     })
     .controller("userCtrl", function ($rootScope, $scope, $http, $upload, DATA, $tooltip, $sce, Result) {
 
+        $scope.targetTag = window.location.hash;
+        if($scope.targetTag){
+            $scope.targetTag = $scope.targetTag.substr(1);
+        }
 
         var isCustomLog_init = false;
         $scope.replys = [];

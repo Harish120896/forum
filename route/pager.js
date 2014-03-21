@@ -7,15 +7,14 @@ module.exports = function wrap(app) {
     app.get("/",
         util.cookieLogin,
         data.share,
-        util.cookieLogin,
-        data.columnList,
         function (req, res) {
-            res.render("index", {columns: req.result.data("columnList"), loginUser: req.session.user});
+            res.locals.breadcrumb = "index"
+            res.render("index", { loginUser: req.session.user , pageType:"index"});
         });
 
     app.get("/topic/:id",
-        //data.share,
         util.cookieLogin,
+        data.share,
         data.topicById,
         data.columnByTopicId,
         function (req, res) {
@@ -24,7 +23,8 @@ module.exports = function wrap(app) {
             if (topic) {
                 res.locals.topic = topic;
                 res.locals.column = column;
-                res.locals.loginUser = req.session.user
+                res.locals.loginUser = req.session.user;
+                res.locals.breadcrumb = "topic"
                 res.render("topic");
             } else {
                 res.send(404);
@@ -33,14 +33,14 @@ module.exports = function wrap(app) {
 
     app.get("/user/:id",
         util.cookieLogin,
+        data.share,
         data.userById,
         util.hasUser,
-        data.columnList,
         function (req, res) {
             if(req.result.hasError()){
                 res.send(404);
             }else{
-                res.locals.columnList = req.result.data("columnList");
+                res.locals.breadcrumb = "user";
                 res.locals.user = req.result.data("user");
                 res.locals.loginUser = req.session.user;
                 res.render("user");
@@ -48,11 +48,12 @@ module.exports = function wrap(app) {
         });
 
     app.get("/column/:id/:page?",
-        //data.share,
         util.cookieLogin,
+        data.share,
         data.columnById,
         data.topicsByColumnId,
         function (req, res) {
+            res.locals.breadcrumb = "column";
             if (res.locals.column = req.result.data("column")) {
                 res.locals.topics = req.result.data("topics");
 
@@ -74,6 +75,7 @@ module.exports = function wrap(app) {
             }
         });
 
+    // doto
     app.get("/setNewPassword",
         function (req, res) {
             res.locals.code = req.param("code");

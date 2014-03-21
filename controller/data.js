@@ -2,7 +2,8 @@ var Result = require("result-brighthas");
 var util = require("./util");
 var pw = require("png-word")();
 
-module.exports = {
+
+var data = {
 
     columnById: function (req, res, next) {
         if (req.result.hasError()) {
@@ -31,8 +32,10 @@ module.exports = {
     },
 
     share: function (req, res, next) {
-        res.locals.user = null;
-        next();
+        data.columnList(req,res,function(){
+            res.locals.columnList = req.result.data("columnList");
+            next();
+        })
     },
 
     columnList: function (req, res, next) {
@@ -213,3 +216,5 @@ module.exports = {
         });
     }
 }
+
+module.exports = data;
