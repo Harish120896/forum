@@ -81,7 +81,7 @@ module.exports = function wrap(my) {
         var query = my.services.getQuery();
 
         query.replyCountByToday(userId, function (count) {
-            if (count > 5000) { //doto
+            if (count > 5000) {
                 callback(false);
             } else {
                 callback(true);

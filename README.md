@@ -25,10 +25,23 @@ query查询组件
 
 可以自己定制，但必须符合下面的接口方法，当然除了这些方法外，可以加入其他查询方法，但以下是必须要实现的。
 
-
-    columns: function (callback) {},
+以下的6个方法是核心层需要的，所以必须实现：
 
     columnById: function (id, callback) {},
+
+    userById: function (id, callback) {},
+
+    userByEmail: function (email, callback) {},
+
+    userByNick: function (nick, callback) {},
+
+    topicCountByToday: function (authorId, callback) {},
+
+    replyCountByToday: function (authorId, callback) {},
+
+
+以下的方法虽然不是核心层需要的方法，但控制器需要调用，如果你使用默认的控制器组件，query 必须要实现以下方法：
+
 
     columnByTopicId: function (id, callback) {},
 
@@ -42,17 +55,7 @@ query查询组件
 
     users: function (callback) {},
 
-    userById: function (id, callback) {},
-
-    userByEmail: function (email, callback) {},
-
-    userByNick: function (nick, callback) {},
-
     userFuzzyExist: function (userInfo, callback) {},
-
-    replyCountByToday: function (authorId, callback) {},
-
-    topicCountByToday: function (authorId, callback) {},
 
     topicTitleListByUserId: function (userId, page, callback) {},
 
