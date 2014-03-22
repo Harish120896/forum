@@ -10,16 +10,16 @@ var user = new User({
 var eventHandles = require("../../domain/eventHandles")({
     repos: {
         User: {
-            get: function(id, cb) {
+            get: function (id, cb) {
                 cb(null, user);
             }
         }
     }
 });
 
-describe("eventHandles", function() {
+describe("eventHandles", function () {
 
-    it("#Topic.*.create", function() {
+    it("#Topic.*.create", function () {
         eventHandles[0]({
             authorId: "001"
         });
@@ -27,7 +27,7 @@ describe("eventHandles", function() {
 
     })
 
-    it("#Reply.*.create", function() {
+    it("#Reply.*.create", function () {
         eventHandles[1]({
             authorId: "001"
         });

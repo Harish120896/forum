@@ -10,11 +10,11 @@ var DATA = require("../../controller/data");
 var util = require("../../controller/util");
 var result = util.result;
 
-describe("topicCtrl", function() {
+describe("topicCtrl", function () {
 
     var tid;
 
-    it("#create", function(done) {
+    it("#create", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -27,12 +27,12 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/create", function(req, res, next) {
+        app.post("/create", function (req, res, next) {
             req.session.user = {
                 id: "u001"
             };
             next();
-        }, topicCtrl.create, function(req, res) {
+        }, topicCtrl.create, function (req, res) {
             var topic = req.result.data("topic");
             tid = topic.id;
             if (req.result.hasError()) {
@@ -52,8 +52,7 @@ describe("topicCtrl", function() {
     });
 
 
-
-    it("#update", function(done) {
+    it("#update", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -66,12 +65,12 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/update", function(req, res, next) {
+        app.post("/update", function (req, res, next) {
             req.session.user = {
                 id: "u001"
             };
             next();
-        }, topicCtrl.update, function(req, res) {
+        }, topicCtrl.update, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -90,7 +89,7 @@ describe("topicCtrl", function() {
 
     });
 
-    it("#remove", function(done) {
+    it("#remove", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -103,7 +102,7 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/remove/:id", topicCtrl.remove, function(req, res) {
+        app.post("/remove/:id", topicCtrl.remove, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -117,7 +116,7 @@ describe("topicCtrl", function() {
     });
 
 
-    it("#seal", function(done) {
+    it("#seal", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -130,7 +129,7 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/seal/:id", topicCtrl.seal, function(req, res) {
+        app.post("/seal/:id", topicCtrl.seal, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -144,8 +143,7 @@ describe("topicCtrl", function() {
     });
 
 
-
-    it("#unseal", function(done) {
+    it("#unseal", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -158,7 +156,7 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/unseal/:id", topicCtrl.unseal, function(req, res) {
+        app.post("/unseal/:id", topicCtrl.unseal, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -172,7 +170,7 @@ describe("topicCtrl", function() {
     });
 
 
-    it("#access", function(done) {
+    it("#access", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -185,7 +183,7 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/access/:id", topicCtrl.access, function(req, res) {
+        app.post("/access/:id", topicCtrl.access, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -198,7 +196,7 @@ describe("topicCtrl", function() {
 
     });
 
-    it("#access", function(done) {
+    it("#access", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -211,7 +209,7 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/access/:id", topicCtrl.access, function(req, res) {
+        app.post("/access/:id", topicCtrl.access, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -224,7 +222,7 @@ describe("topicCtrl", function() {
 
     });
 
-    it("#removeReply", function(done) {
+    it("#removeReply", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -236,7 +234,7 @@ describe("topicCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/removeReply/:id", topicCtrl.removeReply, function(req, res) {
+        app.post("/removeReply/:id", topicCtrl.removeReply, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {

@@ -2,7 +2,7 @@ var r = require("random-word")("0123456789");
 var Result = require("result-brighthas");
 var ability = require("../public/js/ability");
 
-module.exports = function(domain,query){
+module.exports = function (domain, query) {
 
     var util = {
 

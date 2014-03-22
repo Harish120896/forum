@@ -2,11 +2,11 @@ var should = require("should")
 var my = require("../util/my");
 var Message = require("../../domain/Message")(my);
 
-describe("Message", function() {
+describe("Message", function () {
 
     var msg
 
-    it("#create", function() {
+    it("#create", function () {
 
         msg = new Message({
             targetId: "001",
@@ -23,7 +23,7 @@ describe("Message", function() {
 
     })
 
-    it("#see", function() {
+    it("#see", function () {
         msg.havesee.should.be.false;
         msg.see();
         msg.havesee.should.be.true;

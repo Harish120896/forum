@@ -2,11 +2,11 @@ var should = require("should")
 var my = require("../util/my");
 var Info = require("../../domain/Info")(my);
 
-describe("Info", function() {
+describe("Info", function () {
 
     var info;
 
-    it("#create", function() {
+    it("#create", function () {
         info = new Info({
             body: "info body",
             targetId: "u001"
@@ -17,7 +17,7 @@ describe("Info", function() {
         should.exist(info.id);
     })
 
-    it("#see", function() {
+    it("#see", function () {
         info.see();
         info.havesee.should.eql(true);
     })

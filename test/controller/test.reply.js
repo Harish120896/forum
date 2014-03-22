@@ -10,11 +10,11 @@ var DATA = require("../../controller/data");
 var util = require("../../controller/util");
 var result = require("../../controller/util").result;
 
-describe("topicCtrl", function() {
+describe("topicCtrl", function () {
 
     var rid;
 
-    it("#create", function(done) {
+    it("#create", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -26,12 +26,12 @@ describe("topicCtrl", function() {
         app.use(result);
         app.use(app.router);
 
-        app.post("/create", function(req, res, next) {
+        app.post("/create", function (req, res, next) {
             req.session.user = {
                 id: "u001"
             };
             next();
-        }, replyCtrl.create, function(req, res) {
+        }, replyCtrl.create, function (req, res) {
             res.send(req.result.json())
         });
 
@@ -41,7 +41,7 @@ describe("topicCtrl", function() {
                 title: "reply title",
                 body: "reply content"
             })
-            .end(function(err, res) {
+            .end(function (err, res) {
                 rid = res.body.data.reply.id;
                 should.exist(rid);
                 done()
@@ -49,7 +49,7 @@ describe("topicCtrl", function() {
 
     })
 
-    it("#remove", function(done) {
+    it("#remove", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -60,16 +60,16 @@ describe("topicCtrl", function() {
         app.use(result);
         app.use(app.router);
 
-        app.post("/remove/:id", DATA.replyById, replyCtrl.remove, function(req, res) {
+        app.post("/remove/:id", DATA.replyById, replyCtrl.remove, function (req, res) {
             res.send(req.result)
         });
         request(app).post("/remove/" + rid)
-            .end(function() {
+            .end(function () {
                 done();
             });
     });
 
-    it("#updateInfo", function(done) {
+    it("#updateInfo", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -80,7 +80,7 @@ describe("topicCtrl", function() {
         app.use(result);
         app.use(app.router);
 
-        app.post("/updateInfo/:id", replyCtrl.updateInfo, function(req, res) {
+        app.post("/updateInfo/:id", replyCtrl.updateInfo, function (req, res) {
             if (!req.result.hasError()) {
                 res.send("success")
             }

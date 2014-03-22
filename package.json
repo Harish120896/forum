@@ -1,54 +1,54 @@
 {
-  "name": "froum",
-  "version": "0.0.1",
-  "description": "init",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/brighthas/froum.git"
-  },
-  "keywords": [
-    "froum",
-    "node.js",
-    "express",
-    "express.js",
-    "bbs"
-  ],
-  "author": "brighthas <brighthas@gmail.com>",
-  "license": "GPLv3",
-  "bugs": {
-    "url": "https://github.com/brighthas/froum/issues"
-  },
-  "homepage": "https://github.com/brighthas/froum",
-  "dependencies": {
-    "jsdm": "0.3.4",
-    "node-uuid": "~1.4.1",
-    "validator": "~2.0.0",
-    "express": "3.4.4",
-    "ejs": "*",
-    "tree-node": "0.1.5",
-    "mongoose": "~3.8.3",
-    "step": "0.0.5",
-    "model-brighthas": "0.2.8",
-    "jsdm.middle": "0.0.7",
-    "istype": "0.0.2",
-    "png-word": "0.0.5",
-    "random-word": "git://github.com/brighthas/random-word",
-    "underscore": "^1.5.2",
-    "nodemailer": "~0.6.0",
-    "node-validator": "~0.1.4",
-    "q": "~1.0.0",
-    "result-brighthas": "0.0.6",
-    "nedb": "~0.10.4",
-    "shortid": "^2.0.0",
-    "marked": "^0.3.2"
-  },
-  "devDependencies": {
-    "should": "~2.1.0",
-    "supertest": "~0.9.0",
-    "nedb": "~0.10.4"
-  }
+    "name": "froum",
+    "version": "0.0.1",
+    "description": "init",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/brighthas/froum.git"
+    },
+    "keywords": [
+        "froum",
+        "node.js",
+        "express",
+        "express.js",
+        "bbs"
+    ],
+    "author": "brighthas <brighthas@gmail.com>",
+    "license": "GPLv3",
+    "bugs": {
+        "url": "https://github.com/brighthas/froum/issues"
+    },
+    "homepage": "https://github.com/brighthas/froum",
+    "dependencies": {
+        "jsdm": "0.3.4",
+        "node-uuid": "~1.4.1",
+        "validator": "~2.0.0",
+        "express": "3.4.4",
+        "ejs": "*",
+        "tree-node": "0.1.5",
+        "mongoose": "~3.8.3",
+        "step": "0.0.5",
+        "model-brighthas": "0.2.8",
+        "jsdm.middle": "0.0.7",
+        "istype": "0.0.2",
+        "png-word": "0.0.5",
+        "random-word": "git://github.com/brighthas/random-word",
+        "underscore": "^1.5.2",
+        "nodemailer": "~0.6.0",
+        "node-validator": "~0.1.4",
+        "q": "~1.0.0",
+        "result-brighthas": "0.0.6",
+        "nedb": "~0.10.4",
+        "shortid": "^2.0.0",
+        "marked": "^0.3.2"
+    },
+    "devDependencies": {
+        "should": "~2.1.0",
+        "supertest": "~0.9.0",
+        "nedb": "~0.10.4"
+    }
 }

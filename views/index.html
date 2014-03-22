@@ -9,15 +9,17 @@
     <% columnList.forEach(function(col){ %>
     <div class="panel panel-success" ng-init="DATA.user('<%=col.managerId%>')">
         <div class="panel-heading">
-            <a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>" coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a> <a
-                ng-click='select("<%=col.id%>")'></a>
+            <a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
+                                                coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a>
+            <a
+                    ng-click='select("<%=col.id%>")'></a>
             <%if(loginUser && loginUser.role === 1){%>
             <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
                     class="glyphicon glyphicon-edit"></i></a>
             <%}%>
         </div>
         <div class="panel-body">
-                <div columnid="<%=col.id%>" coledit="des"><%=col.des%></div>
+            <div columnid="<%=col.id%>" coledit="des"><%=col.des%></div>
         </div>
         <div class="panel-footer">
             版主

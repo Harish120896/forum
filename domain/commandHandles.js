@@ -29,8 +29,8 @@ function wrap(my) {
     handle2.commandName = "remove a topic";
 
     function handle2(args, callback) {
-        my.repos.Topic.get(args.id).then(function(topic){
-            if(topic){
+        my.repos.Topic.get(args.id).then(function (topic) {
+            if (topic) {
                 topic.removeReply();
                 my.repos.Topic.remove(args.id);
             }
@@ -52,10 +52,10 @@ function wrap(my) {
 
                             if (!err) {
 
-                                try{
+                                try {
                                     topic.addReply(reply.parentId, reply.id);
 
-                                }catch(e){
+                                } catch (e) {
                                     console.log(e);
                                     throw e;
                                 }
@@ -129,7 +129,7 @@ function wrap(my) {
     function handle7(args, callback) {
         var title = args.title;
         var body = args.body;
-        var body2 = body.replace(/(?:@)\w*(?=\s|$)/gi,"");
+        var body2 = body.replace(/(?:@)\w*(?=\s|$)/gi, "");
         var authorId = args.authorId;
         if (body) {
             filterNickname(body).forEach(function (name) {
@@ -188,15 +188,15 @@ function wrap(my) {
     handle11.commandName = "isCustomLogo";
 
     function handle11(args, callback) {
-        my.repos.User.get(args.id).then(function(user){
+        my.repos.User.get(args.id).then(function (user) {
 
-            if(user){
+            if (user) {
                 var custom = args.custom === true || false;
                 user.isCustomLogo = custom;
             }
         })
     }
 
-    return [handle1, handle2, handle3, handle4, handle5, handle6, handle7, handle8, handle9, handle10,handle11];
+    return [handle1, handle2, handle3, handle4, handle5, handle6, handle7, handle8, handle9, handle10, handle11];
 
 }

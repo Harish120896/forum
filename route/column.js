@@ -1,4 +1,4 @@
-module.exports = function wrap(app,ctrls) {
+module.exports = function wrap(app, ctrls) {
 
     app.post("/column/create",
         ctrls.util.isLogin,

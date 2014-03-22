@@ -50,14 +50,14 @@ function wrap(my) {
         .attr("createTime", {
             type: "date"
         })
-        .attr("top",{
+        .attr("top", {
             type: "boolean"
         })
         .on("creating", function (topic) {
             topic.attrs.replyTree = new Node();
             topic.attrs.createTime = topic.attrs.updateTime = new Date();
         })
-        .on("changing",function(topic,attrs){
+        .on("changing", function (topic, attrs) {
             attrs.updateTime = new Date();
         })
         .on("changed", function (topic, attrs) {
@@ -78,7 +78,7 @@ function wrap(my) {
                 }
                 ids.push(replyId);
                 ids.forEach(function (id) {
-                   my.repos.Reply.remove(id);
+                    my.repos.Reply.remove(id);
                 })
             }
             this.replyTree = this.replyTree;

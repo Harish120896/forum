@@ -12,9 +12,9 @@ var result = require("../../controller/util").result;
 
 var DATA = require("../../controller/data");
 
-describe("columnCtrl", function() {
+describe("columnCtrl", function () {
 
-    it("#send message", function(done) {
+    it("#send message", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -28,13 +28,13 @@ describe("columnCtrl", function() {
         app.use(app.router);
 
         app.post("/create",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "u001"
                 }
                 next();
             },
-            msgCtrl.send, function(req, res) {
+            msgCtrl.send, function (req, res) {
                 res.send("success")
             });
 

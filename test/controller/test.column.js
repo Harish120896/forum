@@ -12,9 +12,9 @@ var result = require("../../controller/util").result;
 
 var DATA = require("../../controller/data");
 
-describe("columnCtrl", function() {
+describe("columnCtrl", function () {
 
-    it("#create", function(done) {
+    it("#create", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -27,7 +27,7 @@ describe("columnCtrl", function() {
         app.use(env);
         app.use(app.router);
 
-        app.post("/create", columnCtrl.create, function(req, res) {
+        app.post("/create", columnCtrl.create, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -44,7 +44,7 @@ describe("columnCtrl", function() {
 
     });
 
-    it("#update", function(done) {
+    it("#update", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -56,7 +56,7 @@ describe("columnCtrl", function() {
         app.use(app.router);
 
 
-        app.post("/update/:id", columnCtrl.update, function(req, res) {
+        app.post("/update/:id", columnCtrl.update, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -74,7 +74,7 @@ describe("columnCtrl", function() {
 
     })
 
-    it("#up", function(done) {
+    it("#up", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -86,7 +86,7 @@ describe("columnCtrl", function() {
         app.use(app.router);
 
 
-        app.post("/up/:id", columnCtrl.up, function(req, res) {
+        app.post("/up/:id", columnCtrl.up, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -101,7 +101,7 @@ describe("columnCtrl", function() {
 
     })
 
-    it("#up", function(done) {
+    it("#up", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -113,7 +113,7 @@ describe("columnCtrl", function() {
         app.use(app.router);
 
 
-        app.post("/setManager/:id", columnCtrl.setManager, function(req, res) {
+        app.post("/setManager/:id", columnCtrl.setManager, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {

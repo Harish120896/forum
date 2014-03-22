@@ -5,7 +5,7 @@ module.exports = function wrap(my) {
 
     function handle1(className, data) {
         var db = dbs.getDB(className);
-        db.insert(data, function(err, rs) {
+        db.insert(data, function (err, rs) {
 
         })
     }
@@ -18,7 +18,8 @@ module.exports = function wrap(my) {
             id: id
         }, {
             $set: data
-        }, {}, function() {})
+        }, {}, function () {
+        })
     }
 
     handle3.eventName = "*.*.remove";
@@ -27,7 +28,8 @@ module.exports = function wrap(my) {
         var db = dbs.getDB(className);
         db.remove({
             id: id
-        }, function() {});
+        }, function () {
+        });
     }
 
     return [handle1, handle2, handle3];

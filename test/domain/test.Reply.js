@@ -2,11 +2,11 @@ var should = require("should")
 var my = require("../util/my");
 var Reply = require("../../domain/Reply")(my);
 
-describe("Reply", function() {
+describe("Reply", function () {
 
     var reply;
 
-    it("#new", function() {
+    it("#new", function () {
 
         var options = {
             "title": "my title",
@@ -27,12 +27,12 @@ describe("Reply", function() {
 
     })
 
-    it("#updateInfo", function(done) {
+    it("#updateInfo", function (done) {
         reply.updateInfo("tttt", "bobbobod");
 
         reply.hasError().should.eql(false);
         reply.updateTimeout = 1;
-        setTimeout(function() {
+        setTimeout(function () {
             reply.updateInfo("title1", "body1");
             reply.result.json().errors.should.eql({
                 'timeout': ['timeout']

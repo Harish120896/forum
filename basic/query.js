@@ -102,9 +102,9 @@ module.exports = {
 
     },
 
-    topicCountByColumnId: function(columnId,callback){
+    topicCountByColumnId: function (columnId, callback) {
         var db = dbs.getDB("Topic");
-        db.count({columnId:columnId}).exec(function(err,count){
+        db.count({columnId: columnId}).exec(function (err, count) {
             callback(count || 0);
         })
     },

@@ -1,6 +1,6 @@
 var Result = require("result-brighthas");
 
-module.exports = function wrap(domain,query){
+module.exports = function wrap(domain, query) {
 
     return {
 
@@ -44,7 +44,7 @@ module.exports = function wrap(domain,query){
             }
             var columnId = req.param("id");
             var userId = req.body.userId;
-            console.log(req.body,columnId);
+            console.log(req.body, columnId);
             if (userId)
                 domain.call("Column.setManager", columnId, [userId]);
             next();

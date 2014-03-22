@@ -26,26 +26,28 @@ var config = {
     "getById": require("./basic/db").get,
 
     /*
-    * 根据领域层create update remove 事件更新数据库，
-    * 可以自定义，替换这个默认函数
-    */
-    "update_db": function(domain){
+     * 根据领域层create update remove 事件更新数据库，
+     * 可以自定义，替换这个默认函数
+     */
+    "update_db": function (domain) {
 
         var dbs = require("./basic/db");
         var crypto = require("crypto");
 
-        domain.on("*.*.create",function(className, data){
-            if(className === "User"){
+        domain.on("*.*.create", function (className, data) {
+            if (className === "User") {
                 data.logo = crypto.createHash("md5").update(data.email).digest("hex");
             }
-            dbs.save(className, data, function () {});
+            dbs.save(className, data, function () {
+            });
         });
 
-        domain.on("*.*.update",function(className, id, data){
-            dbs.update(className, id, data, function () {});
+        domain.on("*.*.update", function (className, id, data) {
+            dbs.update(className, id, data, function () {
+            });
         });
 
-        domain.on("*.*.remove",function(className, id){
+        domain.on("*.*.remove", function (className, id) {
             dbs.remove(className, id);
         });
     },
@@ -72,13 +74,14 @@ module.exports = function (conf) {
         }
 
         // 为domain添加getQuery服务service
-        domain.register("service",function wrap(my){
+        domain.register("service",function wrap(my) {
             getQuery.serviceName = "getQuery";
-            function getQuery(){
+            function getQuery() {
                 return config.query;
             }
+
             return getQuery;
-        },"get",config.getById).seal(); // 封印
+        }, "get", config.getById).seal(); // 封印
 
         // 控制器
         var ctrls = {}
@@ -86,7 +89,7 @@ module.exports = function (conf) {
         // 加载控制器
         fs.readdirSync(config.contrller_path).forEach(function (filename) {
             var filepath = config.contrller_path + "/" + filename;
-            ctrls[path.basename(filepath, ".js")] = require(filepath)(domain,config.query);
+            ctrls[path.basename(filepath, ".js")] = require(filepath)(domain, config.query);
         });
 
         app.set('views', path.join(config.view_path));
@@ -113,7 +116,7 @@ module.exports = function (conf) {
 
         // 加载路由器
         fs.readdirSync(config.route_path).forEach(function (filename) {
-            require(config.route_path + "/" + filename)(app,ctrls);
+            require(config.route_path + "/" + filename)(app, ctrls);
         });
 
         // 调用 监听domain create/update/remove 事件，并更新服务器
@@ -122,7 +125,7 @@ module.exports = function (conf) {
     }
 
     return {
-        domain:domain,
+        domain: domain,
         app: app
     }
 

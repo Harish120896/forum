@@ -2,11 +2,11 @@ var should = require("should")
 var my = require("../util/my");
 var Topic = require("../../domain/Topic")(my);
 
-describe("Topic", function() {
+describe("Topic", function () {
 
     var topic;
 
-    it("#new", function() {
+    it("#new", function () {
 
         var options = {
             title: "test title",
@@ -26,7 +26,7 @@ describe("Topic", function() {
     })
 
 
-    it("#addReply", function() {
+    it("#addReply", function () {
         topic.addReply(null, "id001");
         topic.addReply(null, "id002");
         topic.addReply("id001", "id003");
@@ -35,23 +35,23 @@ describe("Topic", function() {
     });
 
 
-    it("#removeReply", function() {
+    it("#removeReply", function () {
         topic.removeReply("id002");
         topic.replyTree.childIds.length.should.eql(1);
         topic.removeReply();
         topic.replyTree.childIds.length.should.eql(0);
     })
 
-    it("#access", function() {
+    it("#access", function () {
         topic.accessNum.should.eql(0);
         topic.access();
         topic.accessNum.should.eql(1);
     })
 
-    it("#updateInfo", function(done) {
+    it("#updateInfo", function (done) {
 
         var result = topic.updateInfo("title01", "body001", "c01");
-        result.then(function(result) {
+        result.then(function (result) {
             topic.title.should.eql("title01");
             topic.body.should.eql("body001");
             topic.columnId.should.eql("c01");
@@ -60,7 +60,7 @@ describe("Topic", function() {
 
     })
 
-    it("#toseal / unseal", function() {
+    it("#toseal / unseal", function () {
         topic.toseal();
         topic.seal.should.be.true;
         topic.unseal();

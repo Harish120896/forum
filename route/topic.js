@@ -1,5 +1,4 @@
-
-module.exports = function wrap(app,ctrls) {
+module.exports = function wrap(app, ctrls) {
 
     app.post("/topic/create",
         ctrls.util.isLogin,

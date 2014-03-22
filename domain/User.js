@@ -83,9 +83,9 @@ function wrap(my) {
         .attr("reportTime", {
             type: "date"
         })
-        .attr("isCustomLogo",{
-            type:"boolean",
-            default:false
+        .attr("isCustomLogo", {
+            type: "boolean",
+            default: false
         })
 
         .method("updateInfo", function (data) {
@@ -127,9 +127,9 @@ function wrap(my) {
             }
         })
         .method("follow", function (uid) {
-         //   console.log(uid,"----------------->")
+            //   console.log(uid,"----------------->")
             var self = this;
-            if(uid === this.id) return;
+            if (uid === this.id) return;
             my.repos.User.get(uid, function (err, user) {
                 if (user) {
 
@@ -151,7 +151,7 @@ function wrap(my) {
         })
         .method("unfollow", function (uid) {
             var self = this;
-            if(uid === this.id) return;
+            if (uid === this.id) return;
             my.repos.User.get(uid, function (err, user) {
 
                 var follows = self.follows;

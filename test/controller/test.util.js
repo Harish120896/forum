@@ -12,9 +12,9 @@ var result = util.result;
 
 var DATA = require("../../controller/data");
 
-describe("validator", function() {
+describe("validator", function () {
 
-    it("#validat_num", function(done) {
+    it("#validat_num", function (done) {
 
         var app = express();
         app.use(env);
@@ -27,8 +27,7 @@ describe("validator", function() {
 
     })
 
-    it("#hasReqUser", function(done) {
-
+    it("#hasReqUser", function (done) {
 
 
         var app = express();
@@ -43,11 +42,11 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/hasUser",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.result.data("user", {})
 
                 next();
-            }, util.hasUser, function(req, res) {
+            }, util.hasUser, function (req, res) {
                 res.send("success")
             });
 
@@ -58,7 +57,7 @@ describe("validator", function() {
     })
 
 
-    it("#isLogin", function(done) {
+    it("#isLogin", function (done) {
 
         var app = express();
         app.use(env);
@@ -72,11 +71,11 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/isLogin",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {};
                 next();
             },
-            util.isLogin, function(req, res) {
+            util.isLogin, function (req, res) {
                 res.send("success");
             });
         request(app).post("/isLogin").send({
@@ -85,7 +84,7 @@ describe("validator", function() {
         }).expect("success", done);
     })
 
-    it("#noSelf", function(done) {
+    it("#noSelf", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -98,7 +97,7 @@ describe("validator", function() {
         app.use(express.session());
         app.use(app.router);
 
-        app.post("/noself", function(req, res, next) {
+        app.post("/noself", function (req, res, next) {
                 req.result.data("user", {
                     id: "001"
                 });
@@ -110,7 +109,7 @@ describe("validator", function() {
                 next();
 
             }, util.noSelf,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             })
 
@@ -118,7 +117,7 @@ describe("validator", function() {
 
     })
 
-    it("#isSelf", function(done) {
+    it("#isSelf", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -131,7 +130,7 @@ describe("validator", function() {
         app.use(express.session());
         app.use(app.router);
 
-        app.post("/isself", function(req, res, next) {
+        app.post("/isself", function (req, res, next) {
                 req.result.data("user", {
                     id: "001"
                 });
@@ -141,14 +140,14 @@ describe("validator", function() {
                 };
                 next();
             }, util.isSelf,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
 
         request(app).post("/isself").expect("success", done);
     })
 
-    it("#isAdmin", function(done) {
+    it("#isAdmin", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -161,7 +160,7 @@ describe("validator", function() {
         app.use(express.session());
         app.use(app.router);
 
-        app.post("/isAdmin", function(req, res, next) {
+        app.post("/isAdmin", function (req, res, next) {
 
             req.session.user = {
                 role: 1
@@ -169,7 +168,7 @@ describe("validator", function() {
 
             next();
 
-        }, util.isAdmin, function(req, res) {
+        }, util.isAdmin, function (req, res) {
             res.send("success");
         });
         request(app).post("/isAdmin")
@@ -179,7 +178,7 @@ describe("validator", function() {
             }).expect("success", done);
     })
 
-    it("#hasTopic", function(done) {
+    it("#hasTopic", function (done) {
 
         var app = express();
         app.use(env);
@@ -194,18 +193,18 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/topic/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.result.data("topic", {});
                 next();
             },
-            util.hasTopic, function(req, res) {
+            util.hasTopic, function (req, res) {
                 res.send("success");
             });
 
         request(app).post("/topic/t001").expect("success", done);
     })
 
-    it("#isTopicManager", function(done) {
+    it("#isTopicManager", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -221,7 +220,7 @@ describe("validator", function() {
 
         app.post("/isTopicManager/:id",
 
-            function(req, res, next) {
+            function (req, res, next) {
 
                 req.session.user = {
                     id: "u001"
@@ -235,14 +234,14 @@ describe("validator", function() {
             },
 
             util.isTopicManager,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
 
         dbs.getDB("Column").insert({
             managerId: "u001",
             id: "c001"
-        }, function(err, rs) {
+        }, function (err, rs) {
 
             request(app).post("/isTopicManager/t001").expect("success", done);
         })
@@ -251,7 +250,7 @@ describe("validator", function() {
     })
 
 
-    it("#isReplyManager1", function(done) {
+    it("#isReplyManager1", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -265,7 +264,7 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/reply/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "u001"
                 };
@@ -274,7 +273,7 @@ describe("validator", function() {
             DATA.replyById,
             util.hasReply,
             util.isReplyManager,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
 
@@ -282,7 +281,7 @@ describe("validator", function() {
 
     });
 
-    it("#isReplyManager2", function(done) {
+    it("#isReplyManager2", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -296,7 +295,7 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/reply/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "u001"
                 };
@@ -305,7 +304,7 @@ describe("validator", function() {
             DATA.replyById,
             util.hasReply,
             util.isReplyManager,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
 
@@ -313,7 +312,7 @@ describe("validator", function() {
 
     });
 
-    it("#isReplyManager3", function(done) {
+    it("#isReplyManager3", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -327,7 +326,7 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/reply/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "u001",
                     role: 1
@@ -337,7 +336,7 @@ describe("validator", function() {
             DATA.replyById,
             util.hasReply,
             util.isReplyManager,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
 
@@ -347,7 +346,7 @@ describe("validator", function() {
     });
 
 
-    it("#isReplyAuthor success", function(done) {
+    it("#isReplyAuthor success", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -361,7 +360,7 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/reply/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "u001"
                 };
@@ -372,7 +371,7 @@ describe("validator", function() {
                 next();
             },
             util.isReplyAuthor,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
 
@@ -381,7 +380,7 @@ describe("validator", function() {
 
     });
 
-    it("#hasReply", function(done) {
+    it("#hasReply", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -395,7 +394,7 @@ describe("validator", function() {
         app.use(app.router);
 
         app.post("/reply",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.reply = {
                     id: "r001",
                     authorId: "u001"
@@ -403,7 +402,7 @@ describe("validator", function() {
                 next();
             },
             util.hasReply,
-            function(req, res) {
+            function (req, res) {
                 res.send("success");
             });
         request(app).post("/reply").expect("success", done);

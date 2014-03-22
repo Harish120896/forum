@@ -1,47 +1,50 @@
 var Aggres = {};
 var Repository = require("jsdm/lib/Repository");
-Repository.prototype._publish = function(){}
+Repository.prototype._publish = function () {
+}
 
 var my = {
-    publish: function() {},
+    publish: function () {
+    },
     repos: {
         Reply: {
-            remove: function() {}
+            remove: function () {
+            }
         },
         User: {
-            get: function(id, cb) {
+            get: function (id, cb) {
                 var user = new User({
-					id:id,
+                    id: id,
                     nickname: "brighthas",
                     password: "123456",
                     email: "brighthas2@gmail.com"
                 })
-				cb(null,user);
+                cb(null, user);
             },
-			create:function(args,cb){
-				cb(null,cb);
-			}
+            create: function (args, cb) {
+                cb(null, cb);
+            }
         },
         Topic: {
-			create:function(args,cb){
-				var topic = new Topic(args);
-				cb(null,topic);
-			}
+            create: function (args, cb) {
+                var topic = new Topic(args);
+                cb(null, topic);
+            }
         }
     },
     services: {
-        existColumn: function(columnId, callback) {
+        existColumn: function (columnId, callback) {
             callback(true);
         },
-		userUnique:function(email,nickname,callback){
-			callback(false);
-		},
-		postTopicCheck:function(id,cb){
-			cb(true);
-		}
+        userUnique: function (email, nickname, callback) {
+            callback(false);
+        },
+        postTopicCheck: function (id, cb) {
+            cb(true);
+        }
     },
-	Aggres:Aggres,
-	Repository:Repository
+    Aggres: Aggres,
+    Repository: Repository
 }
 
 var User = require("../../domain/User")(my);

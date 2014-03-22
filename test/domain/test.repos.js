@@ -9,17 +9,17 @@ var userRepo = repos[3];
 var messageRepo = repos[4];
 var infoRepo = repos[5];
 
-describe("repos", function() {
+describe("repos", function () {
 
     var email = "bright" + Date.now() + "@email.com";
 
-    it("#user repository create", function() {
+    it("#user repository create", function () {
 
         userRepo.create({
             nickname: "leodsfdsfds",
             password: "brighthas",
             email: email
-        }, function(err, userAggre) {
+        }, function (err, userAggre) {
             should.exist(userAggre)
         })
 
@@ -28,7 +28,7 @@ describe("repos", function() {
 
     var aggre;
 
-    it("user repository _data2aggre", function() {
+    it("user repository _data2aggre", function () {
         aggre = userRepo._data2aggre({
             id: "id001",
             nickname: "leo2",
@@ -45,7 +45,7 @@ describe("repos", function() {
 
     })
 
-    it("user repository _aggre2data", function() {
+    it("user repository _aggre2data", function () {
         var data = userRepo._aggre2data(aggre);
         aggre.id.should.eql("id001");
         aggre.nickname.should.eql("leo2");
@@ -56,12 +56,12 @@ describe("repos", function() {
 
     var column;
 
-    it("cloumn repository create", function() {
+    it("cloumn repository create", function () {
 
         columnRepo.create({
             name: "node.js",
             des: "my node.js column"
-        }, function(err, rs) {
+        }, function (err, rs) {
             column = rs;
             rs.name.should.eql("node.js");
             rs.des.should.eql("my node.js column");
@@ -71,7 +71,7 @@ describe("repos", function() {
 
     var data;
 
-    it("cloumn repository _aggre2data", function() {
+    it("cloumn repository _aggre2data", function () {
 
         data = columnRepo._aggre2data(column);
         data.name.should.eql("node.js");
@@ -79,7 +79,7 @@ describe("repos", function() {
 
     });
 
-    it("cloumn repository _data2aggre", function() {
+    it("cloumn repository _data2aggre", function () {
 
         var aggre = columnRepo._data2aggre(data);
         aggre.name.should.eql("node.js");
@@ -90,14 +90,14 @@ describe("repos", function() {
 
     var topic;
 
-    it("topic repository create", function() {
+    it("topic repository create", function () {
 
         topicRepo.create({
             title: "test title",
             body: "test body",
             authorId: "user001",
             columnId: "id0001"
-        }, function(err, rs) {
+        }, function (err, rs) {
             topic = rs;
             rs.title.should.eql("test title");
             rs.body.should.eql("test body");
@@ -107,7 +107,7 @@ describe("repos", function() {
 
     var data;
 
-    it("topic repository _aggre2data", function() {
+    it("topic repository _aggre2data", function () {
 
         data = topicRepo._aggre2data(topic);
         data.title.should.eql("test title");
@@ -115,7 +115,7 @@ describe("repos", function() {
 
     });
 
-    it("topic repository _data2aggre", function() {
+    it("topic repository _data2aggre", function () {
 
         var aggre = topicRepo._data2aggre(data);
         aggre.title.should.eql("test title");
@@ -125,7 +125,7 @@ describe("repos", function() {
 
     var reply;
 
-    it("reply repository create", function() {
+    it("reply repository create", function () {
 
         replyRepo.create({
             "title": "my title",
@@ -133,7 +133,7 @@ describe("repos", function() {
             "authorId": "aid0001",
             "parentId": "pid0001",
             "topicId": "tid0001"
-        }, function(err, rs) {
+        }, function (err, rs) {
             reply = rs;
             rs.title.should.eql("my title");
             rs.body.should.eql("my reply body");
@@ -143,7 +143,7 @@ describe("repos", function() {
 
     var data;
 
-    it("reply repository _aggre2data", function() {
+    it("reply repository _aggre2data", function () {
 
         data = replyRepo._aggre2data(reply);
         data.title.should.eql("my title");
@@ -151,7 +151,7 @@ describe("repos", function() {
 
     });
 
-    it("reply repository _data2aggre", function() {
+    it("reply repository _data2aggre", function () {
 
         var aggre = replyRepo._data2aggre(data);
         aggre.title.should.eql("my title");
@@ -161,14 +161,14 @@ describe("repos", function() {
 
     var message;
 
-    it("message repository create", function() {
+    it("message repository create", function () {
 
         messageRepo.create({
             targetId: "001",
             authorId: "002",
             title: "tttt",
             body: "bobby"
-        }, function(err, msg) {
+        }, function (err, msg) {
             message = msg;
             should.exist(msg.id);
             should.exist(msg.createTime);
@@ -181,7 +181,7 @@ describe("repos", function() {
 
     var data;
 
-    it("message repository _aggre2data", function() {
+    it("message repository _aggre2data", function () {
 
         data = messageRepo._aggre2data(message);
         should.exist(data.id);
@@ -192,7 +192,7 @@ describe("repos", function() {
 
     });
 
-    it("reply repository _data2aggre", function() {
+    it("reply repository _data2aggre", function () {
 
         var aggre = messageRepo._data2aggre(data);
         should.exist(aggre.id);
@@ -205,12 +205,12 @@ describe("repos", function() {
 
     var info;
 
-    it("info repository create", function() {
+    it("info repository create", function () {
 
         infoRepo.create({
             body: "info body",
             targetId: "u001"
-        }, function(err, rs) {
+        }, function (err, rs) {
             info = rs;
             info.body.should.eql("info body");
             info.havesee.should.eql(false);
@@ -222,7 +222,7 @@ describe("repos", function() {
 
     var data;
 
-    it("info repository _aggre2data", function() {
+    it("info repository _aggre2data", function () {
 
         data = infoRepo._aggre2data(info);
         data.body.should.eql("info body");
@@ -232,7 +232,7 @@ describe("repos", function() {
 
     });
 
-    it("info repository _data2aggre", function() {
+    it("info repository _data2aggre", function () {
 
         var aggre = infoRepo._data2aggre(data);
         aggre.body.should.eql("info body");

@@ -1,36 +1,35 @@
-
-module.exports = function wrap(app,ctrls) {
+module.exports = function wrap(app, ctrls) {
 
     app.get("/topicTitleListByUserId/:id/:page",
         ctrls.data.topicTitleListByUserId,
-        function(req,res){
+        function (req, res) {
             res.send(req.result.data("topicTitleList"))
         }
     )
 
     app.get("/topicCountByUserId/:id",
         ctrls.data.topicCountByUserId,
-        function(req,res){
+        function (req, res) {
             res.send(req.result.data())
         })
 
     app.get("/replyIdsByUserId/:id/:page",
         ctrls.data.replyIdsByUserId,
-        function(req,res){
+        function (req, res) {
             res.send(req.result.data("replyIds"))
         }
     )
 
     app.get("/topicById/:id",
         ctrls.data.topicById,
-        function(req,res){
+        function (req, res) {
             res.send(req.result.data("topic"));
         }
     )
 
     app.get("/replyCountByUserId/:id",
         ctrls.data.topicCountByUserId,
-        function(req,res){
+        function (req, res) {
             res.send(req.result.data())
         })
 
@@ -46,7 +45,7 @@ module.exports = function wrap(app,ctrls) {
         ctrls.data.userById,
         function (req, res) {
             var user = req.result.data("user");
-            if(user){
+            if (user) {
                 delete user.password;
             }
             res.send(user);
@@ -91,7 +90,7 @@ module.exports = function wrap(app,ctrls) {
     app.get("/infoList/:page",
         ctrls.util.isLogin,
         ctrls.data.infoListByUserId,
-        function(req,res){
+        function (req, res) {
             res.send(req.result.data("infoList"));
         }
     )

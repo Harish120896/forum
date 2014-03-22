@@ -2,11 +2,11 @@ var should = require("should")
 var my = require("../util/my");
 var Column = require("../../domain/Column")(my);
 
-describe("column", function() {
+describe("column", function () {
 
     var column;
 
-    it("#create", function() {
+    it("#create", function () {
         column = new Column({
             name: "column name",
             des: "column des"
@@ -16,7 +16,7 @@ describe("column", function() {
         column.updateTime.should.eql(column.updateTime);
     })
 
-    it("#up", function() {
+    it("#up", function () {
         var uptime = column.updateTime;
         column.up();
         (column.updateTime > uptime).should.be.true;
@@ -24,7 +24,7 @@ describe("column", function() {
     })
 
 
-    it("#updateInfo", function() {
+    it("#updateInfo", function () {
 
         column.updateInfo('abcde', 'fdfd');
 

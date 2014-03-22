@@ -1,7 +1,7 @@
 var Result = require("result-brighthas");
 var escape = require("./escape");
 
-module.exports = function(domain,query){
+module.exports = function (domain, query) {
     return {
 
         create: function (req, res, next) {
@@ -9,7 +9,7 @@ module.exports = function(domain,query){
                 return next();
             }
             req.body.authorId = req.session.user.id;
-            if(req.body.body){
+            if (req.body.body) {
                 req.body.body = escape(req.body.body);
             }
             domain.exec("create a topic", req.body, function (result) {
@@ -23,7 +23,7 @@ module.exports = function(domain,query){
                 return next();
             }
             req.body.authorId = req.session.user.id;
-            if(req.body.body){
+            if (req.body.body) {
                 req.body.body = escape(req.body.body);
             }
             domain.call("Topic.updateInfo", req.body.topicId, [req.body.title, req.body.body, req.body.columnId], function (result) {

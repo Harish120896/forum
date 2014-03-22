@@ -1,4 +1,4 @@
-module.exports = function(html){
+module.exports = function (html) {
     return String(html)
         .replace(/&(?!#?[a-zA-Z0-9]+;)/g, '&amp;')
         .replace(/</g, '&lt;')

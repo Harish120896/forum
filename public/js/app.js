@@ -195,7 +195,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             }
         }
     })
-    .directive("usercode", function ($http, $compile, $timeout, $modal, $position, $rootScope,$timeout) {
+    .directive("usercode", function ($http, $compile, $timeout, $modal, $position, $rootScope, $timeout) {
 
         return {
             scope: {
@@ -266,7 +266,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                             scope.unfollow = function () {
                                 this.showcode = false;
                                 $http.post("/user/" + v + "/unfollow");
-                                $timeout(function(){
+                                $timeout(function () {
                                     for (var i = 0, len = scope.loginUser.follows.length; i < len; i++) {
                                         if (scope.userId === scope.loginUser.follows[i]) {
                                             scope.loginUser.follows.splice(i, 1);
@@ -505,7 +505,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             user: function (uid) {
 
                 var deferred = $q.defer();
-                if(uid){
+                if (uid) {
                     if (users[uid]) {
                         deferred.resolve(users[uid]);
                     } else {
@@ -813,7 +813,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
         }
 
     })
-    .controller("columnCtrl",function ($scope, $modal,DATA) {
+    .controller("columnCtrl",function ($scope, $modal, DATA) {
 
         $scope.openCreateDialog = function () {
             $modal.open({
@@ -885,7 +885,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
     .controller("userCtrl", function ($rootScope, $scope, $http, $upload, DATA, $tooltip, $sce, Result) {
 
         $scope.targetTag = window.location.hash;
-        if($scope.targetTag){
+        if ($scope.targetTag) {
             $scope.targetTag = $scope.targetTag.substr(1);
         }
 

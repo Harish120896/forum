@@ -10,9 +10,9 @@ var assert = require("assert");
 var should = require("should");
 var DATA = require("../../controller/data");
 
-describe("userCtrl", function() {
+describe("userCtrl", function () {
 
-    it("#create", function(done) {
+    it("#create", function (done) {
 
 
         var app = express();
@@ -25,7 +25,7 @@ describe("userCtrl", function() {
         app.use(result);
 
         app.use(app.router);
-        app.post("/create", userCtrl.create, function(req, res) {
+        app.post("/create", userCtrl.create, function (req, res) {
             if (req.result.hasError()) {
 
                 res.send("error");
@@ -43,7 +43,7 @@ describe("userCtrl", function() {
             .expect("success", done);
     })
 
-    it("#login", function(done) {
+    it("#login", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -56,7 +56,7 @@ describe("userCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/login", DATA.userByEmail, userCtrl.login, function(req, res) {
+        app.post("/login", DATA.userByEmail, userCtrl.login, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -70,7 +70,7 @@ describe("userCtrl", function() {
                 email: "leo@leo.leo",
                 password: "123456"
             })
-            .end(function(err, res) {
+            .end(function (err, res) {
                 var user = JSON.parse(decodeURIComponent(res.headers["set-cookie"][0]).split(";")[0].replace(/user=/g, ""));
                 user.email.should.eql("leo@leo.leo")
                 request(app).post("/login")
@@ -84,7 +84,7 @@ describe("userCtrl", function() {
     });
 
 
-    it("#logout", function(done) {
+    it("#logout", function (done) {
 
         var app = express();
         app.use(express.favicon());
@@ -98,7 +98,7 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/logout", DATA.userByEmail, userCtrl.login,
-            userCtrl.logout, function(req, res) {
+            userCtrl.logout, function (req, res) {
                 assert.ok(null === req.session.user);
                 res.send();
             });
@@ -112,7 +112,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#update", function(done) {
+    it("#update", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -124,7 +124,7 @@ describe("userCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/update", DATA.userByEmail, userCtrl.login, userCtrl.update, function(req, res) {
+        app.post("/update", DATA.userByEmail, userCtrl.login, userCtrl.update, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -132,14 +132,14 @@ describe("userCtrl", function() {
             }
         });
 
-        setTimeout(function() {
+        setTimeout(function () {
             request(app).post("/update")
                 .send({
                     email: "leo@leo.leo",
                     password: "123456",
                     address: "ddddd"
                 })
-                .expect("success", function() {
+                .expect("success", function () {
                     request(app).post("/update")
                         .send({
                             email: "leo@leo.leo",
@@ -152,7 +152,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#seal", function(done) {
+    it("#seal", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -164,7 +164,7 @@ describe("userCtrl", function() {
 
         app.use(app.router);
 
-        app.post("/seal/:id", userCtrl.seal, function(req, res) {
+        app.post("/seal/:id", userCtrl.seal, function (req, res) {
             if (req.result.hasError()) {
                 res.send("error");
             } else {
@@ -179,7 +179,7 @@ describe("userCtrl", function() {
     })
 
 
-    it("#findPassword", function(done) {
+    it("#findPassword", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -192,14 +192,14 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/findPassword",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.result.data("user", {
                     email: "308212012@qq.com",
                     password: "1212121212"
                 })
                 next();
             },
-            userCtrl.findPassword, function(req, res) {
+            userCtrl.findPassword, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -214,7 +214,7 @@ describe("userCtrl", function() {
     })
 
 
-    it("#follow", function(done) {
+    it("#follow", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -227,12 +227,12 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/follow/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "00111"
                 }
                 next();
-            }, userCtrl.follow, function(req, res) {
+            }, userCtrl.follow, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -246,7 +246,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#unfollow", function(done) {
+    it("#unfollow", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -259,12 +259,12 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/unfollow/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "00111"
                 }
                 next();
-            }, userCtrl.unfollow, function(req, res) {
+            }, userCtrl.unfollow, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -279,7 +279,7 @@ describe("userCtrl", function() {
     })
 
 
-    it("#becomeModerator", function(done) {
+    it("#becomeModerator", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -292,12 +292,12 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/becomeModerator/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "00111"
                 }
                 next();
-            }, userCtrl.becomeModerator, function(req, res) {
+            }, userCtrl.becomeModerator, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -311,7 +311,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#becomeUser", function(done) {
+    it("#becomeUser", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -324,12 +324,12 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/becomeUser/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.session.user = {
                     id: "00111"
                 }
                 next();
-            }, userCtrl.becomeUser, function(req, res) {
+            }, userCtrl.becomeUser, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -343,7 +343,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#updatePassword", function(done) {
+    it("#updatePassword", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -356,13 +356,13 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/updatePassword/:id",
-            function(req, res, next) {
+            function (req, res, next) {
                 req.result.data("user", {
                     id: "u0001",
                     password: "123"
                 })
                 next();
-            }, userCtrl.updatePassword, function(req, res) {
+            }, userCtrl.updatePassword, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -378,7 +378,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#plus", function(done) {
+    it("#plus", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -391,7 +391,7 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/plus/:id",
-            userCtrl.plus, function(req, res) {
+            userCtrl.plus, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {
@@ -407,7 +407,7 @@ describe("userCtrl", function() {
 
     })
 
-    it("#remove", function(done) {
+    it("#remove", function (done) {
         var app = express();
         app.use(express.favicon());
         app.use(express.json());
@@ -420,7 +420,7 @@ describe("userCtrl", function() {
         app.use(app.router);
 
         app.post("/remove/:id",
-            userCtrl.remove, function(req, res) {
+            userCtrl.remove, function (req, res) {
                 if (req.result.hasError()) {
                     res.send("error");
                 } else {

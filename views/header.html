@@ -5,12 +5,13 @@
     <title>Forum demo</title>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
     <style>
-        .navbar,.jumbotron{
+        .navbar, .jumbotron {
             margin-bottom: 0;
         }
 
-
-        .breadcrumb{margin: 5px 0;}
+        .breadcrumb {
+            margin: 5px 0;
+        }
 
 
     </style>
@@ -33,9 +34,10 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#" ng-click="openRegDialog()" ng-show="!logined">注册</a></li>
                 <li><a href="#" ng-click="openLoginDialog()" ng-show="!logined">登录</a></li>
-                <li id="userInfo" class="{{open}}" >
+                <li id="userInfo" class="{{open}}">
 
-                    <a href="/user/{{user.id}}" ng-show="logined" ng-mouseleave="open=''" ng-mouseenter="open='open'" data-toggle="dropdown">
+                    <a href="/user/{{user.id}}" ng-show="logined" ng-mouseleave="open=''" ng-mouseenter="open='open'"
+                       data-toggle="dropdown">
                         {{user.nickname || user.email}}
                         <%if(breadcrumb !== "user"){%>
                         <b class="caret"></b>
@@ -59,7 +61,6 @@
             </ul>
 
 
-
         </div>
     </div>
 </div>
@@ -67,23 +68,25 @@
 
 <div class="container">
     <div class="jumbotron" style="position: relative">
-            <h2>HTML5 \ Node.js社区</h2>
-            <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
+        <h2>HTML5 \ Node.js社区</h2>
+
+        <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
     </div>
 
-    <div class="panel panel-default"  style="margin-top: 5px ;border: 0">
+    <div class="panel panel-default" style="margin-top: 5px ;border: 0">
         <div class="panel-heading" style="border: 0;">
-            <div class="row" ng-mouseleave="openBreadcrumbs=''" >
-                <div class="col-xs-6 col-lg-9" >
+            <div class="row" ng-mouseleave="openBreadcrumbs=''">
+                <div class="col-xs-6 col-lg-9">
 
                     <%if(breadcrumb !== "index"){%>
                     <span class="btn-group-sm {{openBreadcrumbs}}">
-                            <a href="/"  ng-mouseenter="openBreadcrumbs='open'">
-                                <i class="glyphicon glyphicon-home"></i>  社区主页 <span class="caret"></span>
+                            <a href="/" ng-mouseenter="openBreadcrumbs='open'">
+                                <i class="glyphicon glyphicon-home"></i> 社区主页 <span class="caret"></span>
                             </a>
-                            <ul class="dropdown-menu open" role="menu" ng-mouseleave="openBreadcrumbs=''" ng-mouseenter="openBreadcrumbs='open'">
+                            <ul class="dropdown-menu open" role="menu" ng-mouseleave="openBreadcrumbs=''"
+                                ng-mouseenter="openBreadcrumbs='open'">
                                 <%columnList.forEach(function(col){%>
-                                    <li><a href="/column/<%=col.id%>"><%=col.name%></a></li>
+                                <li><a href="/column/<%=col.id%>"><%=col.name%></a></li>
                                 <%})%>
                             </ul>
 
@@ -100,12 +103,12 @@
                             <%}%>
                     </span>
                     <%}else{%>
-                       <i class="glyphicon glyphicon-home"></i> 社区主页
+                    <i class="glyphicon glyphicon-home"></i> 社区主页
                     <%}%>
                 </div>
                 <div class="col-xs-6 col-lg-3">
                     <div class="row" style="padding-left: 23px;padding-right: 3px;">
-                        <input class="col-xs-9" style="border: 0"  placeholder="站内搜索"/>
+                        <input class="col-xs-9" style="border: 0" placeholder="站内搜索"/>
                         <a class="col-xs-3 btn btn-xs"><i class="glyphicon glyphicon-search"></i></a>
                     </div>
                 </div>

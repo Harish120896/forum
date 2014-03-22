@@ -4,8 +4,7 @@ var path = require("path");
 var _ = require("underscore");
 
 
-
-module.exports = function(domain,query){
+module.exports = function (domain, query) {
     return {
 
         findPassword: function (req, res, next) {
@@ -81,9 +80,9 @@ module.exports = function(domain,query){
                 var user = result.data("user");
                 if (user) {
                     if (user.email === req.env.config.admin) {
-                        setTimeout(function(){
+                        setTimeout(function () {
                             domain.call("User.becomeAdmin", user.id);
-                        },1000);
+                        }, 1000);
                     }
                 }
 
@@ -204,7 +203,7 @@ module.exports = function(domain,query){
             }
             domain.exec("isCustomLogo", {
                 id: req.session.user.id,
-                custom:req.param("custom")
+                custom: req.param("custom")
             });
             next();
         }

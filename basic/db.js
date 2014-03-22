@@ -28,7 +28,8 @@ module.exports = {
     remove: function (type, id) {
         dbs[type].remove({
             "id": id
-        }, {}, function(){});
+        }, {}, function () {
+        });
     },
     getDB: function (type) {
         return dbs[type];

@@ -1,15 +1,15 @@
 var escape = require("./escape");
 
-module.exports = function wrap(domain,query){
+module.exports = function wrap(domain, query) {
 
-   return {
+    return {
 
         create: function (req, res, next) {
             if (req.result.hasError()) {
                 return next();
             }
             req.body.authorId = req.session.user.id;
-            if(req.body.body){
+            if (req.body.body) {
                 req.body.body = escape(req.body.body);
             }
             domain.exec("create a reply", req.body, function (result) {
@@ -39,7 +39,7 @@ module.exports = function wrap(domain,query){
             }
             var id = req.param("id");
             var title = req.body.title;
-            if(req.body.body){
+            if (req.body.body) {
                 req.body.body = escape(req.body.body);
             }
             var body = req.body.body;

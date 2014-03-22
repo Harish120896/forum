@@ -1,5 +1,4 @@
-
-module.exports = function wrap(app,ctrls) {
+module.exports = function wrap(app, ctrls) {
 
 
     app.get("/",
@@ -7,7 +6,7 @@ module.exports = function wrap(app,ctrls) {
         ctrls.data.share,
         function (req, res) {
             res.locals.breadcrumb = "index"
-            res.render("index", { loginUser: req.session.user , pageType:"index"});
+            res.render("index", { loginUser: req.session.user, pageType: "index"});
         });
 
     app.get("/topic/:id",
@@ -35,9 +34,9 @@ module.exports = function wrap(app,ctrls) {
         ctrls.data.userById,
         ctrls.util.hasUser,
         function (req, res) {
-            if(req.result.hasError()){
+            if (req.result.hasError()) {
                 res.send(404);
-            }else{
+            } else {
                 res.locals.breadcrumb = "user";
                 res.locals.user = req.result.data("user");
                 res.locals.loginUser = req.session.user;
@@ -62,9 +61,9 @@ module.exports = function wrap(app,ctrls) {
                 var count = res.locals.count = req.result.data("count");
                 var page = res.locals.page = req.result.data("page");
                 res.locals.loginUser = req.session.user;
-                var pagenum = res.locals.pagenum = Math.floor(count/itemNum) + ( count%itemNum ? 1 : 0);
+                var pagenum = res.locals.pagenum = Math.floor(count / itemNum) + ( count % itemNum ? 1 : 0);
 
-                groupNum = Math.floor(page / (groupMaxPageNum-1)) + ((page % (groupMaxPageNum-1)) ? 1:0);
+                groupNum = Math.floor(page / (groupMaxPageNum - 1)) + ((page % (groupMaxPageNum - 1)) ? 1 : 0);
                 res.locals.groupNum = groupNum;
                 res.locals.groupMaxPageNum = groupMaxPageNum;
                 res.render("column");

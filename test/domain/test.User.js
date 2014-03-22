@@ -4,11 +4,11 @@ var should = require("should")
 var my = require("../util/my");
 var User = require("../../domain/User")(my);
 
-describe("User", function() {
+describe("User", function () {
 
     var user;
 
-    it("#new", function() {
+    it("#new", function () {
         user = new User({
             nickname: "brighthas",
             password: "123456",
@@ -25,14 +25,14 @@ describe("User", function() {
 
     });
 
-    it("#updatePassword", function() {
+    it("#updatePassword", function () {
         var md5 = crypto.createHash('md5');
         user.password = "ahhahhaah";
         user.password.should.eql(md5.update("ahhahhaah").digest("hex"));
 
     });
 
-    it("#become", function() {
+    it("#become", function () {
         user.becomeAdmin();
         user.role.should.eql(User.roles.ADMIN);
         user.becomeModerator();
@@ -44,7 +44,7 @@ describe("User", function() {
 
     });
 
-    it("#plus", function() {
+    it("#plus", function () {
         user.plus(12);
         user.plus(3);
         user.fraction.should.eql(15);
@@ -52,7 +52,7 @@ describe("User", function() {
 
     var u1;
 
-    it("#follow", function(done) {
+    it("#follow", function (done) {
 
         u1 = new User({
             nickname: "leo",
@@ -65,13 +65,13 @@ describe("User", function() {
 
     })
 
-    it("#unfollow", function() {
+    it("#unfollow", function () {
         u1.unfollow("u001");
         u1.follows.should.eql([]);
     })
 
 
-    it("#report", function() {
+    it("#report", function () {
         u1.fraction.should.eql(0);
         u1.report();
         u1.report();
@@ -79,7 +79,6 @@ describe("User", function() {
         u1.fraction.should.eql(2);
 
     })
-
 
 
 })

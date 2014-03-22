@@ -1,6 +1,4 @@
-
-
-module.exports = function wrap(domain,query){
+module.exports = function wrap(domain, query) {
     return {
         send: function (req, res, next) {
             if (req.result.hasError()) {

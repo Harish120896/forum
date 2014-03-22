@@ -1,5 +1,4 @@
-
-module.exports = function wrap(app,ctrls) {
+module.exports = function wrap(app, ctrls) {
 
     app.post("/user/login",
         ctrls.util.validat_num,
@@ -75,10 +74,10 @@ module.exports = function wrap(app,ctrls) {
     app.post("/user/logined",
         ctrls.util.isLogin,
         function (req, res) {
-            if(req.result.hasError()){
+            if (req.result.hasError()) {
                 res.send();
-            }else{
-                res.redirect("/user/"+req.session.user.id+"/get")
+            } else {
+                res.redirect("/user/" + req.session.user.id + "/get")
             }
         })
 

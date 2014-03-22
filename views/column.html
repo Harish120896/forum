@@ -13,28 +13,32 @@
         <% }) %>
         <tr>
             <td>
-            <ul class="pagination">
+                <ul class="pagination">
 
-                <%if(page!==1){%>
+                    <%if(page!==1){%>
                     <li><a href="/column/<%=column.id%>/1">首页</a></li>
                     <li><a href="/column/<%=column.id%>/<%=page-1%>">上一页</a></li>
-                <%}%>
-
-                <% var startPage = 1+ (groupNum-1)*(groupMaxPageNum-1)%>
-                <%for(var j=0;startPage<pagenum+1 && j<groupMaxPageNum;startPage++,j++){%>
-                    <% if(startPage===page){%>
-                    <li class="active"><a href="#" ><%=startPage%></a></li>
-                    <%}else{%>
-                    <li ><a href="/column/<%=column.id%>/<%=startPage%>" ><%=startPage%></a></li>
                     <%}%>
-                <%}%>
 
-                <%if(page!==pagenum){%>
-                <li><a href="/column/<%=column.id%>/<%=page+1%>">下一页</a></li>
-                <li><a href="/column/<%=column.id%>/<%=pagenum%>">尾页</a></li>
-                <%}%>
+                    <% var startPage = 1+ (groupNum-1)*(groupMaxPageNum-1)%>
+                    <%for(var j=0;startPage
+                    <pagenum
+                    +1 && j
+                    <groupMaxPageNum
+                    ;startPage++,j++){%>
+                    <% if(startPage===page){%>
+                    <li class="active"><a href="#"><%=startPage%></a></li>
+                    <%}else{%>
+                    <li><a href="/column/<%=column.id%>/<%=startPage%>"><%=startPage%></a></li>
+                    <%}%>
+                    <%}%>
 
-            </ul>
+                    <%if(page!==pagenum){%>
+                    <li><a href="/column/<%=column.id%>/<%=page+1%>">下一页</a></li>
+                    <li><a href="/column/<%=column.id%>/<%=pagenum%>">尾页</a></li>
+                    <%}%>
+
+                </ul>
             </td>
         </tr>
     </table>
@@ -53,7 +57,7 @@
             <div class="alert alert-danger small" ng-show="!!bodyMessage">
                 {{bodyMessage}}
             </div>
-            <div editor content="body" ></div>
+            <div editor content="body"></div>
         </div>
         <div class="form-group">
             <div class="alert alert-danger small" ng-show="!!validat_numMessage">
