@@ -18,6 +18,55 @@
 
 `路由器` 路由器是把一些控制器合并为一个大功能，是直接服务UI客户端的。
 
+`query查询组件` 是个从数据库或文件系统得到数据的组件，可以自己定制，但必须符合接口。
+
+query查询组件
+============
+
+可以自己定制，但必须符合下面的接口方法，当然除了这些方法外，可以加入其他查询方法，但以下是必须要实现的。
+
+
+    columns: function (callback) {},
+
+    columnById: function (id, callback) {},
+
+    columnByTopicId: function (id, callback) {},
+
+    topicById: function (id, callback) {},
+
+    replyById: function (id, callback) {},
+
+    topicsByColumnId: function (page, columnId, callback) {},
+
+    topicCountByColumnId: function (columnId, callback) {},
+
+    users: function (callback) {},
+
+    userById: function (id, callback) {},
+
+    userByEmail: function (email, callback) {},
+
+    userByNick: function (nick, callback) {},
+
+    userFuzzyExist: function (userInfo, callback) {},
+
+    replyCountByToday: function (authorId, callback) {},
+
+    topicCountByToday: function (authorId, callback) {},
+
+    topicTitleListByUserId: function (userId, page, callback) {},
+
+    topicCountByUserId: function (userId, callback) {},
+
+    replyIdsByUserId: function (userId, page, callback) {},
+
+    replyCountByUserId: function (userId, callback) {},
+
+    messageListByUserId: function (page, userId, callback) {},
+
+    infoListByUserId: function (page, userId, callback) {}
+
+
 
 调用domain
 =========

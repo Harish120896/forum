@@ -15,16 +15,6 @@ function oneday(date) {
 
 module.exports = {
 
-    clear: function () {
-
-        dbs.getDB("User").remove({}, {});
-        dbs.getDB("Topic").remove({}, {});
-        dbs.getDB("Column").remove({}, {});
-        dbs.getDB("Reply").remove({}, {});
-        dbs.getDB("Message").remove({}, {});
-
-    },
-
     columns: function (callback) {
         var db = dbs.getDB("Column");
         db.find({}).exec(function (err, rs) {
