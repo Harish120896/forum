@@ -116,6 +116,9 @@ module.exports = function (conf) {
             require(config.route + "/" + filename)(app,ctrls);
         });
 
+        // 调用 监听domain create/update/remove 事件，并更新服务器
+        config.update_db(domain);
+
     }
 
     return {
