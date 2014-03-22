@@ -8,7 +8,59 @@
 论坛设计分三层，领域核心层包含了所有功能，然后是应用层和UI层，核心层没有任何权限限制，所以需要应用层加以控制，
 权限控制是指，用户的登录与否等。
 
-通过 domain.exec 和 domain.call 函数可以调用核心层功能。
+论坛模块概念
+==========
+
+`domain` 是核心对象，实现了全部论坛功能
+
+`控制器`  控制器会调用domain对象，达到操作的目的，但控制器会具有权限控制和导航等应用层控制。
+一个控制器一般不会很大，每个控制器一般具备一个很具体的功能，一般一个domain功能对应一个controller控制器功能。
+
+`路由器` 路由器是把一些控制器合并为一个大功能，是直接服务UI客户端的。
+
+
+调用domain
+=========
+
+通过 domain.exec 和 domain.call 方法可以直接调用核心功能，类似于linux内核。
+通过 domain.on / once 可以监听核心事件，一般不会直接用到，除非你自己重写控制器。
+
+控制器
+======
+
+下面是个控制器定义例子：
+
+```
+
+// 文件名为test.js
+module.exports = function(domain,query){
+
+    return {
+        hello:function(req,res,next){
+            domain.exec("xxx") // 调用核心xxx命令
+            next();
+        }
+    }
+
+}
+
+```
+
+路由器
+=====
+
+下面是一个路由定义的例子：
+
+```
+// ctrls 是注入的控制器集合
+module.exports = function wrap(app,ctrls) {
+    app.post("/test",
+            ctrls.test.hello,
+            function(req,res){
+                res.send("success");
+            });
+}
+```
 
 运行
 ===
@@ -65,6 +117,8 @@ forum 对象
 forum.domain 论坛的领域对象。
 
 forum.app 是Express应用对象。
+
+
 
 
 domain.exec 核心层命令
