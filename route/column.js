@@ -13,8 +13,8 @@ module.exports = function wrap(app,ctrls) {
         ctrls.util.end);
 
     app.post("/column/:id/setManager",
-        util.isLogin,
-        util.isAdmin,
-        columnCtrl.setManager,
-        util.end)
+        ctrls.util.isLogin,
+        ctrls.util.isAdmin,
+        ctrls.column.setManager,
+        ctrls.util.end)
 }

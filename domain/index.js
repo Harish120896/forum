@@ -1,12 +1,7 @@
 var domain = require("jsdm")();
-var config = require("../config");
-var basic = require(config.basicPath);
-var query = basic.query;
-var get = basic.get;
 
 domain.register(
 
-        "get", get,
         "AggreClass",
         require("./Column"),
         require("./User"),

@@ -31,7 +31,7 @@ var config = {
     */
     "update_db": function(domain){
 
-        var dbs = require("/basic/db");
+        var dbs = require("./basic/db");
         var crypto = require("crypto");
 
         domain.on("*.*.create",function(className, data){
@@ -78,14 +78,14 @@ module.exports = function (conf) {
                 return config.query;
             }
             return getQuery;
-        }).seal(); // 封印
+        },"get",config.getById).seal(); // 封印
 
         // 控制器
         var ctrls = {}
 
         // 加载控制器
         fs.readdirSync(config.contrller_path).forEach(function (filename) {
-            var filepath = config.route + "/" + filename;
+            var filepath = config.contrller_path + "/" + filename;
             ctrls[path.basename(filepath, ".js")] = require(filepath)(domain,config.query);
         });
 
@@ -113,7 +113,7 @@ module.exports = function (conf) {
 
         // 加载路由器
         fs.readdirSync(config.route_path).forEach(function (filename) {
-            require(config.route + "/" + filename)(app,ctrls);
+            require(config.route_path + "/" + filename)(app,ctrls);
         });
 
         // 调用 监听domain create/update/remove 事件，并更新服务器

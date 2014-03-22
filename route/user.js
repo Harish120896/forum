@@ -29,7 +29,7 @@ module.exports = function wrap(app,ctrls) {
         ctrls.data.userById,
         ctrls.util.hasUser,
         ctrls.util.noSelf,
-        ctrls.userCtrl.seal,
+        ctrls.user.seal,
         ctrls.util.end);
 
     app.post("/user/:id/remove",
