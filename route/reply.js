@@ -1,20 +1,17 @@
-var replyCtrl = require("../controller/reply"),
-    data = require("../controller/data"),
-    util = require("../controller/util");
+module.exports = function wrap(app,ctrls) {
 
-module.exports = function wrap(app) {
-// reply controller
     app.post("/reply/create",
-        util.isLogin,
-        util.validat_num,
-        replyCtrl.create,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.util.validat_num,
+        ctrls.reply.create,
+        ctrls.util.end);
 
     app.post("/reply/:id/remove",
-        util.isLogin,
-        data.replyById,
-        util.hasReply,
-        util.isReplyManager,
-        replyCtrl.remove,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.data.replyById,
+        ctrls.util.hasReply,
+        ctrls.util.isReplyManager,
+        ctrls.reply.remove,
+        ctrls.util.end);
+
 }

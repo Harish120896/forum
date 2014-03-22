@@ -1,43 +1,39 @@
-var topicCtrl = require("../controller/topic"),
-    data = require("../controller/data"),
-    util = require("../controller/util");
 
-module.exports = function wrap(app) {
+module.exports = function wrap(app,ctrls) {
 
-// Topic controller
     app.post("/topic/create",
-        util.isLogin,
-        util.validat_num,
-        topicCtrl.create,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.util.validat_num,
+        ctrls.topic.create,
+        ctrls.util.end);
 
     app.post("/topic/:id/update",
-        util.isLogin,
-        util.validat_num,
-        topicCtrl.update,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.util.validat_num,
+        ctrls.topic.update,
+        ctrls.util.end);
 
     app.post("/topic/:id/remove",
-        util.isLogin,
-        data.topicById,
-        util.hasTopic,
-        topicCtrl.remove,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.data.topicById,
+        ctrls.util.hasTopic,
+        ctrls.topic.remove,
+        ctrls.util.end);
 
     app.post("/topic/:id/seal",
-        util.isLogin,
-        data.topicById,
-        util.hasTopic,
-        util.isTopicManager,
-        topicCtrl.seal,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.data.topicById,
+        ctrls.util.hasTopic,
+        ctrls.util.isTopicManager,
+        ctrls.topic.seal,
+        ctrls.util.end);
 
     app.post("/topic/:id/unseal",
-        util.isLogin,
-        data.topicById,
-        util.hasTopic,
-        util.isTopicManager,
-        topicCtrl.unseal,
-        util.end);
+        ctrls.util.isLogin,
+        ctrls.data.topicById,
+        ctrls.util.hasTopic,
+        ctrls.util.isTopicManager,
+        ctrls.topic.unseal,
+        ctrls.util.end);
 
 }

@@ -1,22 +1,20 @@
-var data = require("../controller/data"),
-    util = require("../controller/util");
 
-module.exports = function wrap(app) {
+module.exports = function wrap(app,ctrls) {
 
 
     app.get("/",
-        util.cookieLogin,
-        data.share,
+        ctrls.util.cookieLogin,
+        ctrls.data.share,
         function (req, res) {
             res.locals.breadcrumb = "index"
             res.render("index", { loginUser: req.session.user , pageType:"index"});
         });
 
     app.get("/topic/:id",
-        util.cookieLogin,
-        data.share,
-        data.topicById,
-        data.columnByTopicId,
+        ctrls.util.cookieLogin,
+        ctrls.data.share,
+        ctrls.data.topicById,
+        ctrls.data.columnByTopicId,
         function (req, res) {
             var topic = req.result.data("topic");
             var column = req.result.data("column");
@@ -32,10 +30,10 @@ module.exports = function wrap(app) {
         });
 
     app.get("/user/:id",
-        util.cookieLogin,
-        data.share,
-        data.userById,
-        util.hasUser,
+        ctrls.util.cookieLogin,
+        ctrls.data.share,
+        ctrls.data.userById,
+        ctrls.util.hasUser,
         function (req, res) {
             if(req.result.hasError()){
                 res.send(404);
@@ -48,10 +46,10 @@ module.exports = function wrap(app) {
         });
 
     app.get("/column/:id/:page?",
-        util.cookieLogin,
-        data.share,
-        data.columnById,
-        data.topicsByColumnId,
+        ctrls.util.cookieLogin,
+        ctrls.data.share,
+        ctrls.data.columnById,
+        ctrls.data.topicsByColumnId,
         function (req, res) {
             res.locals.breadcrumb = "column";
             if (res.locals.column = req.result.data("column")) {

@@ -173,5 +173,41 @@ function wrap(my) {
         return aggre.toJSON();
     }
 
+    var userRepo = new my.Repository("User");
+
+    userRepo._create = function (args, callback) {
+        args.id = shortid.generate();
+
+        my.services.userUnique(args.email, args.nickname, function (unique) {
+            if (unique) {
+                var result = new Result();
+                unique.forEach(function (k) {
+                    if (k === "nickname") {
+                        result.error("nickname", "昵称已被使用");
+                    }
+                    if (k === "email") {
+                        result.error("email", "邮箱已被使用")
+                    }
+                });
+                callback(result);
+            } else {
+                var user = new my.Aggres.User(args);
+                if (user.hasError()) {
+                    callback(user.result);
+                } else {
+                    callback(null, user);
+                }
+            }
+        });
+    }
+
+    userRepo._aggre2data = function (aggre) {
+        return aggre.toJSON();
+    }
+
+    userRepo._data2aggre = function (data) {
+        return my.Aggres.User.reborn(data);
+    }
+
     return [replyRepo, columnRepo, topicRepo, userRepo, messageRepo, infoRepo];
 }

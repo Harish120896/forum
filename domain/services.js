@@ -1,18 +1,10 @@
-var check = require('validator').check,
-    huskies = require("huskies"),
-    lock = require("huskies-lock"),
-//Result = require("result-brighthas"),
-    step = require("step");
 
-
-module.exports = function (query) {
-
-
-    return function wrap(my) {
+module.exports = function wrap(my) {
 
         service1.serviceName = "existColumn";
 
         function service1(columnId, callback) {
+            var query = my.services.getQuery();
             query.columnById(columnId, function (col) {
                 if (col) {
                     callback(true);
@@ -25,6 +17,9 @@ module.exports = function (query) {
         service2.serviceName = "existUser";
 
         function service2(uid, callback) {
+
+
+            var query = my.services.getQuery();
             query.userById(uid, function (u) {
                 if (u) {
                     callback(true);
@@ -39,6 +34,8 @@ module.exports = function (query) {
         service5.serviceName = "userUnique";
 
         function service5(email, nickname, callback) {
+            var query = my.services.getQuery();
+
             var result = [];
             query.userByEmail(email, function (u) {
                 if (u) {
@@ -59,6 +56,8 @@ module.exports = function (query) {
         service6.serviceName = "postTopicCheck";
 
         function service6(userId, callback) {
+            var query = my.services.getQuery();
+
             query.userById(userId, function (user) {
                 if (user) {
                     query.topicCountByToday(userId, function (count) {
@@ -80,6 +79,8 @@ module.exports = function (query) {
 
         function service7(userId, callback) {
 
+            var query = my.services.getQuery();
+
             query.replyCountByToday(userId, function (count) {
                 if (count > 5000) { //doto
                     callback(false);
@@ -93,13 +94,13 @@ module.exports = function (query) {
         service8.serviceName = "userByNick"
 
         function service8(nick, callback) {
+            var query = my.services.getQuery();
+
             query.userByNick(nick, function (rs) {
                 callback(rs);
             });
         }
 
         return [service1,service2, service5, service6, service7, service8];
-
-    }
 
 }

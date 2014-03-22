@@ -2,6 +2,9 @@ var Result = require("result-brighthas");
 var util = require("./util");
 var pw = require("png-word")();
 
+module.exports = wrap;
+
+function wrap(domain,query){
 
 var data = {
 
@@ -9,7 +12,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
         query.columnById(req.param("id"), function (rs) {
             if (rs) {
                 req.result.data("column", rs);
@@ -22,7 +24,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
         query.columnByTopicId(req.param("id"), function (rs) {
             if (rs) {
                 req.result.data("column", rs);
@@ -42,7 +43,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
         query.columns(function (rs) {
             req.result.data("columnList", rs);
             next();
@@ -69,8 +69,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
-
         query.userById(req.param("id"), function (rs) {
             if (rs) {
                 req.result.data("user", rs);
@@ -83,8 +81,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
-
         query.userByEmail(req.param("email"), function (rs) {
             if (rs) {
                 req.result.data("user", rs);
@@ -97,8 +93,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
-
         query.userByNick(req.param("nickname"), function (rs) {
             if (rs) {
                 req.result.data("user", rs);
@@ -111,7 +105,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
         query.topicById(req.param("id"), function (rs) {
             if (rs) {
                 req.result.data("topic", rs);
@@ -124,7 +117,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
         var cid = req.param("id");
         query.topicCountByColumnId(cid,function(count){
             query.topicsByColumnId(req.param("page"), cid, function (rs) {
@@ -143,8 +135,6 @@ var data = {
         if (req.result.hasError()) {
             return next();
         }
-        var query = req.env.query;
-
         query.replyById(req.param("id"), function (rs) {
             if (rs) {
                 req.result.data("reply", rs);
@@ -154,7 +144,6 @@ var data = {
     },
 
     topicTitleListByUserId:function(req,res,next){
-        var query = req.env.query;
         var userId = req.param("id");
         var page = req.param("page");
         query.topicTitleListByUserId(userId,page,function(rs){
@@ -164,7 +153,6 @@ var data = {
     },
 
     topicCountByUserId:function(req,res,next){
-        var query = req.env.query;
         query.topicCountByUserId(req.param("id"),function(count){
             req.result.data("topicCount",count);
             next();
@@ -172,7 +160,6 @@ var data = {
     },
 
     replyIdsByUserId:function(req,res,next){
-        var query = req.env.query;
         var userId = req.param("id");
         var page = req.param("page");
         query.replyIdsByUserId(userId,page,function(rs){
@@ -182,7 +169,6 @@ var data = {
     },
 
     replyCountByUserId:function(req,res,next){
-        var query = req.env.query;
         query.replyCountByUserId(req.param("id"),function(count){
             req.result.data("replyCount",count);
             next();
@@ -194,7 +180,6 @@ var data = {
         if(req.result.hasError()){
             next();
         }
-        var query = req.env.query;
         query.messageListByUserId(req.param("page"), req.session.user.id, function (rs) {
             if (rs) {
                 req.result.data("messageList", rs);
@@ -207,7 +192,6 @@ var data = {
         if(req.result.hasError()){
             next();
         }
-        var query = req.env.query;
         query.infoListByUserId(req.param("page"), req.session.user.id, function (rs) {
             if (rs) {
                 req.result.data("infoList", rs);
@@ -217,4 +201,6 @@ var data = {
     }
 }
 
-module.exports = data;
+
+    return data;
+}

@@ -1,8 +1,9 @@
 node_modules
 .idea
 dbs
-infrastructure/config.json
-infrastructure/db
-infrastructure/dbs
+basic/config.json
+basic/db
+basic/dbs
 test/util/config.json
 public/logo/*
+config.json

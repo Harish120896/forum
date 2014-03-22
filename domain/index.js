@@ -1,7 +1,12 @@
 var domain = require("jsdm")();
+var config = require("../config");
+var basic = require(config.basicPath);
+var query = basic.query;
+var get = basic.get;
 
 domain.register(
-        // "get",require("../infrastructure/db").get,
+
+        "get", get,
         "AggreClass",
         require("./Column"),
         require("./User"),
@@ -11,8 +16,9 @@ domain.register(
         require("./Info"),
         "listener", require("./eventHandles"),
         "repository", require("./repos"),
-        "commandHandle", require("./commandHandles")
-        // "service", require("./services")(require("../infrastructure/query"))
+        "commandHandle", require("./commandHandles"),
+        "service", require("./services")
+
     ).openMethod(
         "User.plus",
         "User.updatePassword",
@@ -24,13 +30,11 @@ domain.register(
         "User.becomeUser",
         "User.sealUser",
         "User.updateInfo",
-        "User.updateNickname",
 
         "Column.updateName",
         "Column.updateDes",
         "Column.updateInfo",
         "Column.setManager",
-
 
         "Topic.updateInfo",
         "Topic.removeReply",
@@ -39,6 +43,6 @@ domain.register(
         "Topic.access",
 
         "Reply.updateInfo"
-    );
+    )
 
 module.exports = domain;

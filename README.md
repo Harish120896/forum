@@ -10,6 +10,62 @@
 
 通过 domain.exec 和 domain.call 函数可以调用核心层功能。
 
+运行
+===
+
+    var forum = require("forum")();
+
+    forum.app.listen(3000); // 运行
+
+配置
+====
+
+下面是个配置对象，都是可选的，都具有默认值，也可以替换部分属性达到相应效果。
+
+    var config = {
+
+        "query",          // 查询组件
+
+        /*
+         *  通过ID查询的函数，可自定义
+         *
+         *  functon(type, id, cb){
+         *
+         *  }
+         *
+         *  type 字符串 表示类型，比如 Topic User 等
+         *  id 对象id
+         *  cb 回调函数 function(err,obj){}
+         *
+         */
+        "getById",
+
+        /*
+        * 根据领域层create update remove 事件更新数据库，
+        * 可以自定义，替换这个默认函数
+        */
+        "update_db",
+
+        "admin_email",       // 用这个邮箱注册的将为管理员
+        "sys_email",         // 这个邮箱用于发送邮箱
+
+        "contrller_path",    // 控制器目录
+        "route_path,         // 路由目录，将加载该目录下的路由器
+        "static_path,        // 静态文件目录路径
+        "view_path"          // 视图文件目录路径
+    }
+
+
+    var forum = require("forum")(config);
+
+
+forum 对象
+==========
+
+forum.domain 论坛的领域对象。
+
+forum.app 是Express应用对象。
+
 
 domain.exec 核心层命令
 ====================
