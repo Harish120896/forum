@@ -8,16 +8,21 @@
                 <tr>
                     <td>头像</td>
                     <td>
-                        <img class="img-circle" width="100" height="100"
-                             ng-src='{{isCustomLogo ? "/logo/<%=user.nickname%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
-                        <%if(loginUser && loginUser.id === user.id){%>
-                        <input type="file" name="logo" ng-file-select="onFileSelect($files)">
+                        <div style="position: relative">
+                            <img class="img-rounded" style="cursor:pointer;" width="100" height="100"
+                                 ng-src='{{user.isCustomLogo ? "/logo/<%=user.nickname%>" : "http://www.gravatar.com/avatar/<%=user.logo%>"}}'/>
+                            <%if(loginUser && loginUser.id === user.id){%>
+                            <i ng-show="user.isCustomLogo" class="glyphicon glyphicon-circle-arrow-up" style="cursor:pointer;font-size:2em;position: absolute; top:40px;left:35px;"></i>
+                            <input tooltip-placement="left" tooltip="点击上传头像" style="cursor:pointer;position: absolute; top:50px;left:10px;filter:alpha(opacity:0);opacity: 0;" ng-show="user.isCustomLogo"  type="file" name="logo" ng-file-select="onFileSelect($files)">
+                        </div>
 
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary" ng-model="isCustomLogo" btn-radio="true">
+                        <p></p>
+
+                        <div class="btn-group-xs">
+                            <button type="button" class="btn btn-info" ng-model="user.isCustomLogo" ng-click="test()" btn-radio="true">
                                 使用自定义头像
                             </button>
-                            <button type="button" class="btn btn-primary" ng-model="isCustomLogo" btn-radio="false">
+                            <button type="button" class="btn btn-info" ng-model="user.isCustomLogo" btn-radio="false">
                                 使用Gravatar头像
                             </button>
                         </div>
@@ -35,16 +40,13 @@
                     <td>个人简介</td>
                     <td>
                         <%if(loginUser && loginUser.id === user.id){%>
-                        <textarea ng-show="canEditUser" type="text" ng-model="user.des"></textarea>
+                        <textarea rows="5" cols="80" ng-show="canEditUser1" type="text" ng-model="user.des" ng-mouseout="updateUser();canEditUser1=false;"></textarea>
 
-                        <p ng-show="!canEditUser">
+                        <p ng-show="!canEditUser1">
                             {{user.des}}
                         </p>
-                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser=true"
-                                      ng-show="!canEditUser"></i></a>
-                        <button ng-click="updateUser();canEditUser=false;" ng-show="canEditUser"
-                                class="btn btn-default btn-xs">确定
-                        </button>
+                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser1=true"
+                                      ng-show="!canEditUser1"></i></a>
                         <%}else{%>
                         <%=user.des%>
                         <%}%>
@@ -56,17 +58,15 @@
                     <td>
                         <%if(loginUser && loginUser.id === user.id){%>
 
-                        <select ng-selected="user.sex.toString()" ng-show="canEditUser" ng-model="user.sex">
+                        <select ng-selected="user.sex.toString()" ng-change="updateUser();canEditUser2=false;" ng-show="canEditUser2" ng-model="user.sex">
                             <option value="true">男</option>
                             <option value="false">女</option>
                         </select>
 
-                        <p ng-show="!canEditUser">{{user.sex.toString()==="true"?"男":"女"}}</p>
-                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser=true"
-                                      ng-show="!canEditUser"></i></a>
-                        <button ng-click="updateUser();canEditUser=false;" ng-show="canEditUser"
-                                class="btn btn-default btn-xs">确定
-                        </button>
+                        <p ng-show="!canEditUser2">{{user.sex.toString()==="true"?"男":"女"}}</p>
+                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser2=true"
+                                      ng-show="!canEditUser2"></i></a>
+
                         <%}else{%>
                         <%=user.sex?"男":"女"%>
                         <%}%>
@@ -100,17 +100,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>所在地址</td>
+                    <td>所在地</td>
                     <td>
                         <%if(loginUser && loginUser.id === user.id){%>
-                        <textarea ng-show="canEditUser" type="text" ng-model="user.address"></textarea>
+                        <textarea rows="5" cols="80" ng-show="canEditUser3" ng-mouseout="updateUser();canEditUser3=false;" type="text" ng-model="user.address"></textarea>
 
-                        <p ng-show="!canEditUser">{{user.address || ""}}</p>
-                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser=true"
-                                      ng-show="!canEditUser"></i></a>
-                        <button ng-click="updateUser();canEditUser=false;" ng-show="canEditUser"
-                                class="btn btn-default btn-xs">确定
-                        </button>
+                        <p ng-show="!canEditUser3">{{user.address || ""}}</p>
+                        <a href=""><i class="glyphicon glyphicon-edit" ng-click="canEditUser3=true"
+                                      ng-show="!canEditUser3"></i></a>
                         <%}else{%>
                         <%=user.address || ""%>
                         <%}%>

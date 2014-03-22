@@ -893,15 +893,16 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
         $scope.replys = [];
         $scope.topics = [];
 
-        $rootScope.$watch("logined", function (u) {
-            if (u) {
-                $scope.user = $rootScope.user;
+        $rootScope.$watch("userId", function (uid) {
+            if (uid) {
+                DATA.user(uid).then(function(user){
+                    $scope.user = user;
+                });
             }
         })
 
         // update user info
         $scope.updateUser = function () {
-            $scope.canEditUser = "ccc";
             $http.post("/user/update", {
                 des: $scope.user.des,
                 address: $scope.user.address,
@@ -909,13 +910,13 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             })
         }
 
-        $scope.$watch("isCustomLogo", function (v) {
+        $scope.$watch("user.isCustomLogo", function (v) {
             if (isCustomLog_init) {
                 $http.post("/user/isCustomLogo", {custom: v});
             } else {
                 isCustomLog_init = true;
             }
-        });
+        },true);
 
         $scope.onFileSelect = function ($files) {
             //$files: an array of files selected, each file has name, size, and type.
