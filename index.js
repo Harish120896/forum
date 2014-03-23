@@ -89,9 +89,10 @@ module.exports = function (conf) {
         // 加载控制器
         fs.readdirSync(config.contrller_path).forEach(function (filename) {
             var filepath = config.contrller_path + "/" + filename;
-            ctrls[path.basename(filepath, ".js")] = require(filepath)(domain, config.query);
+            ctrls[path.basename(filepath, ".js")] = require(filepath)(domain, config.query,config);
         });
 
+        app.use(express.static(config.static_path));
         app.set('views', path.join(config.view_path));
         app.engine('.html', require('ejs').__express);
         app.set('view engine', 'html');
@@ -112,7 +113,6 @@ module.exports = function (conf) {
 
         app.locals.markdown = require("marked");
         app.use(app.router);
-        app.use(express.static(config.static_path));
 
         // 加载路由器
         fs.readdirSync(config.route_path).forEach(function (filename) {

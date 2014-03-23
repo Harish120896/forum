@@ -27,6 +27,14 @@ module.exports = function wrap(app, ctrls) {
         ctrls.topic.seal,
         ctrls.util.end);
 
+    app.post("/topic/:id/top",
+        ctrls.util.isLogin,
+        ctrls.util.isAdmin,
+        ctrls.data.topicById,
+        ctrls.util.hasTopic,
+        ctrls.topic.top,
+        ctrls.util.end);
+
     app.post("/topic/:id/unseal",
         ctrls.util.isLogin,
         ctrls.data.topicById,

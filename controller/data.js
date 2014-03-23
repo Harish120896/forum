@@ -33,10 +33,17 @@ function wrap(domain, query) {
         },
 
         share: function (req, res, next) {
-            data.columnList(req, res, function () {
-                res.locals.columnList = req.result.data("columnList");
-                next();
+            query.topList(function(rs){
+                res.locals.topList = rs;
+                query.hotList(function(rs){
+                    res.locals.hotList = rs;
+                    query.columns(function (rs) {
+                        res.locals.columnList = rs;
+                        next();
+                    });
+                })
             })
+
         },
 
         columnList: function (req, res, next) {
@@ -199,6 +206,7 @@ function wrap(domain, query) {
                 next();
             });
         }
+
     }
 
 

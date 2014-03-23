@@ -5,11 +5,13 @@ module.exports = function wrap(app, ctrls) {
         ctrls.util.cookieLogin,
         ctrls.data.share,
         function (req, res) {
+            res.locals.title = "社区主页"
             res.locals.breadcrumb = "index"
             res.render("index", { loginUser: req.session.user, pageType: "index"});
         });
 
     app.get("/topic/:id",
+        ctrls.topic.access,
         ctrls.util.cookieLogin,
         ctrls.data.share,
         ctrls.data.topicById,
@@ -19,6 +21,7 @@ module.exports = function wrap(app, ctrls) {
             var column = req.result.data("column");
             if (topic) {
                 res.locals.topic = topic;
+                res.locals.title = topic.title;
                 res.locals.column = column;
                 res.locals.loginUser = req.session.user;
                 res.locals.breadcrumb = "topic"
@@ -39,6 +42,7 @@ module.exports = function wrap(app, ctrls) {
             } else {
                 res.locals.breadcrumb = "user";
                 res.locals.user = req.result.data("user");
+                res.locals.title = res.locals.user.nickname+"的个人中心"
                 res.locals.loginUser = req.session.user;
                 res.render("user");
             }
@@ -52,6 +56,7 @@ module.exports = function wrap(app, ctrls) {
         function (req, res) {
             res.locals.breadcrumb = "column";
             if (res.locals.column = req.result.data("column")) {
+                res.locals.title = res.locals.column.name;
                 res.locals.topics = req.result.data("topics");
 
                 var groupNum = 1,

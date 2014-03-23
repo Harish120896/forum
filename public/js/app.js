@@ -16,6 +16,27 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
         };
     })
 
+    .filter('time', function($filter){
+
+        return function(time){
+
+            var date = new Date();
+            date.setTime(time);
+            var now = new Date();
+
+            if(date.getFullYear() !== now.getFullYear()){
+                return $filter('date')(date,"yyyy");
+            }
+
+            if(date.getMonth() !== now.getMonth() || date.getDate() !== now.getDate()){
+                return $filter('date')(date,"MM/dd");
+            }
+
+            return $filter('date')(date,"H:m");
+
+        }
+    })
+
     .run(function ($rootScope, $http) {
         $rootScope.users = {}
         $rootScope.refreshNum = function () {
@@ -27,6 +48,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             $http.post("/user/logined").success(function (data) {
                 if (data.email) {
                     self.user = data;
+                    self.loginUser = data;
                     $rootScope.users[data.id] = data;
                     self.logined = true;
                 }
@@ -354,7 +376,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
         };
         $scope.logout = function () {
             $http.post("/user/logout").success(function () {
-                $rootScope.logined = false;
+                window.location.href = "/";
             })
         }
     })
@@ -716,6 +738,12 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         }
 
+        $scope.top = function (rid) {
+            $http.post("/topic/" + $scope.topicId + "/top").success(function (data) {
+                window.location.href = "/column/" + $scope.columnId;
+            })
+        }
+
         $scope.removeTopic = function () {
             var bool = window.confirm("确定删除主题帖吗？");
             if (bool) {
@@ -801,6 +829,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                         $scope.replyIdsList.push(reply.id);
                         $scope.subReplyIds[reply.id] = [];
                         $scope.showReplyPosition += 1;
+                        $scope.showSubReplyPositions[reply.id] = 0;
                     }
                     $scope.replys[reply.id] = reply;
                     $scope.loadUser(reply.authorId);

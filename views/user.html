@@ -79,7 +79,6 @@
                     <td>身份</td>
 
                     <td>
-
                         <%if(user.role === 0){%>
                         用户
                         <%}%>
@@ -91,7 +90,7 @@
                         <%if(col.managerId === user.id){%>
                         <p><strong><%=col.name%></strong>版主</p>
                         <%}else{%>
-                        <p ng-show="user.role === 1">
+                        <p ng-show="loginUser.role === 1 && loginUser.id !== userId">
                             <string><%=col.name%></string>
                             <a href="" ng-click="setManager('<%=user.id%>','<%=col.id%>')">设置管理员</a></p>
                         <%}%>

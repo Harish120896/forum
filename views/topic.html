@@ -24,7 +24,7 @@
                 <p ng-non-bindable><%- markdown(topic.body) %></p>
 
                 <p>
-                    <span class="pull-right">{{topic.createTime | date:"MM-dd"}}</span>
+                    <span class="pull-right">{{topic.createTime | time}}</span>
                 </p>
             </div>
         </div>
@@ -45,7 +45,7 @@
                             <a href="" ng-show="logined" ng-click="moveEditor(rid)">回复</a>
                             <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[rid],column)"
                                ng-click="removeReply(rid)">删除</a>
-                            <span class="pull-right">{{replys[rid].createTime | date:"MM-dd"}}</span>
+                            <span class="pull-right">{{replys[rid].createTime | time}}</span>
                         </p>
 
                         <p ng-bind-html="replys[rid].body | markdown"></p>
@@ -60,15 +60,15 @@
                                 <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href=""
                                                                                                            ng-show="logined && ability.canRemoveReply(user,topic,replys[sr],column)"
                                                                                                            ng-click="removeReply(sr)">删除</a>
-                                    <span class="pull-right">{{replys[sr].createTime | date:"MM-dd"}}</span>
+                                    <span class="pull-right">{{replys[sr].createTime | time}}</span>
                                 </p>
 
                                 <p ng-bind-html="replys[sr].body | markdown"></p>
                             </li>
                         </ul>
                         <div><a href="" class="btn btn-default btn-xs"
-                                ng-show="showSubReplyPositions[rid] !== subReplyIds[rid].length"
-                                ng-click="moreSubReply(rid)">更多</a></div>
+                                ng-show="showSubReplyPositions[rid]  !== subReplyIds[rid].length"
+                                ng-click="moreSubReply(rid)">更多{{}}</a></div>
 
                     </div>
                 </div>
@@ -85,6 +85,8 @@
                     ng-click="moveEditor('createReply')">回帖</a>
             <a href="" ng-click="removeTopic()" ng-show="logined && ability.canRemoveTopic(user,topic,column)"
                class="btn btn-default btn-xs pull-right">删帖</a>
+            <a href="" ng-click="top()" ng-show="logined && ability.canRemoveTopic(user,topic,column)"
+               class="btn btn-default btn-xs pull-right">Top</a>
         </div>
     </div>
 

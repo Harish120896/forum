@@ -98,4 +98,9 @@ module.exports = function wrap(app, ctrls) {
         ctrls.util.end
     )
 
+    // 默认头像
+    app.get("/logo/*",function(req,res){
+        res.redirect("/logo/guest.jpg")
+    })
+
 }

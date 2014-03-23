@@ -4,7 +4,7 @@ var path = require("path");
 var _ = require("underscore");
 
 
-module.exports = function (domain, query) {
+module.exports = function (domain, query,config) {
     return {
 
         findPassword: function (req, res, next) {
@@ -79,7 +79,7 @@ module.exports = function (domain, query) {
             }, function (result) {
                 var user = result.data("user");
                 if (user) {
-                    if (user.email === req.env.config.admin) {
+                    if (user.email === config.admin_email) {
                         setTimeout(function () {
                             domain.call("User.becomeAdmin", user.id);
                         }, 1000);

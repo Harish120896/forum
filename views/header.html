@@ -2,7 +2,7 @@
 <html ng-app="jseraApp">
 <head>
     <meta charset="utf-8">
-    <title>Forum demo</title>
+    <title><%=title%> - JSera.net </title>
     <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css"/>
     <style>
         .navbar, .jumbotron {
@@ -11,6 +11,19 @@
 
         .breadcrumb {
             margin: 5px 0;
+        }
+
+        .head-login{
+            display: none;
+        }
+
+        @media (min-width: 0) and (max-width: 970px) {
+            .guest-info{
+                display: none;
+            }
+            .head-login{
+                display: inline-block;
+            }
         }
 
 
@@ -32,8 +45,8 @@
         <div class="navbar-collapse collapse" ng-class="!navCollapsed && 'in'">
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" ng-click="openRegDialog()" ng-show="!logined">注册</a></li>
                 <li><a href="#" ng-click="openLoginDialog()" ng-show="!logined">登录</a></li>
+                <li><a href="#" ng-click="openRegDialog()" ng-show="!logined">注册</a></li>
                 <li id="userInfo" class="{{open}}">
 
                     <a href="/user/{{user.id}}" ng-show="logined" ng-mouseleave="open=''" ng-mouseenter="open='open'"
@@ -67,10 +80,12 @@
 
 
 <div class="container">
-    <div class="jumbotron" style="position: relative">
+    <div class="jumbotron" style="position: relative" ng-controller="headerCtrl">
         <h2>HTML5 \ Node.js社区</h2>
-
         <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
+        <button ng-show="!logined"  ng-click="openLoginDialog()" class="btn btn-primary head-login">登录</button>
+        <button ng-show="!logined" ng-click="openRegDialog()" class="btn btn-success head-login">注册</button>
+
     </div>
 
     <div class="panel panel-default" style="margin-top: 5px ;border: 0">
@@ -118,4 +133,4 @@
 
 
     <div class="row">
-        <div class="col-xs-12 col-lg-9">
+        <div class="col-xs-12 col-md-9">

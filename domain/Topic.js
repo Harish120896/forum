@@ -41,6 +41,10 @@ function wrap(my) {
             type: "number",
             default: 0
         })
+        .attr("replyNum",{
+            type: "number",
+            default:0
+        })
         .attr("replyTree", {
             type: Node
         })
@@ -81,7 +85,10 @@ function wrap(my) {
                     my.repos.Reply.remove(id);
                 })
             }
+            this.begin();
             this.replyTree = this.replyTree;
+            this.replyNum = this.replyTree.allChildIds.length;
+            this.end();
         })
         .method("access", function () {
             var num = this.accessNum;
@@ -93,7 +100,10 @@ function wrap(my) {
             if (parent) {
                 parent.appendChild(new Node(replyId));
             }
+            this.begin();
             this.replyTree = tree;
+            this.replyNum = tree.allChildIds.length;
+            this.end();
 
         })
         .method("updateInfo", function (title, body, columnId) {

@@ -295,6 +295,24 @@ module.exports = {
         } else {
             callback([]);
         }
+    },
+
+    topList:function(callback){
+        var db = dbs.getDB("Topic");
+        db.find({top:true}).limit(10).sort({
+            updateTime: -1
+        }).exec(function(err,rs){
+            callback(rs || []);
+        })
+    },
+
+    hotList:function(callback){
+        var db = dbs.getDB("Topic");
+        db.find({}).limit(10).sort({
+            replyNum: -1
+        }).exec(function(err,rs){
+            callback(rs || []);
+        })
     }
 
 

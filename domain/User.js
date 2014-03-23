@@ -85,7 +85,7 @@ function wrap(my) {
         })
         .attr("isCustomLogo", {
             type: "boolean",
-            default: false
+            default: true
         })
 
         .method("updateInfo", function (data) {

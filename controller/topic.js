@@ -81,7 +81,23 @@ module.exports = function (domain, query) {
             var replyId = req.body.replyId;
             domain.call("Topic.removeReply", id, [replyId]);
             next();
-        }
+        },
 
+        top: function (req, res, next) {
+            if (req.result.hasError()) {
+                return next();
+            }
+
+            domain.exec("top topic",{id:req.param("id")});
+            next();
+        },
+
+        access:function(req,res,next){
+            if (req.result.hasError()) {
+                return next();
+            }
+            domain.call("Topic.access",req.param("id"));
+            next();
+        }
     }
 }
