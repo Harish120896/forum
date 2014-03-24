@@ -1,5 +1,6 @@
 var is = require("istype");
 var dbs = require("./db");
+var Q = require("q");
 
 function oneday(date) {
 
@@ -66,6 +67,37 @@ module.exports = {
         }).exec(function (err, rs) {
                 callback(rs);
             })
+    },
+
+    newReplyByTopicId:function(topicId,callback){
+        var defer = Q.defer();
+        var db = dbs.getDB("Reply");
+        db.findOne({
+            topicId: topicId
+        })
+            .sort({createTime: -1})
+            .exec(function (err, rs) {
+                defer.resolve(rs);
+                callback(rs);
+        })
+        return defer.promise;
+    },
+
+    newReplyAuthorByTopicId:function(topicId,callback){
+        var defer = Q.defer();
+        var self = this;
+        this.newReplyByTopicId(topicId,function(r){
+            if(r){
+                self.userById(r.authorId,function(u){
+                    defer.resolve(u || null);
+                    callback(u || null)
+                })
+            }else{
+                defer.resolve(null);
+                callback(null);
+            }
+        })
+        return defer.promise;
     },
 
     topicsByColumnId: function (page, columnId, callback) {
@@ -313,6 +345,67 @@ module.exports = {
         }).exec(function(err,rs){
             callback(rs || []);
         })
+    },
+
+    searchTopic:function(keyword,callback){
+        var db = dbs.getDB("Topic");
+        db.find({
+            $where:function(){
+                var regexp = new RegExp(keyword,"gi");
+               return  regexp.test(this.title) || regexp.test(this.body);
+            }
+        }).exec(function(err,rs){
+                callback(rs || []);
+         })
+    },
+
+    // result is {topicAuthor 主题作者, newReply 最新回贴 , replyAuthor最新回贴作者}
+    topicInfo:function(topic,callback){
+
+        callback = callback || function(){}
+        var defer = Q.defer();
+        var self = this;
+        var info = {}
+
+        self.userById(topic.authorId,function(topicAuthor){
+            info.topicAuthor = topicAuthor;
+
+            self.newReplyByTopicId(topic.id,function(r){
+                if(r){
+                    info.newReply = r;
+                    self.userById(r.authorId,function(replyAuthor){
+
+                        if(replyAuthor){
+                            info.replyAuthor = replyAuthor;
+                        }
+                        defer.resolve(info);
+                        callback(info);
+                    })
+                }else{
+                    defer.resolve(info);
+                    callback(info);
+                }
+            })
+        })
+
+        return defer.promise;
+    },
+
+    // 获得信息
+    topicsInfo:function(topics,callback){
+
+        var self = this;
+
+        var qList = [];
+
+        topics.forEach(function(topic){
+            qList.push(self.topicInfo(topic));
+        });
+
+        Q.all(qList).spread(function(){
+            callback([].slice.apply(arguments));
+        }).done();
+
     }
 
 

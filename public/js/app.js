@@ -527,7 +527,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         return {
             user: function (uid) {
-
                 var deferred = $q.defer();
                 if (uid) {
                     if (users[uid]) {
@@ -643,6 +642,18 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                 $http.get("/infoList/" + page).success(function (rs) {
                     infoList = infoList.concat(rs);
                     deferred.resolve(infoList);
+                });
+                return deferred.promise;
+            },
+            newReplyAuthorByTopicId:function(topicId){
+                var deferred = $q.defer();
+                $http.get("/newReplyAuthorByTopicId?topicId="+topicId).success(function (rs) {
+                    if(rs.id){
+                        users[rs.id] = rs;
+                        deferred.resolve(rs);
+                    }else{
+                        deferred.resolve(null);
+                    }
                 });
                 return deferred.promise;
             }
@@ -1146,7 +1157,19 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
 
     })
-    .controller("topicCtrl", function ($scope, $http, $rootScope, Result) {
+    .controller("topicCtrl", function ($scope, $http, $rootScope, Result,DATA) {
+        $scope.DATA = DATA;
+
+        $scope.newReplyAuthors = {}
+
+        $scope.loadNewReplyAuthorByTopicId = function(tid){
+            DATA.newReplyAuthorByTopicId(tid).then(function(u){
+                if(u){
+                    $scope.newReplyAuthors[tid] = u;
+                }
+            })
+        }
+
         $scope.createTopic = function () {
             $http.post("/topic/create", {
                 title: $scope.title,

@@ -204,7 +204,7 @@ function wrap(domain, query) {
 
         infoListByUserId: function (req, res, next) {
             if (req.result.hasError()) {
-                next();
+                return next();
             }
             query.infoListByUserId(req.param("page"), req.session.user.id, function (rs) {
                 if (rs) {
@@ -212,6 +212,44 @@ function wrap(domain, query) {
                 }
                 next();
             });
+        },
+        searchTopic:function(req,res,next){
+            if(req.result.hasError()){
+               return next();
+            }
+            query.searchTopic(req.param("keyword"),function(rs){
+                req.result.data("topicList",rs);
+                next();
+            })
+        },
+        newReplyByTopicId:function(req,res,next){
+            if(req.result.hasError()){
+                return next();
+            }
+            query.newReplyByTopicId(req.param("topicId"),function(rs){
+                req.result.data("topic",rs);
+                next();
+            })
+        },
+
+        newReplyAuthorByTopicId:function(req,res,next){
+            if(req.result.hasError()){
+                return next();
+            }
+            query.newReplyAuthorByTopicId(req.param("topicId"),function(rs){
+                req.result.data("author",rs);
+                next();
+            })
+        },
+
+        topicsInfo:function(req,res,next){
+            if(req.result.hasError()){
+                return next();
+            }
+            query.topicsInfo(req.result.data("topics"),function(rs){
+                req.result.data("topicsInfo",rs);
+                next();
+            })
         }
 
     }

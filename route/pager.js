@@ -53,11 +53,14 @@ module.exports = function wrap(app, ctrls) {
         ctrls.data.share,
         ctrls.data.columnById,
         ctrls.data.topicsByColumnId,
+        ctrls.data.topicsInfo,
         function (req, res) {
             res.locals.breadcrumb = "column";
             if (res.locals.column = req.result.data("column")) {
                 res.locals.title = res.locals.column.name;
+
                 res.locals.topics = req.result.data("topics");
+                res.locals.topicsInfo = req.result.data("topicsInfo");
 
                 var groupNum = 1,
                     groupMaxPageNum = 3,
@@ -83,5 +86,14 @@ module.exports = function wrap(app, ctrls) {
             res.locals.code = req.param("code");
             res.locals.email = req.param("email");
             res.render("setNewPassword");
+        });
+
+    // doto
+    app.post("/topic/search",
+        ctrls.data.searchTopic,
+        function (req, res) {
+            var rs = req.result.data("topicList");
+            console.log(rs,9999);
+            res.send(rs);
         });
 }

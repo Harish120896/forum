@@ -4,20 +4,49 @@
 <div class="panel panel-info" ng-controller="topicCtrl">
     <div class="panel-heading"> <%=column.name%> <a href="#createTopic" class="btn btn-default btn-xs pull-right">发表新帖</a></div>
     <ul class="list-group">
-        <% topics.forEach(function(topic){ %>
+        <% topics.forEach(function(topic,index){ %>
         <li class="list-group-item">
 
             <div class="row">
-                <div class="col-xs-1" >
-                    <span class="badge pull-right" > <%=topic.accessNum%> / <%=topic.replyNum%> </span>
-                </div>
-                <div class="col-xs-9">
+                <div class="col-md-9">
+                    <div style="width: 40px;display: inline-block">
+                        <span class="label center-block" style="background: #eee;color: #888"> <%=topic.replyNum%> </span>
+                    </div>
                     <a  href="/topic/<%=topic.id%>" ng-non-bindable><%=topic.title%></a>
                 </div>
-                <div class="co-xs-1">
-                    <span class="pull-right">{{<%=topic.createTime %> | time}}</span>
+                <div class="col-md-3">
+                    <div class="pull-right">
+                        <p>
+                            <i class="small glyphicon glyphicon-user" style="opacity: .5"></i> <a ng-init="DATA.user('<%=topic.authorId%>')" usercode user-id="<%=topic.authorId%>" href="/user/<%=topics.authorId%>">
+                                <%=topicsInfo[index].topicAuthor.nickname %>
+                            </a>
+                        </p>
+
+                        <p>
+
+                            <%if(topicsInfo[index].newReply){%>
+                                <i style="opacity: .5" class="small glyphicon glyphicon-comment"></i><a ng-init="DATA.user('<%=topicsInfo[index].replyAuthor.id%>')" usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user/<%=topicsInfo[index].replyAuthor.id%>">
+                                    <%=topicsInfo[index].replyAuthor.nickname%>
+                                </a>
+                                <span style="opacity: .5">
+                                    {{<%=topicsInfo[index].newReply.createTime%> | time}}
+                                </span>
+                            <%}else{%>
+                               <i style="opacity: .5" class="small glyphicon glyphicon-user"></i><a  ng-init="DATA.user('<%=topic.authorId%>')" usercode user-id="<%=topic.authorId%>" href="/user/<%=topics.authorId%>">
+                            <%=topicsInfo[index].topicAuthor.nickname %>
+                                </a>
+                                 <span style="opacity: .5">
+                                    {{<%=topic.createTime%> | time}}
+                                </span>
+                            <%}%>
+
+
+                        </p>
+                    </div>
                 </div>
             </div>
+
+
         </li>
         <% }) %>
         <li class="list-group-item">

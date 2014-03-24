@@ -102,4 +102,21 @@ module.exports = function wrap(app, ctrls) {
         }
     )
 
+    app.get("/newReplyByTopicId",
+        ctrls.data.newReplyByTopicId,
+        function (req, res) {
+            res.send(req.result.data("topic"));
+        }
+    )
+
+    app.get("/newReplyAuthorByTopicId",
+        ctrls.data.newReplyAuthorByTopicId,
+        function (req, res) {
+            res.send(req.result.data("author"));
+        }
+    )
+
+
+
+
 }
