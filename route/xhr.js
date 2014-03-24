@@ -13,6 +13,12 @@ module.exports = function wrap(app, ctrls) {
             res.send(req.result.data())
         })
 
+    app.get("/topicCountByColumnId/:id",
+        ctrls.data.topicCountByColumnId,
+        function (req, res) {
+            res.send(req.result.data())
+        })
+
     app.get("/replyIdsByUserId/:id/:page",
         ctrls.data.replyIdsByUserId,
         function (req, res) {
@@ -33,10 +39,11 @@ module.exports = function wrap(app, ctrls) {
             res.send(req.result.data())
         })
 
-    app.get("/column/:id/get",
+    app.post("/column/:id/get",
         ctrls.data.columnById,
         function (req, res) {
             var column = req.result.data("column");
+
             res.send(column)
         }
     )

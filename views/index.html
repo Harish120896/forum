@@ -6,27 +6,29 @@
     <a href="#" ng-click="openCreateDialog()">创建栏目</a>
     <%}%>
 
-    <% columnList.forEach(function(col){ %>
-    <div class="panel panel-success" ng-init="DATA.user('<%=col.managerId%>')">
+    <div class="panel panel-success">
         <div class="panel-heading">
-            <a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
-                                                coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a>
-            <a
-                    ng-click='select("<%=col.id%>")'></a>
-            <%if(loginUser && loginUser.role === 1){%>
-            <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
-                    class="glyphicon glyphicon-edit"></i></a>
-            <%}%>
+            社区板块
         </div>
-        <div class="panel-body">
-            <div columnid="<%=col.id%>" coledit="des"><%=col.des%></div>
-        </div>
-        <div class="panel-footer">
-            版主
-            <a usercode user-id='{{users["<%=col.managerId%>"].id}}' href='/user/{{users["<%=col.managerId%>"].id}}'>{{users["<%=col.managerId%>"].nickname}}</a>
-        </div>
+        <ul class="list-group">
+           <% columnList.forEach(function(col){ %>
+           <li class="list-group-item" ng-init="DATA.user('<%=col.managerId%>');topicCountByColumnId('<%=col.id%>')">
+                <h4><a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
+                                                        coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a></h4>
+               <p><%=col.des%></p>
+               版主
+               <a usercode user-id='{{users["<%=col.managerId%>"].id}}' href='/user/{{users["<%=col.managerId%>"].id}}'>{{users["<%=col.managerId%>"].nickname}}</a>
+               <%if(loginUser && loginUser.role === 1){%>
+               <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
+                       class="glyphicon glyphicon-edit"></i></a>
+               <%}%>
+
+               <span>贴数：{{topicCounts['<%=col.id%>']}} </span> <!--button ng-click="openUpdateDialog('<%=col.id%>')">update</button-->
+           </li>
+           <% }) %>
+
+        </ul>
     </div>
-    <% }) %>
 
 </div>
 

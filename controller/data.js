@@ -138,6 +138,13 @@ function wrap(domain, query) {
             });
         },
 
+        topicCountByColumnId:function(req,res,next){
+            query.topicCountByColumnId(req.param("id"), function (count) {
+                req.result.data("topicCount",count);
+                next()
+            })
+        },
+
         replyById: function (req, res, next) {
             if (req.result.hasError()) {
                 return next();

@@ -1,8 +1,8 @@
 <% include header.html %>
 
-<a href="#createTopic">添加主题</a>
+
 <div class="panel panel-info" ng-controller="topicCtrl">
-    <div class="panel-heading"> <%=column.name%></div>
+    <div class="panel-heading"> <%=column.name%> <a href="#createTopic" class="btn btn-default btn-xs pull-right">发表新帖</a></div>
     <ul class="list-group">
         <% topics.forEach(function(topic){ %>
         <li class="list-group-item">

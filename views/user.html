@@ -33,7 +33,29 @@
                 <tr>
                     <td>昵称</td>
                     <td>
-                        <div><%=user.nickname || ""%></div>
+                        <div>
+                            <p><%=user.nickname || ""%></p>
+
+                            <div ng-show="userId !== loginUser.id">
+                                <i class="glyphicon glyphicon-envelope"></i>
+
+                                <a ng-click="sendMessage()" href="">私信TA</a>
+
+                                <span ng-show="hasFollow()">
+                                    @ <a href="" ng-click="unfollow()">取消关注TA</a>
+                                </span>
+
+                                <span ng-show="!hasFollow()">
+                                    @ <a href="" ng-click="follow()">关注TA</a>
+                                </span>
+
+                                <i class="glyphicon glyphicon-hand-right"></i>
+                                <a href="">投诉TA</a></li>
+
+                            </div>
+
+                        </div>
+
                     </td>
                 </tr>
                 <tr>
