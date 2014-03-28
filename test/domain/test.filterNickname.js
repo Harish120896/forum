@@ -1,4 +1,4 @@
-var filterNickName = require("../../domain/filterNickName");
+var filterNickName = require(".././filterNickName");
 var should = require("should");
 
 describe("filterNickName", function () {

@@ -30,7 +30,7 @@
     </style>
 </head>
 <body ng-app="jseraApp" id="appRoot">
-<div class="navbar navbar-inverse navbar-static-top" ng-controller="headerCtrl" role="navigation">
+<div class="navbar navbar-inverse navbar-static-top" ng-controller="navbar_ctrl" role="navigation">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" ng-init="navCollapsed = true"
@@ -45,13 +45,13 @@
         <div class="navbar-collapse collapse" ng-class="!navCollapsed && 'in'">
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" ng-click="openLoginDialog()" ng-show="!logined">登录</a></li>
-                <li><a href="#" ng-click="openRegDialog()" ng-show="!logined">注册</a></li>
+                <li><a href="#" ng-click="openLoginDialog()" ng-show="!loginUser">登录</a></li>
+                <li><a href="#" ng-click="openRegDialog()" ng-show="!loginUser">注册</a></li>
                 <li id="userInfo" class="{{open}}">
 
-                    <a href="/user/{{user.id}}" ng-show="logined" ng-mouseleave="open=''" ng-mouseenter="open='open'"
+                    <a href="/user/{{loginUser.id}}" ng-show="loginUser" ng-mouseleave="open=''" ng-mouseenter="open='open'"
                        data-toggle="dropdown">
-                        {{user.nickname || user.email}}
+                        {{loginUser.nickname || loginUser.email}}
                         <%if(breadcrumb !== "user"){%>
                         <b class="caret"></b>
                         <%}%>
@@ -70,7 +70,7 @@
                     <%}%>
 
                 </li>
-                <li><a href="#" ng-click="logout()" ng-show="logined">退出</a></li>
+                <li><a href="#" ng-click="logout()" ng-show="loginUser">退出</a></li>
             </ul>
 
 
@@ -80,11 +80,11 @@
 
 
 <div class="container">
-    <div class="jumbotron" style="position: relative" ng-controller="headerCtrl">
+    <div class="jumbotron" style="position: relative" ng-controller="navbar_ctrl">
         <h2>HTML5 \ Node.js社区</h2>
         <p class="text-muted">专注于HTML5 Node.js 技术应用与推广</p>
-        <button ng-show="!logined"  ng-click="openLoginDialog()" class="btn btn-primary head-login">登录</button>
-        <button ng-show="!logined" ng-click="openRegDialog()" class="btn btn-success head-login">注册</button>
+        <button ng-show="!loginUser"  ng-click="openLoginDialog()" class="btn btn-primary head-login">登录</button>
+        <button ng-show="!loginUser" ng-click="openRegDialog()" class="btn btn-success head-login">注册</button>
 
     </div>
 
@@ -101,20 +101,20 @@
                             <ul class="dropdown-menu open" style="min-width: 100px" role="menu" ng-mouseleave="openBreadcrumbs=''"
                                 ng-mouseenter="openBreadcrumbs='open'">
                                 <%columnList.forEach(function(col){%>
-                                <li><a href="/column/<%=col.id%>"><%=col.name%></a></li>
+                                <li><a href="/column?id=<%=col.id%>"><%=col.name%></a></li>
                                 <%})%>
                             </ul>
 
                             <%if(breadcrumb === "topic"){%>
-                                <% include breadcrumb/topic.html %>
+                            / <a href="/column/<%=column.id%>"><%=column.name%></a> / <%=topic.title%>
                             <%}%>
 
                             <%if(breadcrumb === "column"){%>
-                                <% include breadcrumb/column.html %>
+                            / <%=column.name%>
                             <%}%>
 
                             <%if(breadcrumb === "user"){%>
-                                <% include breadcrumb/user.html %>
+                            / <%=user.nickname%> 个人中心
                             <%}%>
                     </span>
                     <%}else{%>
@@ -125,6 +125,7 @@
                     <div class="row" style="padding-left: 23px;padding-right: 3px;">
                         <form action="/topic/search" method="post">
                             <input class="col-xs-9" name="keyword" style="border: 0" placeholder="站内搜索"/>
+                            <button type="submit"><i class="glyphicon glyphicon-search"></i></button>
                         </form>
                     </div>
                 </div>

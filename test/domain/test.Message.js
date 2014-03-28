@@ -1,6 +1,6 @@
 var should = require("should")
 var my = require("../util/my");
-var Message = require("../../domain/Message")(my);
+var Message = require(".././Message")(my);
 
 describe("Message", function () {
 

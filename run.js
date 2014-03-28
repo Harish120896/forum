@@ -1,2 +1,1 @@
-var forum = require("./")();
-forum.app.listen(3000);
+require("./")().listen(3000);

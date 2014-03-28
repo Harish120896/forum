@@ -1,29 +1,27 @@
 <% include header.html %>
 
-<div ng-controller="columnCtrl">
+<div ng-controller="index_page_ctrl">
 
-    <%if(loginUser && loginUser.role === 1){%>
-    <a href="#" ng-click="openCreateDialog()">创建栏目</a>
-    <%}%>
 
     <div class="panel panel-success">
         <div class="panel-heading">
             社区板块
+            <a href="#" ng-click="openCreateDialog()" class="pull-right" ng-show="loginUser && loginUser.role === 1">创建栏目</a>
         </div>
         <ul class="list-group">
-           <% columnList.forEach(function(col){ %>
+           <% columnList.forEach(function(col,index){ %>
            <li class="list-group-item" ng-init="DATA.user('<%=col.managerId%>');topicCountByColumnId('<%=col.id%>')">
-                <h4><a href="/column/<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
+                <h4><a href="/column?id=<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
                                                         coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a></h4>
                <p><%=col.des%></p>
                版主
-               <a usercode user-id='{{users["<%=col.managerId%>"].id}}' href='/user/{{users["<%=col.managerId%>"].id}}'>{{users["<%=col.managerId%>"].nickname}}</a>
+               <a usercode user-id='<%=col.managerId%>' href='/user/<%=col.managerId%>'><%=managers[index] ? managers[index].nickname : ""%></a>
                <%if(loginUser && loginUser.role === 1){%>
                <a class="pull-right" href="" ng-click='openUpdateDialog("<%=col.id%>")' data-toggle="modal"><i
                        class="glyphicon glyphicon-edit"></i></a>
                <%}%>
 
-               <span>贴数：{{topicCounts['<%=col.id%>']}} </span> <!--button ng-click="openUpdateDialog('<%=col.id%>')">update</button-->
+               <span>贴数：<%=topicCountList[index]%> </span>
            </li>
            <% }) %>
 
@@ -31,5 +29,14 @@
     </div>
 
 </div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/share.js"></script>
+<script src="/js/index_page_ctrl.js"></script>
 
 <% include footer.html %>

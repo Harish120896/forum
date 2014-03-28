@@ -1,43 +1,43 @@
-var is = require("istype");
 var dbs = require("./db");
 var Q = require("q");
 
 function oneday(date) {
-
     var date = date || new Date();
-
     date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
     this.startTime = date.getTime();
-
     this.endTime = this.startTime + 1000 * 60 * 60 * 24;
-
 }
 
-module.exports = {
+var query = require("query-brighthas")(),
+    option1 = [
+        "id", {required: true},
+        "page", {type: "nubmer", convert: true, default: 1},
+        "limit", {type: "number", convert: true, default: 10}
+    ],
+    option2 = ["id", {required: true}];
 
-    columns: function (callback) {
-        var db = dbs.getDB("Column");
-        db.find({}).exec(function (err, rs) {
-            callback(rs || []);
-        })
-    },
 
+query.add("get all columns", function (args, callback) {
+    var db = dbs.getDB("Column");
+    db.find({}).exec(function (err, rs) {
+        callback(rs || []);
+    })
+})
 
-    columnById: function (id, callback) {
+    .add("get a column by id", option2, function (args, callback) {
         var db = dbs.getDB("Column");
         db.findOne({
-            id: id
+            id: args.id
         }).exec(function (err, rs) {
                 callback(rs);
             })
-    },
+    })
 
-    columnByTopicId: function (id, callback) {
+    .add("get a column by topic's id", option2, function (args, callback) {
         var tdb = dbs.getDB("Topic");
         var cdb = dbs.getDB("Column");
         tdb.findOne({
-            id: id
+            id: args.id
         }).exec(function (err, rs) {
                 if (rs) {
                     cdb.findOne({
@@ -49,142 +49,113 @@ module.exports = {
                     callback(null);
                 }
             })
-    },
+    })
 
-    topicById: function (id, callback) {
+    .add("get a topic by id", option2, function (args, callback) {
         var db = dbs.getDB("Topic");
         db.findOne({
-            id: id
+            id: args.id
         }).exec(function (err, rs) {
                 callback(rs);
             })
-    },
+    })
 
-    replyById: function (id, callback) {
+    .add("get a reply by id", option2, function (args, callback) {
         var db = dbs.getDB("Reply");
         db.findOne({
-            id: id
+            id: args.id
         }).exec(function (err, rs) {
                 callback(rs);
             })
-    },
+    })
 
-    newReplyByTopicId:function(topicId,callback){
-        var defer = Q.defer();
+    .add("get a newest reply by topic's id", option2, function (args, callback) {
         var db = dbs.getDB("Reply");
         db.findOne({
-            topicId: topicId
+            topicId: args.id
         })
             .sort({createTime: -1})
             .exec(function (err, rs) {
-                defer.resolve(rs);
                 callback(rs);
-        })
-        return defer.promise;
-    },
+            })
+    })
 
-    newReplyAuthorByTopicId:function(topicId,callback){
-        var defer = Q.defer();
+    .add("get a newest reply's author by topic's id", option2, function (args, callback) {
         var self = this;
-        this.newReplyByTopicId(topicId,function(r){
-            if(r){
-                self.userById(r.authorId,function(u){
-                    defer.resolve(u || null);
-                    callback(u || null)
+        this("get newest reply by topic's id", {topicId: args.id}).then(function (r) {
+            if (r) {
+                self("get user by id", {id: r.authorId}).then(function (u) {
+                    callback(u);
                 })
-            }else{
-                defer.resolve(null);
+            } else {
                 callback(null);
             }
         })
-        return defer.promise;
-    },
+    })
 
-    topicsByColumnId: function (page, columnId, callback) {
-
-        if (columnId) {
-            page = parseInt(page);
-            page = page > 0 ? page : 1;
-            var db = dbs.getDB("Topic");
-            db
-                .find({
-                    columnId: columnId
-                })
-                .limit(3)
-                .sort({
-                    createTime: -1
-                })
-                .skip((page - 1) * 3)
-                .exec(function (err, rs) {
-                    callback(rs || []);
-                })
-        } else {
-            callback([]);
-        }
-
-    },
-
-    topicCountByColumnId: function (columnId, callback) {
+    .add("get topics by column's id",
+    option1,
+    function (args, callback) {
         var db = dbs.getDB("Topic");
-        db.count({columnId: columnId}).exec(function (err, count) {
+        db
+            .find({
+                columnId: args.id
+            })
+            .limit(args.limit)
+            .sort({
+                updateTime: -1
+            })
+            .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
+    .add("get topic count by column's id",
+    option2,
+    function (args, callback) {
+        var db = dbs.getDB("Topic");
+        db.count({columnId: args.id}).exec(function (err, count) {
             callback(count || 0);
         })
-    },
+    })
 
-    users: function (callback) {
-        var db = dbs.getDB("User");
-        db.find({}).exec(function (err, rs) {
-            callback(rs);
-        });
-    },
-
-    userById: function (id, callback) {
+    .add("get a user by id", option2,
+    function (args, callback) {
         var db = dbs.getDB("User");
         db.findOne({
-            id: id
+            id: args.id
         }).exec(function (err, rs) {
                 callback(rs);
             });
-    },
+    })
 
-    userByEmail: function (email, callback) {
+    .add("get a user by email", ["email", {type: "email", required: true}],
+    function (args, callback) {
         var db = dbs.getDB("User");
         db.findOne({
-            email: email
+            email: args.email
         }).exec(function (err, rs) {
                 callback(rs);
             });
-    },
+    })
 
-    userByNick: function (nick, callback) {
+    .add("get a user by nickname", ["nickname", {required: true}],
+    function (args, callback) {
         var db = dbs.getDB("User");
         db.findOne({
-            nickname: nick
+            nickname: args.nickname
         }).exec(function (err, rs) {
                 callback(rs);
             });
-    },
+    })
 
-    userFuzzyExist: function (userInfo, callback) {
-        var db = dbs.getDB("User");
-        var orq = [];
-        for (var k in userInfo) {
-            var kv = {};
-            kv[k] = userInfo[k];
-            orq.push(kv);
-        }
-        db.count({
-            $or: orq
-        }).exec(function (err, num) {
-                callback(num ? true : false);
-            });
-    },
-
-    replyCountByToday: function (authorId, callback) {
+    .add("get a user's reply count in today", option2,
+    function (args, callback) {
         var date = new oneday();
         var db = dbs.getDB("Reply");
         db.count({
-            authorId: authorId,
+            authorId: args.id,
             createTime: {
                 $gt: date.startTime,
                 $lt: date.endTime
@@ -193,13 +164,14 @@ module.exports = {
             .exec(function (err, num) {
                 callback(num || 0);
             });
-    },
+    })
 
-    topicCountByToday: function (authorId, callback) {
+    .add("get a user's topic count in today", option2,
+    function (args, callback) {
         var date = new oneday();
         var db = dbs.getDB("Topic");
         db.count({
-            authorId: authorId,
+            authorId: args.id,
             createTime: {
                 $gt: date.startTime,
                 $lt: date.endTime
@@ -208,205 +180,115 @@ module.exports = {
             .exec(function (err, num) {
                 callback(num || 0);
             })
-    },
+    })
 
-    topicTitleListByUserId: function (userId, page, callback) {
-        if (userId) {
-            page = parseInt(page);
-            page = page > 0 ? page : 1;
-            var db = dbs.getDB("Topic");
-            db
-                .find({
-                    authorId: userId
-                })
-                .limit(3)
-                .sort({
-                    createTime: -1
-                })
-                .skip((page - 1) * 3)
-                .exec(function (err, rs) {
-                    callback(rs || []);
-                })
-        } else {
-            callback([]);
-        }
-    },
-
-    topicCountByUserId: function (userId, callback) {
-        if (userId) {
-            var db = dbs.getDB("Topic");
-            db
-                .count({
-                    authorId: userId
-                })
-                .exec(function (err, rs) {
-                    callback(rs || 0);
-                })
-        } else {
-            callback(0);
-        }
-    },
-
-    replyIdsByUserId: function (userId, page, callback) {
-        if (userId) {
-            page = parseInt(page);
-            page = page > 0 ? page : 1;
-            var db = dbs.getDB("Reply");
-            db
-                .find({
-                    authorId: userId
-                })
-                .limit(3)
-                .sort({
-                    createTime: -1
-                })
-                .skip((page - 1) * 3)
-                .exec(function (err, rs) {
-                    callback(rs || []);
-                })
-        } else {
-            callback([]);
-        }
-    },
-
-
-    replyCountByUserId: function (userId, callback) {
-        if (userId) {
-            var db = dbs.getDB("Reply");
-            db
-                .count({
-                    authorId: userId
-                })
-                .exec(function (err, rs) {
-                    callback(rs || 0);
-                })
-        } else {
-            callback(0);
-        }
-    },
-
-    messageListByUserId: function (page, userId, callback) {
-        if (userId) {
-            page = parseInt(page);
-            page = page > 0 ? page : 1;
-            var db = dbs.getDB("Message");
-            db
-                .find({
-                    targetId: userId
-                })
-                .limit(3)
-                .sort({
-                    createTime: -1
-                })
-                .skip((page - 1) * 3)
-                .exec(function (err, rs) {
-                    callback(rs || []);
-                })
-        } else {
-            callback([]);
-        }
-    },
-
-    infoListByUserId: function (page, userId, callback) {
-        if (userId) {
-            page = parseInt(page);
-            page = page > 0 ? page : 1;
-            var db = dbs.getDB("Info");
-            db
-                .find({
-                    targetId: userId
-                })
-                .limit(3)
-                .sort({
-                    createTime: -1
-                })
-                .skip((page - 1) * 3)
-                .exec(function (err, rs) {
-                    callback(rs || []);
-                })
-        } else {
-            callback([]);
-        }
-    },
-
-    topList:function(callback){
+    .add("get topic count by user's id", option2,
+    function (args, callback) {
         var db = dbs.getDB("Topic");
-        db.find({top:true}).limit(10).sort({
-            updateTime: -1
-        }).exec(function(err,rs){
-            callback(rs || []);
-        })
-    },
+        db
+            .count({
+                authorId: args.id
+            })
+            .exec(function (err, rs) {
+                callback(rs || 0);
+            })
+    })
 
-    hotList:function(callback){
+    .add("get replys by user's id",
+    option1,
+    function (args, callback) {
+        var db = dbs.getDB("Reply");
+        db
+            .find({
+                authorId: args.id
+            })
+            .limit(args.limit)
+            .sort({
+                createTime: -1
+            })
+            .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
+    .add("get reply count by user's id", option2,
+    function (args, callback) {
+        var db = dbs.getDB("Reply");
+        db
+            .count({
+                authorId: args.id
+            })
+            .exec(function (err, rs) {
+                callback(rs || 0);
+            })
+    })
+
+    .add("get messages by user's id", option1,
+    function (args, callback) {
+        var db = dbs.getDB("Message");
+        db
+            .find({
+                targetId: args.id
+            })
+            .limit(args.limit)
+            .sort({
+                createTime: -1
+            })
+            .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
+
+    .add("get infos by user's id", option1,
+    function (args, callback) {
+        var db = dbs.getDB("Info");
+        db
+            .find({
+                targetId: args.id
+            })
+            .limit(args.limit)
+            .sort({
+                createTime: -1
+            })
+            .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
+    .add("get top topics",
+    function (args, callback) {
+        var db = dbs.getDB("Topic");
+        db.find({top: true}).limit(10).sort({
+            updateTime: -1
+        }).exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
+    .add("get hot topics", function (args, callback) {
         var db = dbs.getDB("Topic");
         db.find({}).limit(10).sort({
             replyNum: -1
-        }).exec(function(err,rs){
-            callback(rs || []);
-        })
-    },
+        }).exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
 
-    searchTopic:function(keyword,callback){
+    .add("search topics by keyword", ["keyword", {required: true}],
+    function (args, callback) {
         var db = dbs.getDB("Topic");
         db.find({
-            $where:function(){
-                var regexp = new RegExp(keyword,"gi");
-               return  regexp.test(this.title) || regexp.test(this.body);
+            $where: function () {
+                var regexp = new RegExp(args.keyword, "gi");
+                return  regexp.test(this.title) || regexp.test(this.body);
             }
-        }).exec(function(err,rs){
+        }).exec(function (err, rs) {
                 callback(rs || []);
-         })
-    },
-
-    // result is {topicAuthor 主题作者, newReply 最新回贴 , replyAuthor最新回贴作者}
-    topicInfo:function(topic,callback){
-
-        callback = callback || function(){}
-        var defer = Q.defer();
-        var self = this;
-        var info = {}
-
-        self.userById(topic.authorId,function(topicAuthor){
-            info.topicAuthor = topicAuthor;
-
-            self.newReplyByTopicId(topic.id,function(r){
-                if(r){
-                    info.newReply = r;
-                    self.userById(r.authorId,function(replyAuthor){
-
-                        if(replyAuthor){
-                            info.replyAuthor = replyAuthor;
-                        }
-                        defer.resolve(info);
-                        callback(info);
-                    })
-                }else{
-                    defer.resolve(info);
-                    callback(info);
-                }
             })
-        })
+    })
 
-        return defer.promise;
-    },
-
-    // 获得信息
-    topicsInfo:function(topics,callback){
-
-        var self = this;
-
-        var qList = [];
-
-        topics.forEach(function(topic){
-            qList.push(self.topicInfo(topic));
-        });
-
-        Q.all(qList).spread(function(){
-            callback([].slice.apply(arguments));
-        }).done();
-
-    }
-
-
-}
+module.exports = query;

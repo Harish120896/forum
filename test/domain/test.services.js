@@ -1,4 +1,4 @@
-var services = require("../../domain/services")({
+var services = require(".././services")({
     columnById: function (id, cb) {
         cb(true)
     },

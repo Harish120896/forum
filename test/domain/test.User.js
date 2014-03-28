@@ -2,7 +2,7 @@ var crypto = require("crypto");
 
 var should = require("should")
 var my = require("../util/my");
-var User = require("../../domain/User")(my);
+var User = require(".././User")(my);
 
 describe("User", function () {
 

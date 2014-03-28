@@ -1,6 +1,6 @@
 var should = require("should")
 var my = require("../util/my");
-var Column = require("../../domain/Column")(my);
+var Column = require(".././Column")(my);
 
 describe("column", function () {
 

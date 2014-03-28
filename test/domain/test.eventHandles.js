@@ -1,13 +1,13 @@
 var my = require("../util/my");
 var should = require("should");
-var User = require("../../domain/User")(my);
+var User = require(".././User")(my);
 var user = new User({
     nickname: "brighthas",
     password: "123456",
     email: "brighthas@gmail.com"
 });
 
-var eventHandles = require("../../domain/eventHandles")({
+var eventHandles = require(".././eventHandles")({
     repos: {
         User: {
             get: function (id, cb) {

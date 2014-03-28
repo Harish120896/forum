@@ -6,27 +6,27 @@
     <div class="modal-body">
         <form role="form">
             <div class="form-group">
-                <div class="alert alert-danger small" ng-show="!!nicknameMessage">
-                    {{nicknameMessage}}
+                <div class="alert alert-danger small" ng-show="!!errors.nickname">
+                    {{errors.nickname[0]}}
                 </div>
                 <input type="text" class="form-control" ng-model="data.nickname" tabindex="1"
                        placeholder="请输入昵称，之后不可更改。">
             </div>
             <div class="form-group">
-                <div class="alert alert-danger small" ng-show="!!emailMessage">
-                    {{emailMessage}}
+                <div class="alert alert-danger small" ng-show="!!errors.email">
+                    {{errors.email[0]}}
                 </div>
                 <input type="text" class="form-control" ng-model="data.email" tabindex="2" placeholder="请输入Email">
             </div>
             <div class="form-group">
-                <div class="alert alert-danger small" ng-show="!!passwordMessage">
-                    {{passwordMessage}}
+                <div class="alert alert-danger small" ng-show="!!errors.password">
+                    {{errors.password[0]}}
                 </div>
                 <input type="password" class="form-control" ng-model="data.password" tabindex="3" placeholder="请输入密码">
             </div>
             <div class="form-group">
-                <div class="alert alert-danger small" ng-show="!!validat_numMessage">
-                    {{validat_numMessage}}
+                <div class="alert alert-danger small" ng-show="!!errors.validat_num">
+                    {{errors.validat_num[0]}}
                 </div>
                 <div class="row">
                     <div class="col-sm-7">

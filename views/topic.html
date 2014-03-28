@@ -1,21 +1,29 @@
 <% include header.html %>
 
-<div ng-controller="replyCtrl"
-     ng-init='topic = {createTime:<%=topic.createTime%>,authorId:"<%=topic.authorId%>",top:<%=topic.top%>,id:"<%=topic.id%>"};column=<%=JSON.stringify(column)%> ; topicAuthorId = "<%=topic.authorId%>";topicId="<%=topic.id%>" ; columnId = "<%=column.id%>"'>
+<div ng-controller="topic_page_ctrl" ng-init="topicId='<%=topic.id%>'">
 
     <div class="panel panel-success">
-        <div class="panel-heading"><span ng-non-bindable><%=topic.title%></span> <a href="" ng-click="removeTopic()"
-                                                                                    ng-show="logined && ability.canRemoveTopic(user,topic,column)"
-                                                                                    class="btn btn-default btn-xs pull-right">删帖</a>
-            <a
-                    href="#createReply" class="pull-right btn btn-default btn-xs pull-right"
-                    ng-click="moveEditor('createReply')" ng-show="logined">回帖</a></div>
-        <div class="panel-body row">
-            <div class="col-sm-2" ng-init="loadUser(topicAuthorId)">
-                <img class="img-rounded" width="100" height="100"
-                     ng-src='{{users[topicAuthorId].isCustomLogo ? "/logo/"+users[topicAuthorId].nickname : "http://www.gravatar.com/avatar/"+users[topicAuthorId].logo}}'/>
 
-                <p><a href="/user/{{topicAuthorId}}" usercode user-id="{{topicAuthorId}}">{{users[topicAuthorId].nickname}}</a>
+        <div class="panel-heading">
+
+            <span ng-non-bindable><%=topic.title%></span>
+
+            <a href="" ng-click="removeTopic()"
+               ng-show="canRemoveReply('<%=topic.id%>')"
+               class="btn btn-default btn-xs pull-right">删帖</a>
+
+            <a href="#createReply" class="pull-right btn btn-default btn-xs pull-right"
+               ng-click="moveEditor('createReply')"
+               ng-show="loginUser">回帖</a>
+
+        </div>
+
+        <div class="panel-body row">
+            <div class="col-sm-2">
+                <img class="img-rounded" width="100" height="100"
+                     ng-src='{{author.isCustomLogo ? "/logo/"+author.nickname : "http://www.gravatar.com/avatar/"+author.logo}}'/>
+
+                <p><a href="/user?id={{author.id}}" usercode user-id="{{author.id}}">{{author.nickname}}</a>
                 </p>
             </div>
             <div class="col-sm-10">
@@ -24,12 +32,12 @@
                 <p ng-non-bindable><%- markdown(topic.body) %></p>
 
                 <p>
-                    <span class="pull-right">{{topic.createTime | time}}</span>
+                    <span class="pull-right">{{<%=topic.createTime%> | time}}</span>
                 </p>
             </div>
         </div>
         <ul class="list-group">
-            <li class="list-group-item" ng-repeat="rid in replyIdsList" ng-show="replys[rid]">
+            <li class="list-group-item" ng-repeat="rid in main_reply_ids" ng-show="replys[rid]">
                 <div class="row">
                     <div class="col-sm-2">
 
@@ -42,8 +50,8 @@
                     <div class="col-sm-10" id="{{rid}}">
                         <p>
                             {{replys[rid].title}}
-                            <a href="" ng-show="logined" ng-click="moveEditor(rid)">回复</a>
-                            <a href="" ng-show="logined && ability.canRemoveReply(user,topic,replys[rid],column)"
+                            <a href="" ng-show="loginUser" ng-click="moveEditor(rid)">回复</a>
+                            <a href="" ng-show="loginUser && canRemoveReply(rid)"
                                ng-click="removeReply(rid)">删除</a>
                             <span class="pull-right">{{replys[rid].createTime | time}}</span>
                         </p>
@@ -52,13 +60,13 @@
 
                         <ul class="list-group">
                             <li ng-show="replys[sr]" class="list-group-item list-group-item-info"
-                                ng-repeat="sr in subReplyIds[rid]" id="{{sr}}">
+                                ng-repeat="sr in sub_reply_ids_repo[rid]" id="{{sr}}">
                                 <a usercode user-id="{{replys[sr].authorId}}"><img class="img-rounded" width="40"
                                                                                    height="40"
                                                                                    ng-src='{{users[replys[sr].authorId].isCustomLogo ? "/logo/"+users[replys[sr].authorId].nickname : "http://www.gravatar.com/avatar/"+users[replys[sr].authorId].logo}}'/></a>
 
                                 <p>{{replys[sr].title}} <a href="" ng-click="moveEditor(rid,sr)">回复</a> <a href=""
-                                                                                                           ng-show="logined && ability.canRemoveReply(user,topic,replys[sr],column)"
+                                                                                                           ng-show="loginUser && canRemoveReply(sr)"
                                                                                                            ng-click="removeReply(sr)">删除</a>
                                     <span class="pull-right">{{replys[sr].createTime | time}}</span>
                                 </p>
@@ -67,26 +75,28 @@
                             </li>
                         </ul>
                         <div><a href="" class="btn btn-default btn-xs"
-                                ng-show="showSubReplyPositions[rid]  !== subReplyIds[rid].length"
-                                ng-click="moreSubReply(rid)">更多{{}}</a></div>
+                                ng-show="showSubMore(rid)"
+                                ng-click="moreSubReply(rid)">更多</a></div>
 
                     </div>
                 </div>
             </li>
 
-            <li ng-show="replyIdsList.length !== showReplyPosition" class="list-group-item"><a href=""
+            <li ng-show="showMainMore()" class="list-group-item"><a href=""
                                                                                                class="btn btn-default btn-block"
-                                                                                               ng-click="moreReply()">
+                                                                                               ng-click="moreMainReply()">
                 更多 </a></li>
         </ul>
         <div class="panel-footer">
             <a
                     href="#createReply" class=" btn btn-default btn-xs"
                     ng-click="moveEditor('createReply')">回帖</a>
-            <a href="" ng-click="removeTopic()" ng-show="logined && ability.canRemoveTopic(user,topic,column)"
+            <a href="" ng-click="removeTopic()" ng-show="loginUser && canRemoveTopic()"
                class="btn btn-default btn-xs pull-right">删帖</a>
-            <a href="" ng-click="top()" ng-show="logined && ability.canRemoveTopic(user,topic,column)"
-               class="btn btn-default btn-xs pull-right">Top</a>
+            <a href="" ng-click="top()" ng-show="loginUser && loginUser.role === 1 && !<%=topic.top%>"
+               class="btn btn-default btn-xs pull-right">置顶</a>
+            <a href="" ng-click="untop()" ng-show="loginUser && loginUser.role === 1 && <%=topic.top%>"
+               class="btn btn-default btn-xs pull-right">取消置顶</a>
         </div>
     </div>
 
@@ -95,5 +105,17 @@
     </div>
 
 </div>
+
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<!-- 各页面公共功能代码 -->
+<script src="/js/share.js"></script>
+
+<!-- topic页面专用控制代码 -->
+<script src="/js/topic_page_ctrl.js"></script>
 
 <% include footer.html %>

@@ -1,8 +1,7 @@
 <% include header.html %>
 
-
-<div class="panel panel-info" ng-controller="topicCtrl">
-    <div class="panel-heading"> <%=column.name%> <a href="#createTopic" class="btn btn-default btn-xs pull-right">发表新帖</a></div>
+<div class="panel panel-info" ng-controller="column_page_ctrl">
+    <div class="panel-heading"> <%=column.name%> <a ng-show="loginUser" href="#createTopic" class="btn btn-default btn-xs pull-right">发表新帖</a></div>
     <ul class="list-group">
         <% topics.forEach(function(topic,index){ %>
         <li class="list-group-item">
@@ -12,7 +11,7 @@
                     <div style="width: 40px;display: inline-block">
                         <span class="label center-block" style="background: #eee;color: #888"> <%=topic.replyNum%> </span>
                     </div>
-                    <a  href="/topic/<%=topic.id%>" ng-non-bindable><%=topic.title%></a>
+                    <a  href="/topic?id=<%=topic.id%>" ng-non-bindable><%=topic.title%></a>
                 </div>
                 <div class="col-md-3">
                     <div class="pull-right">
@@ -25,7 +24,8 @@
                         <p>
 
                             <%if(topicsInfo[index].newReply){%>
-                                <i style="opacity: .5" class="small glyphicon glyphicon-comment"></i><a ng-init="DATA.user('<%=topicsInfo[index].replyAuthor.id%>')" usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user/<%=topicsInfo[index].replyAuthor.id%>">
+                                <i style="opacity: .5" class="small glyphicon glyphicon-comment"></i>
+                                <a ng-init="DATA.user('<%=topicsInfo[index].replyAuthor.id%>')" usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user/<%=topicsInfo[index].replyAuthor.id%>">
                                     <%=topicsInfo[index].replyAuthor.nickname%>
                                 </a>
                                 <span style="opacity: .5">
@@ -40,7 +40,6 @@
                                 </span>
                             <%}%>
 
-
                         </p>
                     </div>
                 </div>
@@ -54,8 +53,8 @@
         <ul class="pagination">
 
                     <%if(page!==1){%>
-                    <li><a href="/column/<%=column.id%>/1">首页</a></li>
-                    <li><a href="/column/<%=column.id%>/<%=page-1%>">上一页</a></li>
+                    <li><a href="/column?id=<%=column.id%>">首页</a></li>
+                    <li><a href="/column?id=<%=column.id%>&page=<%=page-1%>">上一页</a></li>
                     <%}%>
 
                     <% var startPage = 1+ (groupNum-1)*(groupMaxPageNum-1)%>
@@ -63,43 +62,43 @@
                     <% if(startPage===page){%>
                     <li class="active"><a href="#" ><%=startPage%></a></li>
                     <%}else{%>
-                    <li ><a href="/column/<%=column.id%>/<%=startPage%>" ><%=startPage%></a></li>
+                    <li ><a href="/column?id=<%=column.id%>&page=<%=startPage%>" ><%=startPage%></a></li>
                     <%}%>
                     <%}%>
 
                     <%if(page!==pagenum){%>
-                    <li><a href="/column/<%=column.id%>/<%=page+1%>">下一页</a></li>
-                    <li><a href="/column/<%=column.id%>/<%=pagenum%>">尾页</a></li>
+                    <li><a href="/column?id=<%=column.id%>&page=<%=page+1%>">下一页</a></li>
+                    <li><a href="/column?id=<%=column.id%>&page=<%=pagenum%>">尾页</a></li>
                     <%}%>
 
                 </ul>
     </li>
-    <div role="form" id="createTopic">
+    <div role="form" id="createTopic" ng-show="loginUser" style="padding:50px">
         <input type="hidden" ng-init='columnId="<%=column.id%>"'/>
 
         <div class="form-group">
-            <div class="alert alert-danger small" ng-show="!!titleMessage">
-                {{titleMessage}}
+            <div class="alert alert-danger small" ng-show="errors.title">
+                {{errors.title[0]}}
             </div>
             <input type="text" class="form-control" ng-keydown="tab()" ng-model="title" tabindex="1"
-                   placeholder="请输入昵称，之后不可更改。">
+                   placeholder="主题标题">
         </div>
         <div class="form-group">
-            <div class="alert alert-danger small" ng-show="!!bodyMessage">
-                {{bodyMessage}}
+            <div class="alert alert-danger small" ng-show="errors.body">
+                {{errors.body[0]}}
             </div>
             <div editor content="body"></div>
         </div>
         <div class="form-group">
-            <div class="alert alert-danger small" ng-show="!!validat_numMessage">
-                {{validat_numMessage}}
+            <div class="alert alert-danger small" ng-show="errors.validat_num">
+                {{errors.validat_num[0]}}
             </div>
             <div class="row">
                 <div class="col-sm-7">
                     <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3"
                            placeholder="输入验证码">
                 </div>
-                <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}"/>
+                <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" width="60" height="25"/>
                     <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
             </div>
         </div>
@@ -108,5 +107,13 @@
 
 </div>
 
+<script src="/js/marked.js"></script>
+<script src="/js/angular-file-upload-shim.min.js"></script>
+<script src="/js/angular.min.js"></script>
+<script src="/js/angular-file-upload.min.js"></script>
+<script src="/js/ui-bootstrap-tpls.min.js"></script>
+
+<script src="/js/share.js"></script>
+<script src="/js/column_page_ctrl.js"></script>
 
 <% include footer.html %>

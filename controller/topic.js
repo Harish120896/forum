@@ -1,103 +1,54 @@
-var Result = require("result-brighthas");
-var escape = require("./escape");
+var Q = require("q");
+var markdown = require("marked");
 
-module.exports = function (domain, query) {
-    return {
+module.exports = function (my) {
 
-        create: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
+    var share_data = require("./share_data")(my);
+
+    my.app.get("/topic",
+        my.util.cookieLogin,
+        share_data,
+        function (req, res) {
+
+            var topicId = req.query.id;
+
+            Q.all([
+                    my.query("get a topic by id", {id: topicId}),
+                    my.query("get a column by topic's id", {id: topicId})
+                ]).spread(function (topic, column) {
+
+                    res.locals.topic = topic;
+                    res.locals.title = topic.title;
+                    res.locals.breadcrumb = "topic"
+                    res.locals.column = column;
+                    res.locals.markdown = markdown;
+
+                    if (topic)
+                        res.render("topic");
+                    else
+                        res.send(404);
+
+                })
+        });
+
+    my.app.post("/topic/search",
+        function (req, res) {
+            var rs = req.result.data("topicList");
+            res.send(rs);
+        });
+
+    my.app.post("/topic/create",
+        my.util.isLogin,
+        my.util.validat_num,
+        function (req, res) {
             req.body.authorId = req.session.user.id;
-            if (req.body.body) {
-                req.body.body = escape(req.body.body);
-            }
-            domain.exec("create a topic", req.body, function (result) {
+            my.core.exec("create a topic", req.body, function (result) {
                 req.result.mix(result);
-                next();
-            });
-        },
-
-        update: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            req.body.authorId = req.session.user.id;
-            if (req.body.body) {
-                req.body.body = escape(req.body.body);
-            }
-            domain.call("Topic.updateInfo", req.body.topicId, [req.body.title, req.body.body, req.body.columnId], function (result) {
-                req.result.mix(result);
-                next();
-            });
-        },
-
-        // dev isLogin / isAdmin
-        remove: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var id = req.param("id");
-            domain.exec("remove a topic", {
-                id: id
-            });
-            next();
-        },
-
-        // dev isLogin / isTopicManager
-        seal: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var id = req.param("id");
-            domain.call("Topic.toseal", id);
-            next();
-        },
-
-        // dev isLogin / isTopicManager
-        unseal: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var id = req.param("id");
-            domain.call("Topic.unseal", id);
-            next();
-        },
-
-        access: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var id = req.param("id");
-            domain.call("Topic.access", id);
-            next();
-        },
-
-        removeReply: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var id = req.param("id");
-            var replyId = req.body.replyId;
-            domain.call("Topic.removeReply", id, [replyId]);
-            next();
-        },
-
-        top: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-
-            domain.exec("top topic",{id:req.param("id")});
-            next();
-        },
-
-        access:function(req,res,next){
-            if (req.result.hasError()) {
-                return next();
-            }
-            domain.call("Topic.access",req.param("id"));
-            next();
-        }
-    }
+                if (req.result.hasError()) {
+                    res.send(req.result.error());
+                } else {
+                    res.send();
+                }
+            })
+        });
 }

@@ -1,49 +1,17 @@
 var crypto = require("crypto");
-var fs = require("fs");
-var path = require("path");
-var _ = require("underscore");
 
+module.exports = function wrap(my) {
 
-module.exports = function (domain, query,config) {
-    return {
+    var share_data = require("./share_data")(my);
 
-        findPassword: function (req, res, next) {
+    function login(req, res) {
 
-            if (req.result.hasError()) {
-                return next();
-            }
-
-            var user = req.result.data("user");
-            req.env.transport.sendMail({
-                from: "xxxq <308212012@qq.com>",
-                to: "hi <" + user.email + ">",
-                // Subject of the message
-                subject: '更改密码',
-
-                // plaintext body
-                text: '更改密码',
-
-                // HTML body
-                html: '<a href="http://localhost:3000/setNewPassword?email=' + user.email + "&code=" + user.password + '">点击更改密码</a>'
-
-            }, function (err) {
-                if (err)
-                    req.result.error("email", "内部错误，请联系管理员");
-                next();
-            });
-        },
-
-        // must have req.user & req.body.password
-        login: function (req, res, next) {
-
-            if (req.result.hasError()) {
-                return next();
-            }
+        my.query("get a user by email", {email: req.param("email")}).then(function (user) {
 
             var md5 = crypto.createHash('md5');
             var pwd = md5.update(req.body.password).digest("hex");
-            var user = req.result.data("user");
-            if (user.password === pwd) {
+
+            if (user && user.password === pwd) {
 
                 req.session.user = user;
 
@@ -53,106 +21,114 @@ module.exports = function (domain, query,config) {
                 }), {
                     maxAge: 1000 * 60 * 60 * 24 * 90
                 });
+
+                res.send();
+
             } else {
                 req.result.error("email", "登录信箱或密码有误，请重新登录。");
+                res.send(req.result.error());
             }
-            next();
-        },
+        })
+    }
 
-        logout: function (req, res, next) {
-            res.clearCookie("user");
-            req.session.user = null;
-            next();
-        },
+    my.app.get("/user",
+        my.util.cookieLogin,
+        share_data,
+        function (req, res) {
+            res.locals.breadcrumb = "user";
+            res.locals.user = req.result.data("user");
+            res.locals.title = res.locals.user.nickname + "的个人中心"
+            res.locals.loginUser = req.session.user;
+            res.render("user");
+        });
 
-        // return success or [error];
-        // if success , req.user exist.
-        create: function (req, res, next) {
 
-            if (req.result.hasError()) {
-                return next();
+    my.app.post("/user/logined", function (req, res, next) {
+        if(req.session.user){
+            my.query("get a user by id",{id:req.session.user.id}).then(function(user){
+                if(!user){ req.session.user = null; }
+                res.send(user || "");
+            })
+        }else{
+            res.send();
+        }
+    });
+
+    my.app.get("/user/update_password",
+        function (req, res) {
+            res.locals.code = req.param("code");
+            res.locals.email = req.param("email");
+            res.render("setNewPassword");
+        });
+
+    my.app.post("/user/find_password", function (req, res) {
+
+        my.query("get a user by email", {email: req.query.email}).then(function (user) {
+            if (user) {
+                req.env.transport.sendMail({
+                    from: "xxxq <308212012@qq.com>",
+                    to: "hi <" + user.email + ">",
+                    subject: '更改密码',
+                    text: '更改密码',
+                    html: '<a href="http://localhost:3000/setNewPassword?email=' + user.email + "&code=" + user.password + '">点击更改密码</a>'
+
+                }, function (err) {
+                    if (err)
+                        res.send("内部错误，请联系管理员");
+                    else
+                        res.send();
+                });
+            } else {
+                res.send("没有此用户");
             }
-            domain.exec("create a user", {
-                nickname: req.body.nickname,
-                email: req.body.email,
-                password: req.body.password
-            }, function (result) {
-                var user = result.data("user");
-                if (user) {
-                    if (user.email === config.admin_email) {
+        })
+
+    });
+
+    my.app.post("/user/reg",
+        my.util.validat_num,
+        my.util.refreshValidatNum,
+        function (req, res, next) {
+
+            my.core.exec("create a user",
+                {email:req.body.email,nickname:req.body.nickname,password:req.body.password}
+                , function (result) {
+
+                if (result.hasError()) {
+                    res.send(result.error());
+                } else {
+
+                    var user = result.data("user");
+
+                    if (user && user.email === my.config.admin_email) {
                         setTimeout(function () {
-                            domain.call("User.becomeAdmin", user.id);
+                            my.core.call("User.becomeAdmin", user.id);
+
                         }, 1000);
                     }
+
+                    setTimeout(function () {
+                        next();
+                    },100);
                 }
 
-                req.result.mix(result);
-
-                next();
-
             });
-        },
+        }, login);
 
-        update: function (req, res, next) {
+    my.app.post("/user/login",
+        my.util.validat_num,
+        my.util.refreshValidatNum,
+        login);
 
-            if (req.result.hasError()) {
-                return next();
-            }
+    my.app.post("/user/logout", function (req, res) {
+        res.clearCookie("user");
+        req.session.user = null;
+        res.send();
+    })
 
-            domain.call("User.updateInfo", req.session.user.id, [req.body], function (result) {
-                req.result.mix(result);
-                next();
-            });
-        },
-
-        seal: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            domain.call("User.sealUser", req.param("id"), []);
-            next();
-        },
-
-        follow: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-
-            domain.call("User.follow", req.session.user.id, [req.param("id")]);
-            next();
-        },
-
-        unfollow: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-
-            domain.call("User.unfollow", req.session.user.id, [req.param("id")]);
-            next();
-        },
-
-        becomeModerator: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-
-            domain.call("User.becomeModerator", req.param("id"));
-            next();
-        },
-
-        becomeUser: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-
-            domain.call("User.becomeUser", req.param("id"));
-            next();
-        },
-
-        updateLogo: function (req, res) {
-//        if (req.result.hasError()) {
-//            return next();
-//        }
+    my.app.post("/user/update_logo",
+        my.util.isLogin,
+        function (req, res) {
             var logo = req.files.file;
             if (logo && (logo.type === "image/png" || logo.type === "image/jpeg") && logo.size <= 1024 * 100) {
                 fs.createReadStream(logo.path).pipe(fs.createWriteStream(path.join(__dirname, "..", "public/logo", req.session.user.nickname)));
@@ -160,53 +136,6 @@ module.exports = function (domain, query,config) {
                 req.result.error("logo", "图片大小<100k，并且是png格式");
             }
             res.send(req.result.json());
-//        next();
-        },
+        })
 
-        updatePassword: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var user = req.result.data("user");
-            if (user.password === req.body.code) {
-                domain.call("User.updatePassword", user.id, [req.param("password")], function (result) {
-                    next();
-                })
-            } else {
-                req.result.error("code", "操作失败");
-                next();
-            }
-        },
-
-        plus: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            domain.call("User.plus", req.param("id"), [req.param["fraction"]])
-            next();
-        },
-
-        remove: function (req, res, next) {
-
-            if (req.result.hasError()) {
-                return next();
-            }
-            domain.exec("remove a user", {
-                id: req.param("id")
-            });
-            next();
-        },
-
-        isCustomLogo: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            domain.exec("isCustomLogo", {
-                id: req.session.user.id,
-                custom: req.param("custom")
-            });
-            next();
-        }
-
-    }
 }

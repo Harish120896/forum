@@ -1,55 +1,81 @@
-var Result = require("result-brighthas");
+var Q = require("q");
 
-module.exports = function wrap(domain, query) {
 
-    return {
+module.exports = function (my) {
 
-        create: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            domain.exec("create a column", req.body, function (result) {
-                req.result.mix(result);
-                next();
-            });
-        },
+    var share_data = require("./share_data")(my);
 
-        update: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var columnId = req.param("id");
-            domain.call("Column.updateInfo", columnId, [req.body.name, req.body.des], function (result) {
-                if (Result.isResult(result)) {
-                    req.result.mix(result);
+    function topicInfo(topic) {
+        var defer = Q.defer();
+        var info = {}
+
+        my.query("get a user by id", {id: topic.authorId}).then(function (topicAuthor) {
+            info.topicAuthor = topicAuthor;
+
+            my.query("get a newest reply by topic's id", {id: topic.id}).then(function (r) {
+                if (r) {
+                    info.newReply = r;
+                    my.query("get a user by id", {id: r.authorId}).then(function (replyAuthor) {
+                        if (replyAuthor) {
+                            info.replyAuthor = replyAuthor;
+                        }
+                        defer.resolve(info);
+                    })
                 } else {
-                    req.result.error("error", result);
+                    defer.resolve(info);
                 }
-                next();
             })
-        },
+        })
 
-        up: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var columnId = req.param("id");
-            domain.call("Column.up", columnId);
-            next();
-        },
-
-        setManager: function (req, res, next) {
-            if (req.result.hasError()) {
-                return next();
-            }
-            var columnId = req.param("id");
-            var userId = req.body.userId;
-            console.log(req.body, columnId);
-            if (userId)
-                domain.call("Column.setManager", columnId, [userId]);
-            next();
-        }
-
+        return defer.promise;
     }
+
+    my.app.get("/column",
+        my.util.cookieLogin,
+        share_data,
+        function (req, res) {
+
+            Q.all([
+                    my.query("get topics by column's id", {id: req.query.id, page: req.query.page || 1}),
+                    my.query("get a column by id", {id: req.query.id}),
+                    my.query("get topic count by column's id", {id: req.query.id})
+                ]).spread(function (topics, column, count) {
+
+                    if (res.locals.column = column) {
+
+                        res.locals.breadcrumb = "column";
+                        res.locals.title = column.name;
+                        res.locals.topics = topics;
+
+                        // page info
+                        var groupNum = 1,
+                            groupMaxPageNum = 3,
+                            itemNum = 3;
+
+                        var page = res.locals.page = parseInt(req.query.page) || 1;
+                        var pagenum = res.locals.pagenum = Math.floor(count / itemNum) + ( count % itemNum ? 1 : 0);
+
+                        groupNum = Math.floor(page / (groupMaxPageNum - 1)) + ((page % (groupMaxPageNum - 1)) ? 1 : 0);
+                        res.locals.groupNum = groupNum;
+                        res.locals.groupMaxPageNum = groupMaxPageNum;
+
+                        var topicInfosArr = [];
+
+                        topics.forEach(function (topic) {
+                            topicInfosArr.push(topicInfo(topic));
+                        });
+
+                        Q.all(topicInfosArr).then(function (rs) {
+                            res.locals.topicsInfo = rs;
+                            res.render("column");
+                        })
+
+                    } else {
+                        res.send(404);
+                    }
+                }).fail(function (err) {
+                    console.log(err);
+                })
+        })
 
 }

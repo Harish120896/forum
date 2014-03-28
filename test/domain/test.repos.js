@@ -1,6 +1,6 @@
 var should = require("should")
 var my = require("../util/my");
-var repos = require("../../domain/repos")(my);
+var repos = require(".././repos")(my);
 
 var replyRepo = repos[0];
 var columnRepo = repos[1];
