@@ -1,5 +1,5 @@
 app
-    .controller("topic_page_ctrl", function ($scope, $http, $rootScope, query, core, $q,$timeout) {
+    .controller("topic_page_ctrl", function ($scope, $http, $rootScope, query, core, $q, $timeout) {
 
         $scope.author = null; // 作者信息
         $scope.topic = null;  // 主题贴
@@ -94,18 +94,18 @@ app
 
         // 置顶该主题
         $scope.top = function () {
-            core.exec("top topic",{id:$scope.topicId});
-            $timeout(function(){
+            core.exec("top topic", {id: $scope.topicId});
+            $timeout(function () {
                 window.location.reload();
-            },1000)
+            }, 1000)
         }
 
         // 取消置顶该主题
         $scope.untop = function () {
-            core.exec("down topic",{id:$scope.topicId});
-            $timeout(function(){
+            core.exec("down topic", {id: $scope.topicId});
+            $timeout(function () {
                 window.location.reload();
-            },1000)
+            }, 1000)
         }
 
         // 移动编辑器到置顶回帖下方
@@ -170,7 +170,7 @@ app
 
         // 判断是否该显示 子回帖下的 ［更多］ 按钮
         $scope.showSubMore = function (mainReplyId) {
-            return sub_reply_show_count_repo[mainReplyId] < $scope.sub_reply_ids_repo[mainReplyId].length;
+            return $scope.sub_reply_ids_repo[mainReplyId] && sub_reply_show_count_repo[mainReplyId] < $scope.sub_reply_ids_repo[mainReplyId].length;
         }
 
 
@@ -187,7 +187,6 @@ app
         }
 
         $scope.createReply = function () {
-            clearErrorMessage();
 
             var parentId = $scope.parentId;
 
@@ -198,34 +197,29 @@ app
                 parentId: $scope.parentId
             }
 
-            $http.post("/reply/create", data).success(function (rs) {
-                var result = new Result();
-                result.reborn(rs);
-                if (result.hasError()) {
-                    var errors = result.error();
-                    var keys = Object.keys(errors);
-                    keys.forEach(function (key) {
-                        $scope[key + "Message"] = errors[key][0];
-                    })
+            $http.post("/reply/create", data).success(function (result) {
 
+                if (result.errors) {
+                    $scope.errors = result.errors;
                 } else {
-                    var reply = result.data("reply");
-                    if (reply.parentId) {
-                        $scope.subReplyIds[$scope.editorContainerId].push(reply.id);
-                        $scope.showSubReplyPositions[$scope.editorContainerId] += 1;
-                    } else {
-                        $scope.replyIdsList.push(reply.id);
-                        $scope.subReplyIds[reply.id] = [];
-                        $scope.showReplyPosition += 1;
-                        $scope.showSubReplyPositions[reply.id] = 0;
-                    }
-                    $scope.replys[reply.id] = reply;
-                    $scope.loadUser(reply.authorId);
-                }
-                $scope.validat_num = "";
-                $scope.body = "";
-                $rootScope.refreshNum();
 
+                    var newReply = result.data && result.data.reply;
+
+                    $scope.replys[newReply.id] = newReply;
+
+                    // 添加信息到UI
+                    if(newReply.parentId){
+                        var ids = $scope.sub_reply_ids_repo[newReply.parentId];
+                        if(ids){
+                            ids.push(newReply.id);
+                        }else{
+                            $scope.sub_reply_ids_repo[newReply.parentId].push(newReply.id);
+                        }
+                    }else{
+                        $scope.main_reply_ids.push(newReply.id);
+                    }
+
+                }
             })
         }
 

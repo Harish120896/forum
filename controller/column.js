@@ -6,7 +6,9 @@ module.exports = function (my) {
     var share_data = require("./share_data")(my);
 
     function topicInfo(topic) {
+
         var defer = Q.defer();
+
         var info = {}
 
         my.query("get a user by id", {id: topic.authorId}).then(function (topicAuthor) {

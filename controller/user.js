@@ -9,7 +9,11 @@ module.exports = function wrap(my) {
         my.query("get a user by email", {email: req.param("email")}).then(function (user) {
 
             var md5 = crypto.createHash('md5');
-            var pwd = md5.update(req.body.password).digest("hex");
+            try{
+                var pwd = md5.update(req.body.password).digest("hex");
+            }catch(e){
+                var pwd = null;
+            }
 
             if (user && user.password === pwd) {
 
@@ -21,12 +25,11 @@ module.exports = function wrap(my) {
                 }), {
                     maxAge: 1000 * 60 * 60 * 24 * 90
                 });
-
                 res.send();
 
             } else {
                 req.result.error("email", "登录信箱或密码有误，请重新登录。");
-                res.send(req.result.error());
+                res.send(req.result.json());
             }
         })
     }

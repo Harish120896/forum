@@ -41,7 +41,7 @@
     "nodemailer": "~0.6.0",
     "node-validator": "~0.1.4",
     "q": "~1.0.0",
-    "result-brighthas": "0.0.6",
+    "result-brighthas": "0.0.7",
     "nedb": "~0.10.4",
     "shortid": "^2.0.0",
     "marked": "^0.3.2",

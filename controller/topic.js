@@ -6,8 +6,10 @@ module.exports = function (my) {
     var share_data = require("./share_data")(my);
 
     my.app.get("/topic",
+
         my.util.cookieLogin,
         share_data,
+
         function (req, res) {
 
             var topicId = req.query.id;
@@ -43,12 +45,18 @@ module.exports = function (my) {
         function (req, res) {
             req.body.authorId = req.session.user.id;
             my.core.exec("create a topic", req.body, function (result) {
-                req.result.mix(result);
-                if (req.result.hasError()) {
-                    res.send(req.result.error());
-                } else {
-                    res.send();
-                }
+                res.send(result.json());
             })
         });
+
+    my.app.post("/reply/create",
+        my.util.isLogin,
+        my.util.validat_num,
+        function (req, res) {
+            req.body.authorId = req.session.user.id;
+            my.core.exec("create a reply", req.body, function (result) {
+                res.send(result.json());
+            });
+        });
+
 }

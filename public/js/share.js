@@ -306,9 +306,10 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         $scope.login = function () {
             $http.post("/user/login", $scope.data).success(function (result) {
-                if (result) {
+console.log(result)
+                if (result.errors) {
                     $rootScope.refreshNum();
-                    $scope.errors = result;
+                    $scope.errors = result.errors;
                 } else {
                     $scope.close();
                     $rootScope.checkLogined();
@@ -332,9 +333,9 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         $scope.reg = function () {
             $http.post("/user/reg", $scope.data).success(function (result) {
-                if (result) {
+                if (result.errors) {
                     $rootScope.refreshNum();
-                    $scope.errors = result;
+                    $scope.errors = result.errors;
                 } else {
                     $scope.close();
                     $rootScope.checkLogined();

@@ -39,7 +39,7 @@ module.exports = function (query) {
             if (!(req.body.validat_num && req.session.validat_num.toLocaleLowerCase() === req.body.validat_num.toLocaleLowerCase())) {
                 req.result.error("validat_num", "验证码错误");
                 util.refreshValidatNum(req,res,function(){});
-                res.send(req.result.error());
+                res.send(req.result.json());
             } else {
                 next();
             }
@@ -61,7 +61,7 @@ module.exports = function (query) {
         isLogin: function (req, res, next) {
             if (!req.session.user) {
                 req.result.error("email", "请先登录");
-                return res.send(req.result.error());
+                return res.send(req.result);
             }
             next();
 

@@ -75,13 +75,13 @@ module.exports = function wrap(my) {
 
         var query = my.services.getQuery();
 
-        query.replyCountByToday(userId, function (count) {
+        query("get a user's reply count in today",{id:userId}).then(function(count){
             if (count > 5000) {
                 callback(false);
             } else {
                 callback(true);
             }
-        })
+        });
 
     }
 
