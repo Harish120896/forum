@@ -35,6 +35,7 @@ module.exports = function(conf) {
         return getQuery;
     }, "get", config.getById).seal(); // 封印
 
+    app.use(express.static(config.static_path));
     app.set('views', path.join(config.view_path));
     app.engine('.html', require('ejs').__express);
     app.set('view engine', 'html');
@@ -65,13 +66,15 @@ module.exports = function(conf) {
     // 初始化核心入口控制器
     coredoor(my);
 
+    // 加载默认头像
+    app.get("/logo/*",function(req,res){
+      res.redirect("/logo/guest.jpg");
+    })
 
     // 加载控制器
     fs.readdirSync(config.contrller_path).forEach(function (filename) {
         require(config.contrller_path + "/" + filename)(my);
     });
-
-    app.use(express.static(config.static_path));
 
     // 调用 监听core create/update/remove 事件，并更新数据库
     var create_handle = config.core_changed_handles["*.*.create"];

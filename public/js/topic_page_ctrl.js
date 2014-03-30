@@ -4,7 +4,6 @@ app
         $scope.author = null; // 作者信息
         $scope.topic = null;  // 主题贴
         $scope.replys = {};  // 回帖库
-        $scope.users = {};  // 用户库
         $scope.main_reply_ids = []; // 主贴id列表
         $scope.sub_reply_ids_repo = {};  // 子贴id库
 
@@ -108,12 +107,6 @@ app
             }, 1000)
         }
 
-        // 移动编辑器到置顶回帖下方
-        $scope.moveEditor = function (replyId) {
-
-        }
-
-
         // 加载回复贴和其用户信息
         function loadReply(ids) {
             // 加载要显示的贴
@@ -139,12 +132,17 @@ app
         // 展开更多主回复帖
         $scope.moreMainReply = function () {
 
-            var ids = $scope.main_reply_ids.slice(main_reply_show_count, show_main_reply_num);
+            var ids = $scope.main_reply_ids.slice(main_reply_show_count, main_reply_show_count+show_main_reply_num);
 
             main_reply_show_count += show_main_reply_num;
 
-            if (main_reply_show_count > $scope.main_reply_ids.length)
+            if (main_reply_show_count > $scope.main_reply_ids.length){
                 main_reply_show_count = $scope.main_reply_ids.length;
+            }
+
+            for(var i= 0,len=ids.length;i<len ;i++){
+                $scope.moreSubReply(ids[i]);
+            }
 
             loadReply(ids);
         }
@@ -152,7 +150,7 @@ app
         // 展开主回复下的更多子回复
         $scope.moreSubReply = function (mainReplyId) {
 
-            var ids = $scope.sub_reply_ids_repo[mainReplyId].slice(sub_reply_show_count_repo[mainReplyId], show_sub_reply_num);
+            var ids = $scope.sub_reply_ids_repo[mainReplyId].slice(sub_reply_show_count_repo[mainReplyId], show_sub_reply_num+sub_reply_show_count_repo[mainReplyId]);
 
             sub_reply_show_count_repo[mainReplyId] += show_sub_reply_num
 
@@ -170,12 +168,12 @@ app
 
         // 判断是否该显示 子回帖下的 ［更多］ 按钮
         $scope.showSubMore = function (mainReplyId) {
-            return $scope.sub_reply_ids_repo[mainReplyId] && sub_reply_show_count_repo[mainReplyId] < $scope.sub_reply_ids_repo[mainReplyId].length;
+            return sub_reply_show_count_repo[mainReplyId] && sub_reply_show_count_repo[mainReplyId] < $scope.sub_reply_ids_repo[mainReplyId].length;
         }
 
 
         $scope.moveEditor = function (cid, parentId) {
-            $scope.validat_numMessage = null;
+            $scope.errors = null;
             $scope.body = "";
             if (cid === "createReply") {
                 $scope.editorContainerId = cid;
@@ -192,7 +190,6 @@ app
 
             var data = {
                 body: $scope.body,
-                validat_num: $scope.validat_num,
                 topicId: $scope.topicId,
                 parentId: $scope.parentId
             }
@@ -203,20 +200,32 @@ app
                     $scope.errors = result.errors;
                 } else {
 
+                    // 清除信息
+                    $scope.errors = null;
+                    $scope.body = "";
+
                     var newReply = result.data && result.data.reply;
 
                     $scope.replys[newReply.id] = newReply;
 
+
                     // 添加信息到UI
-                    if(newReply.parentId){
-                        var ids = $scope.sub_reply_ids_repo[newReply.parentId];
+                    if($scope.editorContainerId){
+                        var ids = $scope.sub_reply_ids_repo[$scope.editorContainerId];
                         if(ids){
-                            ids.push(newReply.id);
+                            ids.splice(sub_reply_show_count_repo[$scope.editorContainerId],0,newReply.id);
                         }else{
-                            $scope.sub_reply_ids_repo[newReply.parentId].push(newReply.id);
+                            $scope.sub_reply_ids_repo[$scope.editorContainerId] = [newReply.id];
+                        }
+                        if(sub_reply_show_count_repo[$scope.editorContainerId]){
+                            sub_reply_show_count_repo[$scope.editorContainerId] += 1;
+                        }else{
+                            sub_reply_show_count_repo[$scope.editorContainerId] = 1;
                         }
                     }else{
-                        $scope.main_reply_ids.push(newReply.id);
+                        $scope.main_reply_ids.splice(main_reply_show_count,0,newReply.id);
+                        main_reply_show_count += 1;
+
                     }
 
                 }
@@ -237,6 +246,7 @@ app
                     if (v) {
                         var parent = document.querySelector("#" + v);
                         parent.appendChild(elem[0]);
+                        elem[0].scrollIntoView()
                     }
                     $rootScope.refreshNum();
                 })

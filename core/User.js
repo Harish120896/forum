@@ -35,8 +35,8 @@ function wrap(my) {
             max: 15,
             required: true,
             readonly: true,
-            validator: /^[a-zA-Z0-9]*$/,
-            message: "昵称长度 2～15 字符，a~z A~Z 0-9"
+            validator: /^[a-zA-Z0-9\u4E00-\u9FA5]*$/,
+            message: "昵称长度 2～15 字符，中文汉字 a~z A~Z 0-9"
         })
         .attr("sex", {
             type: "boolean",

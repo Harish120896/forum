@@ -51,7 +51,28 @@ module.exports = function (my) {
 
     my.app.post("/reply/create",
         my.util.isLogin,
-        my.util.validat_num,
+        //回帖频率控制，过高会阻止发帖
+        function (req,res,next){
+
+            // 最后回帖时间
+            var lastTime = req.session.user.replyLastTime;
+
+            if(lastTime){
+                // 测试是否回帖太频繁
+                var xt = Date.now() - lastTime;
+                req.session.user.replyLastTime = Date.now();
+                if(xt > 5000){
+                    next();
+                }else{
+                    req.result.error("freq","回帖过频繁，请注意哦！5秒后再发吧。");
+                    res.send(req.result.json());
+                }
+            }else{
+                req.session.user.replyLastTime = Date.now();
+                next();
+            }
+
+        },
         function (req, res) {
             req.body.authorId = req.session.user.id;
             my.core.exec("create a reply", req.body, function (result) {

@@ -9,6 +9,7 @@ module.exports = function wrap(my) {
         my.query("get a user by email", {email: req.param("email")}).then(function (user) {
 
             var md5 = crypto.createHash('md5');
+
             try{
                 var pwd = md5.update(req.body.password).digest("hex");
             }catch(e){
@@ -98,7 +99,7 @@ module.exports = function wrap(my) {
                 , function (result) {
 
                 if (result.hasError()) {
-                    res.send(result.error());
+                    res.send(result.json());
                 } else {
 
                     var user = result.data("user");

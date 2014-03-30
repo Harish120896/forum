@@ -1,5 +1,5 @@
 var Q = require("q");
-
+var Pager = require("./share_data/pager");
 
 module.exports = function (my) {
 
@@ -49,17 +49,7 @@ module.exports = function (my) {
                         res.locals.title = column.name;
                         res.locals.topics = topics;
 
-                        // page info
-                        var groupNum = 1,
-                            groupMaxPageNum = 3,
-                            itemNum = 3;
-
-                        var page = res.locals.page = parseInt(req.query.page) || 1;
-                        var pagenum = res.locals.pagenum = Math.floor(count / itemNum) + ( count % itemNum ? 1 : 0);
-
-                        groupNum = Math.floor(page / (groupMaxPageNum - 1)) + ((page % (groupMaxPageNum - 1)) ? 1 : 0);
-                        res.locals.groupNum = groupNum;
-                        res.locals.groupMaxPageNum = groupMaxPageNum;
+                        res.locals.pager = Pager(count, parseInt(req.query.page) || 1, 10);
 
                         var topicInfosArr = [];
 
@@ -78,6 +68,41 @@ module.exports = function (my) {
                 }).fail(function (err) {
                     console.log(err);
                 })
+        })
+
+    my.app.get("/topic/search",
+        my.util.cookieLogin,
+        share_data,
+        function (req, res) {
+            if (req.query.keyword) {
+                Q.all([
+                        my.query("search topics by keyword", {keyword: req.query.keyword, page: req.query.page}),
+                        my.query("search topics count by keyword", {keyword: req.query.keyword})])
+                    .spread(function (topics, count) {
+
+
+                        res.locals.breadcrumb = "search";
+                        res.locals.title = "搜索关键词: " + req.query.keyword;
+                        res.locals.keyword = req.query.keyword;
+                        res.locals.topics = topics;
+                        res.locals.pager = Pager(count, parseInt(req.query.page) || 1, 10);
+
+                        var topicInfosArr = [];
+
+                        topics.forEach(function (topic) {
+                            topicInfosArr.push(topicInfo(topic));
+                        });
+
+                        Q.all(topicInfosArr).then(function (rs) {
+                            res.locals.topicsInfo = rs;
+                            res.render("search");
+                        })
+
+                    })
+            } else {
+                res.send(404);
+            }
+
         })
 
 }

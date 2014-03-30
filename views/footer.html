@@ -9,7 +9,7 @@
                      ng-src='{{loginUser.isCustomLogo ? "/logo/"+loginUser.nickname : "http://www.gravatar.com/avatar/"+loginUser.logo}}'/>
             </div>
             <div class="col-xs-12 col-lg-8">
-                <div><h4><a href="/user/{{user.id}}">{{loginUser.nickname}}</a></h4></div>
+                <div><h4><a href="/user?id={{loginUser.id}}">{{loginUser.nickname}}</a></h4></div>
                 <div><h5>积分: {{loginUser.fraction}}</h5></div>
             </div>
         </div>
@@ -35,7 +35,7 @@
         <div class="panel-body">
             <%for(var i=0,len=topList.length;i<len;i++){%>
             <div>
-                <i class="glyphicon glyphicon-file" style="opacity: 0.2"></i> <a href="/topic/<%=topList[i].id%>"><%=hotList[i].title%></a>
+                <i class="glyphicon glyphicon-file" style="opacity: 0.2"></i> <a href="/topic?id=<%=topList[i].id%>"><%=hotList[i].title%></a>
             </div>
             <%}%>
         </div>
@@ -46,7 +46,7 @@
         <div class="panel-body">
             <%for(var i=0,len=hotList.length;i<len;i++){%>
             <div>
-                <i class="glyphicon glyphicon-file" style="opacity: 0.2"></i> <a href="/topic/<%=hotList[i].id%>"><%=hotList[i].title%></a>
+                <i class="glyphicon glyphicon-file" style="opacity: 0.2"></i> <a href="/topic?id=<%=hotList[i].id%>"><%=hotList[i].title%></a>
             </div>
             <%}%>
         </div>

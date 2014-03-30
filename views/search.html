@@ -1,7 +1,7 @@
 <% include header.html %>
 
 <div class="panel panel-info" ng-controller="column_page_ctrl">
-    <div class="panel-heading"> <%=column.name%> <a ng-show="loginUser" href="#createTopic" class="btn btn-default btn-xs pull-right">发表新帖</a></div>
+    <div class="panel-heading"> 搜索结果 </div>
     <ul class="list-group">
         <% topics.forEach(function(topic,index){ %>
         <li class="list-group-item">
@@ -49,39 +49,34 @@
         </li>
         <% }) %>
         <li class="list-group-item">
-        <%include pager.html%>
-    </li>
-    <div role="form" id="createTopic" ng-show="loginUser" style="padding:50px">
-        <input type="hidden" ng-init='columnId="<%=column.id%>"'/>
+            <%if(topics.length){%>
+            <ul class="pagination">
+                <% var head = "/topic/search?keyword="+keyword %>
+                <%if(pager.page!==1){%>
+                <li><a href="<%=head%>">首页</a></li>
+                <li><a href="<%=head%>&page=<%=pager.page-1%>">上一页</a></li>
+                <%}%>
 
-        <div class="form-group">
-            <div class="alert alert-danger small" ng-show="errors.title">
-                {{errors.title[0]}}
-            </div>
-            <input type="text" class="form-control" ng-keydown="tab()" ng-model="title" tabindex="1"
-                   placeholder="主题标题">
-        </div>
-        <div class="form-group">
-            <div class="alert alert-danger small" ng-show="errors.body">
-                {{errors.body[0]}}
-            </div>
-            <div editor content="body"></div>
-        </div>
-        <div class="form-group">
-            <div class="alert alert-danger small" ng-show="errors.validat_num">
-                {{errors.validat_num[0]}}
-            </div>
-            <div class="row">
-                <div class="col-sm-7">
-                    <input type="text" class="form-control" ng-keydown="tab()" ng-model="validat_num" tabindex="3"
-                           placeholder="输入验证码，不区分大小写。">
-                </div>
-                <label class="col-sm-5 control-label"><img ng-src="/refresh_num?{{time}}" width="60" height="25"/>
-                    <a href="" ng-click="refreshNum()"><span class="glyphicon glyphicon-repeat"></span></a></label>
-            </div>
-        </div>
-        <button type="button" ng-click="createTopic()" tabindex="5" class="btn btn-primary">创建主题</button>
-    </div>
+                <% var startPage = 1+ (pager.groupNum-1)*(pager.groupMaxPageNum-1)%>
+                <%for(var j=0;startPage<pager.pagenum+1 && j<pager.groupMaxPageNum;startPage++,j++){%>
+                <% if(startPage===pager.page){%>
+                <li class="active"><a href="#" ><%=startPage%></a></li>
+                <%}else{%>
+                <li ><a href="<%=head%>&page=<%=startPage%>" ><%=startPage%></a></li>
+                <%}%>
+                <%}%>
+
+                <%if(pager.page!==pager.pagenum){%>
+                <li><a href="<%=head%>&page=<%=pager.page+1%>">下一页</a></li>
+                <li><a href="<%=head%>&page=<%=pager.pagenum%>">尾页</a></li>
+                <%}%>
+
+            </ul>
+            <%}else{%>
+                sorry，没有符合结果。
+            <%}%>
+        </li>
+
 
 </div>
 

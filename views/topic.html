@@ -100,8 +100,10 @@
         </div>
     </div>
 
-    <div id="createReply">
-        <reply-editor ng-show="true"></reply-editor>
+    <div id="createReply" class="panel panel-default" ng-show="!editorContainerId || editorContainerId === 'createReply'">
+        <div class="panel-footer" style="padding:20px">
+            <reply-editor ng-show="true"></reply-editor>
+        </div>
     </div>
 
 </div>

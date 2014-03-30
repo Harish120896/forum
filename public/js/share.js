@@ -135,6 +135,12 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                     }
                 })
 
+                var toid2;
+
+                elem.bind("mouseleave",function(){
+                    clearTimeout(toid2);
+                })
+
                 elem.bind("mouseenter", function (event) {
 
                     var toid = setTimeout(function () {
@@ -150,11 +156,16 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                         })
                     });
 
-                    scope.showcode = true;
-                    scope.$apply();
+                    clearTimeout(toid2);
 
-                    var pos = $offset(elem);
-                    code.css("left", pos.left + "px").css("top", pos.top + 17 + "px");
+                    toid2 = setTimeout(function(){
+                        scope.showcode = true;
+                        scope.$apply();
+                        var pos = $offset(elem);
+                        code.css("left", pos.left + "px").css("top", pos.top + 17 + "px");
+                    },100);
+
+
 
                 })
 
@@ -306,7 +317,6 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
         $scope.login = function () {
             $http.post("/user/login", $scope.data).success(function (result) {
-console.log(result)
                 if (result.errors) {
                     $rootScope.refreshNum();
                     $scope.errors = result.errors;

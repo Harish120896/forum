@@ -11,13 +11,14 @@ function oneday(date) {
 var query = require("query-brighthas")(),
     option1 = [
         "id", {required: true},
-        "page", {type: "nubmer", convert: true, default: 1},
+        "page", {type: "number", convert: true, default: 1},
         "limit", {type: "number", convert: true, default: 10}
     ],
-    option2 = ["id", {required: true}];
+    option2 = ["id", {required: true}],
+    option3 = option1.slice(2).concat(["keyword", {required: true}]);
 
 
-query.add("get all columns", function (args, callback) {
+    query.add("get all columns", function (args, callback) {
     var db = dbs.getDB("Column");
     db.find({}).exec(function (err, rs) {
         callback(rs || []);
@@ -278,16 +279,39 @@ query.add("get all columns", function (args, callback) {
             })
     })
 
-    .add("search topics by keyword", ["keyword", {required: true}],
+    .add("search topics by keyword",
+    option3,
     function (args, callback) {
         var db = dbs.getDB("Topic");
+        var num = 0;
         db.find({
             $where: function () {
                 var regexp = new RegExp(args.keyword, "gi");
                 return  regexp.test(this.title) || regexp.test(this.body);
             }
-        }).exec(function (err, rs) {
+        })
+            .limit(args.limit)
+            .sort({
+                updateTime: -1
+            })
+            .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
                 callback(rs || []);
+            })
+    })
+
+    .add("search topics count by keyword",
+    ["keyword", {required: true}],
+    function (args, callback) {
+        var db = dbs.getDB("Topic");
+        db.count({
+            $where: function () {
+                var regexp = new RegExp(args.keyword, "gi");
+                return  regexp.test(this.title) || regexp.test(this.body);
+            }
+        })
+            .exec(function (err, rs) {
+                callback(rs || 0);
             })
     })
 
