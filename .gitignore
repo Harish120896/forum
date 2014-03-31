@@ -1,6 +1,7 @@
 node_modules
 .idea
 dbs
+
 basic/config.json
 basic/db
 basic/dbs
