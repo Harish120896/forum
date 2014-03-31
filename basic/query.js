@@ -18,7 +18,7 @@ var query = require("query-brighthas")(),
     option3 = option1.slice(2).concat(["keyword", {required: true}]);
 
 
-    query.add("get all columns", function (args, callback) {
+query.add("get all columns", function (args, callback) {
     var db = dbs.getDB("Column");
     db.find({}).exec(function (err, rs) {
         callback(rs || []);
@@ -112,6 +112,24 @@ var query = require("query-brighthas")(),
             })
     })
 
+    .add("get topics by user's id",
+    option1,
+    function (args, callback) {
+        var db = dbs.getDB("Topic");
+        db
+            .find({
+                authorId: args.id
+            })
+            .limit(args.limit)
+            .sort({
+                updateTime: -1
+            })
+            .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
     .add("get topic count by column's id",
     option2,
     function (args, callback) {
@@ -179,7 +197,7 @@ var query = require("query-brighthas")(),
             }
         })
             .exec(function (err, num) {
-                callback(num || 0);
+                callback({count:rs||0});
             })
     })
 
@@ -191,7 +209,7 @@ var query = require("query-brighthas")(),
                 authorId: args.id
             })
             .exec(function (err, rs) {
-                callback(rs || 0);
+                callback({count:rs||0});
             })
     })
 
@@ -221,7 +239,7 @@ var query = require("query-brighthas")(),
                 authorId: args.id
             })
             .exec(function (err, rs) {
-                callback(rs || 0);
+                callback({count:rs || 0});
             })
     })
 

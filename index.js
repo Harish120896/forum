@@ -35,6 +35,7 @@ module.exports = function(conf) {
         return getQuery;
     }, "get", config.getById).seal(); // 封印
 
+    app.use(express.favicon(__dirname + '/public/favicon.ico'));
     app.use(express.static(config.static_path));
     app.set('views', path.join(config.view_path));
     app.engine('.html', require('ejs').__express);

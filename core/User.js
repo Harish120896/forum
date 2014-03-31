@@ -110,6 +110,10 @@ function wrap(my) {
                 this.sex = data.sex;
             }
 
+            if (data.hasOwnProperty("isCustomLogo")) {
+                this.isCustomLogo = data.isCustomLogo;
+            }
+
             this.end();
             return this.result;
 

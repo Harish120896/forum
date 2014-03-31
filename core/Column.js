@@ -48,7 +48,6 @@ function wrap(my) {
         })
 
         .method("updateInfo", function (name, des) {
-            console.log(name,des,"--------------")
             this.set({
                 name: name,
                 des: des

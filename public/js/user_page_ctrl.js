@@ -1,5 +1,6 @@
 app
-    .controller("userCtrl", function ($modal, $rootScope, $scope, $http, $timeout, $upload, DATA, $tooltip, $sce, Result) {
+    .controller("userCtrl",
+    function ($modal, $rootScope, $scope, $http, $timeout, $upload, $tooltip, $sce, core, query) {
 
         $scope.targetTag = window.location.hash;
         if ($scope.targetTag) {
@@ -18,6 +19,7 @@ app
             return has;
         }
 
+        // 给该用户发私信
         $scope.sendMessage = function () {
             var sc = $scope.$new();
             sc.userId = $scope.userId;
@@ -28,142 +30,120 @@ app
             });
         }
 
+        // 关注该用户
         $scope.follow = function () {
-            $http.post("/user/" + $scope.userId + "/follow");
+            core.call("User.follow", $rootScope.loginUser.id, [$scope.userId]);
             $rootScope.loginUser.follows.push($scope.userId);
         }
 
+        // 取消关注该用户
         $scope.unfollow = function () {
-            $http.post("/user/" + $scope.userId + "/unfollow");
-            $timeout(function () {
-                for (var i = 0, len = $rootScope.loginUser.follows.length; i < len; i++) {
-                    if ($scope.userId === $rootScope.loginUser.follows[i]) {
-                        $rootScope.loginUser.follows.splice(i, 1);
-                    }
+            this.showcode = false;
+            core.call("User.unfollow", $rootScope.loginUser.id, [$scope.userId]);
+            for (var i = 0, len = $rootScope.loginUser.follows.length; i < len; i++) {
+                if ($scope.userId === $rootScope.loginUser.follows[i]) {
+                    $rootScope.loginUser.follows.splice(i, 1);
                 }
-            })
+            }
         }
 
-        var isCustomLog_init = false;
+
+        // 用户回复的信息
         $scope.replys = [];
+
+        // 用户发表的主题
         $scope.topics = [];
 
-        $rootScope.$watch("userId", function (uid) {
+        // 初始化用户信息
+        $scope.$watch("userId", function (uid) {
             if (uid) {
-                DATA.user(uid).then(function (user) {
+                query("get a user by id", {id: uid}).then(function (user) {
                     $scope.user = user;
-                });
+                })
             }
         })
 
-        // update user info
+        // 更改用户信息
         $scope.updateUser = function () {
-            $http.post("/user/update", {
-                des: $scope.user.des,
-                address: $scope.user.address,
-                sex: $scope.user.sex === "true" ? true : false
-            })
+            core.call("User.updateInfo", $scope.userId, [$scope.user]);
         }
 
-        $scope.$watch("user.isCustomLogo", function (v) {
-            if (isCustomLog_init) {
-                $http.post("/user/isCustomLogo", {custom: v});
-            } else {
-                isCustomLog_init = true;
-            }
-        }, true);
-
+        // 上传用户头像
         $scope.onFileSelect = function ($files) {
-            //$files: an array of files selected, each file has name, size, and type.
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
                 $scope.upload = $upload.upload({
-                    url: '/user/updateLogo', //upload.php script, node.js route, or servlet url
-                    // method: POST or PUT,
-                    // headers: {'headerKey': 'headerValue'},
-                    // withCredentials: true,
+                    url: '/user/updateLogo',
                     data: {myObj: $scope.myModelObj},
-                    file: file,
-                    // file: $files, //upload multiple files, this feature only works in HTML5 FromData browsers
-                    /* set file formData name for 'Content-Desposition' header. Default: 'file' */
-                    //fileFormDataName: myFile, //OR for HTML5 multiple upload only a list: ['name1', 'name2', ...]
-                    /* customize how data is added to formData. See #40#issuecomment-28612000 for example */
-                    //formDataAppender: function(formData, key, val){} //#40#issuecomment-28612000
+                    file: file
                 }).progress(function (evt) {
-                        //console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     }).success(function (data, status, headers, config) {
-                        // file is uploaded successfully
-                        var result = new Result();
-                        result.reborn(data);
-                        if (result.hasError()) {
-                            alert(result.error().logo);
+                        if (data) {
+                            // 提示错误信息
+                            alert(data);
                         } else {
                             setTimeout(function () {
                                 window.location.reload()
                             }, 1000);
                         }
-
                     });
-                //.error(...)
-                //.then(success, error, progress);
             }
-            // $scope.upload = $upload.upload({...}) alternative way of uploading, sends the the file content directly with the same content-type of the file. Could be used to upload files to CouchDB, imgur, etc... for HTML5 FileReader browsers.
         };
 
+        // 设置用户为某个板块的管理员
         $scope.setManager = function (uid, cid) {
-            $http.post("/column/" + cid + "/setManager", {userId: uid});
+            core.call("Column.setManager",cid,[uid]);
             setTimeout(function () {
                 window.location.reload()
             }, 1000);
         }
 
         $scope.selectTopicPage = function (page) {
-            DATA.topicTitles($scope.userId, page).then(function (rs) {
+
+            query("get topics by user's id",{page:page,id:$scope.userId}).then(function(rs){
                 $scope.topicTitles = rs;
             })
+
         }
 
         $scope.selectReplyPage = function (page) {
-            DATA.replysByUserId($scope.userId, page).then(function (rs) {
+
+            query("get replys by user's id",{page:page,id:$scope.userId}).then(function(rs){
                 $scope.replys = rs;
                 for (var i = 0, len = rs.length; i < len; i++) {
-                    DATA.topicById(rs[i].topicId).then(function (t) {
+                    query("get a topic by id",{id:rs[i].topicId}).then(function (t) {
                         if (t) {
                             $scope.topics[t.id] = t;
                         }
                     })
                 }
             });
+
         }
 
         $scope.loadTopicList = function () {
-            DATA.topicCount($scope.userId).then(function (rs) {
-                $scope.bigTotalItems = rs;
-                $scope.bigCurrentPage = 1;
-                $scope.perPage = 3;
 
+            query("get topic count by user's id",{id:$scope.userId}).then(function(rs){
+                console.log(rs);
+                $scope.bigTotalItems = rs.count;
+                $scope.bigCurrentPage = 1;
+                $scope.perPage = 10;
             })
-            DATA.topicTitles($scope.userId, 0).then(function (rs) {
-                $scope.topicTitles = rs;
-            })
+
+            $scope.selectTopicPage(1);
+
         }
 
         $scope.loadReplyList = function () {
-            DATA.replyCount($scope.userId).then(function (rs) {
-                $scope.bigTotalItems2 = rs;
+
+            query("get reply count by user's id",{id:$scope.userId}).then(function(rs){
+                console.log(rs)
+                $scope.bigTotalItems2 = rs.count;
                 $scope.bigCurrentPage2 = 1;
-                $scope.perPage2 = 3;
+                $scope.perPage2 = 10;
             })
-            DATA.replysByUserId($scope.userId, 0).then(function (rs) {
-                $scope.replys = rs;
-                for (var i = 0, len = rs.length; i < len; i++) {
-                    DATA.topicById(rs[i].topicId).then(function (t) {
-                        if (t) {
-                            $scope.topics[t.id] = t;
-                        }
-                    })
-                }
-            })
+
+            $scope.selectReplyPage(1);
         }
 
         var messagePage = 0;
@@ -172,7 +152,7 @@ app
 
         $scope.loadMessageList = function () {
             messagePage += 1;
-            DATA.messageList(messagePage).then(function (rs) {
+            query("get messages by user's id",{id:$scope.userId,page:messagePage}).then(function (rs) {
                 if (rs.length <= $scope.messageList.length) {
                     $scope.showMessageMoreButton = false;
                 } else {
@@ -187,7 +167,7 @@ app
 
         $scope.loadInfoList = function () {
             infoPage += 1;
-            DATA.infoList(infoPage).then(function (rs) {
+            query("get infos by user's id",{id:$scope.userId,page:infoPage}).then(function (rs) {
                 if (rs.length <= $scope.infoList.length) {
                     $scope.showInfoMoreButton = false;
                 } else {
@@ -199,20 +179,5 @@ app
         $scope.sce = function (htmltxt) {
             return $sce.trustAsHtml(htmltxt);
         }
-
-        $scope.$watch("userId", function (v) {
-
-            DATA.user($scope.userId).then(function (user) {
-                $scope.user = user;
-                for (var i = 0, len = user.follows.length; i < len; i++) {
-                    DATA.user(user.follows[i]);
-                }
-                for (var i = 0, len = user.watchers.length; i < len; i++) {
-                    DATA.user(user.watchers[i]);
-                }
-            })
-
-        })
-
 
     })

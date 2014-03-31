@@ -1,7 +1,6 @@
 <% include header.html %>
 
-
-<div ng-controller="userCtrl" ng-init="userId='<%=user.id%>';isCustomLogo = <%=user.isCustomLogo%> === true || false ">
+<div ng-controller="userCtrl" ng-init="userId='<%=user.id%>'">
     <tabset>
         <tab heading="基本资料" active="'info'===targetTag">
             <table class="table table-striped">
@@ -204,7 +203,7 @@
 <script src="/js/angular-file-upload.min.js"></script>
 <script src="/js/ui-bootstrap-tpls.min.js"></script>
 
-<script src="/js/head_ctrl.js"></script>
+<script src="/js/share.js"></script>
 <script src="/js/user_page_ctrl.js"></script>
 
 <% include footer.html %>

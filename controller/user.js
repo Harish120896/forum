@@ -39,11 +39,21 @@ module.exports = function wrap(my) {
         my.util.cookieLogin,
         share_data,
         function (req, res) {
-            res.locals.breadcrumb = "user";
-            res.locals.user = req.result.data("user");
-            res.locals.title = res.locals.user.nickname + "的个人中心"
-            res.locals.loginUser = req.session.user;
-            res.render("user");
+
+            my.query("get a user by id",{id:req.query.id}).then(function(user){
+                if(user){
+                    res.locals.breadcrumb = "user";
+                    delete user.password;
+                    res.locals.user = user;
+                    res.locals.loginUser = req.session.loginUser;
+                    res.locals.title = res.locals.user.nickname + "的个人中心"
+                    res.render("user");
+                }else{
+                    res.send(404);
+                }
+            })
+
+
         });
 
 
@@ -136,10 +146,10 @@ module.exports = function wrap(my) {
             var logo = req.files.file;
             if (logo && (logo.type === "image/png" || logo.type === "image/jpeg") && logo.size <= 1024 * 100) {
                 fs.createReadStream(logo.path).pipe(fs.createWriteStream(path.join(__dirname, "..", "public/logo", req.session.user.nickname)));
+                res.send();
             } else {
-                req.result.error("logo", "图片大小<100k，并且是png格式");
+                res.send("图片大小<100k，并且是png/jpg格式");
             }
-            res.send(req.result.json());
         })
 
 }
