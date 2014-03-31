@@ -68,19 +68,25 @@ app
             core.call("User.updateInfo", $scope.userId, [$scope.user]);
         }
 
+        $scope.$watch("user.isCustomLogo",function(v){
+            if(typeof v !== "undefined"){
+                $scope.updateUser();
+            }
+        })
+
         // 上传用户头像
         $scope.onFileSelect = function ($files) {
             for (var i = 0; i < $files.length; i++) {
                 var file = $files[i];
                 $scope.upload = $upload.upload({
-                    url: '/user/updateLogo',
+                    url: '/user/update_logo',
                     data: {myObj: $scope.myModelObj},
                     file: file
                 }).progress(function (evt) {
                     }).success(function (data, status, headers, config) {
                         if (data) {
                             // 提示错误信息
-                            alert(data);
+                            setTimeout( function(){alert(data);});
                         } else {
                             setTimeout(function () {
                                 window.location.reload()
@@ -124,7 +130,6 @@ app
         $scope.loadTopicList = function () {
 
             query("get topic count by user's id",{id:$scope.userId}).then(function(rs){
-                console.log(rs);
                 $scope.bigTotalItems = rs.count;
                 $scope.bigCurrentPage = 1;
                 $scope.perPage = 10;
@@ -137,7 +142,6 @@ app
         $scope.loadReplyList = function () {
 
             query("get reply count by user's id",{id:$scope.userId}).then(function(rs){
-                console.log(rs)
                 $scope.bigTotalItems2 = rs.count;
                 $scope.bigCurrentPage2 = 1;
                 $scope.perPage2 = 10;

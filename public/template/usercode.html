@@ -7,7 +7,7 @@
                          ng-src='{{user.isCustomLogo ? "/logo/"+user.nickname : "http://www.gravatar.com/avatar/"+user.logo}}'/>
                 </div>
                 <div class="col-xs-8">
-                    <p><a href="/user/{{user.id}}">{{user.nickname}}</a></p>
+                    <p><a href="/user?id={{user.id}}">{{user.nickname}}</a></p>
 
                     <p>{{user.fraction}}</p>
                 </div>

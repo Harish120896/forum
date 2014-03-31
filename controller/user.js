@@ -1,4 +1,5 @@
 var crypto = require("crypto");
+var fs = require("fs"),path = require("path");
 
 module.exports = function wrap(my) {
 
@@ -45,7 +46,7 @@ module.exports = function wrap(my) {
                     res.locals.breadcrumb = "user";
                     delete user.password;
                     res.locals.user = user;
-                    res.locals.loginUser = req.session.loginUser;
+                    res.locals.loginUser = req.session.user;
                     res.locals.title = res.locals.user.nickname + "的个人中心"
                     res.render("user");
                 }else{
