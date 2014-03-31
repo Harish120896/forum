@@ -7,3 +7,5 @@ basic/dbs
 test/util/config.json
 public/logo/*
 config.json
+run.js
+jsera_config

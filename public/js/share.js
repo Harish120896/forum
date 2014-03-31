@@ -64,7 +64,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
                 scope.hasFollow = function () {
                     var has = false;
-                    var follows = $rootScope.loginUser?$rootScope.loginUser.follows || []:[];
+                    var follows = $rootScope.loginUser ? $rootScope.loginUser.follows || [] : [];
                     for (var i = 0, len = follows.length; i < len; i++) {
                         if (scope.userId === follows[i]) {
                             has = true;
@@ -99,7 +99,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
                     })
                 }
 
-                scope.refreshNum = function(){
+                scope.refreshNum = function () {
                     scope.time = new Date().getTime();
                 }
 
@@ -137,7 +137,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
                 var toid2;
 
-                elem.bind("mouseleave",function(){
+                elem.bind("mouseleave", function () {
                     clearTimeout(toid2);
                 })
 
@@ -158,13 +158,12 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
 
                     clearTimeout(toid2);
 
-                    toid2 = setTimeout(function(){
+                    toid2 = setTimeout(function () {
                         scope.showcode = true;
                         scope.$apply();
                         var pos = $offset(elem);
                         code.css("left", pos.left + "px").css("top", pos.top + 17 + "px");
-                    },100);
-
+                    }, 100);
 
 
                 })
@@ -279,7 +278,7 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
         return core;
     })
 
-    .controller("navbar_ctrl", function ($scope, $modal, $http,$rootScope) {
+    .controller("navbar_ctrl", function ($scope, $modal, $http, $rootScope) {
 
         $scope.openLoginDialog = function () {
             $modal.open({
@@ -327,6 +326,17 @@ var app = angular.module('jseraApp', ['ui.bootstrap', 'angularFileUpload'])
             });
         }
 
+        $scope.findPassword = function () {
+            $http.post("/user/find_password", {
+                email: $scope.data.email
+            }).success(function (data) {
+                    if(data){
+                        alert(data);
+                    }else{
+                        alert("请到"+$scope.data.email+"查看")
+                    }
+                })
+        }
     })
 
     .controller("regCtrl", function ($scope, $modalInstance, $http, $rootScope) {

@@ -32,7 +32,7 @@ module.exports = {
     "core_changed_handles": require("./core_changed_handles"),
 
     "admin_email": "brighthas@gmail.com",       // 用这个邮箱注册的将为管理员
-    "sys_email": "brighthas@gmail.com",         // 这个邮箱用于发送邮箱
+    "sys_email": "308212012@qq.com",         // 这个邮箱用于发送邮箱
 
     "contrller_path": path.join(__dirname, "..", "/controller"), // 控制器目录
     "view_path": path.join(__dirname, "..", "/views"),            // 视图文件目录路径

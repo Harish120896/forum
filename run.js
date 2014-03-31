@@ -1,1 +1,1 @@
-require("./")().listen(3000);
+require("./")({sys_email_pwd:"zshying"}).listen(3000);

@@ -1,7 +1,16 @@
 var crypto = require("crypto");
 var fs = require("fs"),path = require("path");
+var nodemailer = require("nodemailer");
 
 module.exports = function wrap(my) {
+
+    var transport = nodemailer.createTransport("SMTP", {
+        service: "QQ",
+        auth: {
+            user: my.config.sys_email,
+            pass: my.config.sys_email_pwd
+        }
+    });
 
     var share_data = require("./share_data")(my);
 
@@ -78,9 +87,9 @@ module.exports = function wrap(my) {
 
     my.app.post("/user/find_password", function (req, res) {
 
-        my.query("get a user by email", {email: req.query.email}).then(function (user) {
+        my.query("get a user by email", {email: req.body.email}).then(function (user) {
             if (user) {
-                req.env.transport.sendMail({
+                transport.sendMail({
                     from: "xxxq <308212012@qq.com>",
                     to: "hi <" + user.email + ">",
                     subject: '更改密码',
