@@ -27,7 +27,7 @@ function wrap(my) {
                 var infoRepo = my.repos.Info;
                 infoRepo.create({
                     targetId: topic.authorId,
-                    body: "<a href='/topic/" + topic.id + "#" + reply.id + "'> 您的帖子有人回复 ：" + topic.title + "</a>"
+                    body: "<a href='/topic?id=" + topic.id + "#" + reply.id + "'> 您的帖子有人回复 ：" + topic.title + "</a>"
                 })
             }
         })

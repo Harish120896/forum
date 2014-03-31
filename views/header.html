@@ -59,13 +59,13 @@
 
                     <%if(breadcrumb !== "user"){%>
                     <ul class="dropdown-menu" style="min-width:103px" ng-mouseleave="open=''" ng-mouseenter="open='open'">
-                        <li><a href="/user/{{user.id}}#info">基本资料</a></li>
-                        <li><a href="/user/{{user.id}}#topics">主题帖</a></li>
-                        <li><a href="/user/{{user.id}}#replys">回帖</a></li>
-                        <li><a href="/user/{{user.id}}#messages">私信</a></li>
-                        <li><a href="/user/{{user.id}}#infos">动态</a></li>
-                        <li><a href="/user/{{user.id}}#follows">关注</a></li>
-                        <li><a href="/user/{{user.id}}#watchers">听众</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#info">基本资料</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#topics">主题帖</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#replys">回帖</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#messages">私信</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#infos">动态</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#follows">关注</a></li>
+                        <li><a href="/user?id={{loginUser.id}}#watchers">听众</a></li>
                     </ul>
                     <%}%>
 
