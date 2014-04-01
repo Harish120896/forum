@@ -1,5 +1,6 @@
 var Emit = require("events").EventEmitter,
     check = require('validator').check,
+    escape = require("./escape"),
     inherits = require("util").inherits;
 
 var createModel = require("model-brighthas");
@@ -42,6 +43,9 @@ function wrap(my) {
             type: "date"
         })
         .on("changed", function (reply, attrs) {
+            if (attrs.body) {
+                reply.oattrs.body = escape(reply.oattrs.body);
+            }
             my.publish("*.*.update", "Reply", reply.id, this.toJSON(reply, Object.keys(attrs)));
         })
         .on("changing", function (reply) {
@@ -50,6 +54,7 @@ function wrap(my) {
             }
         })
         .on("creating", function (reply) {
+            reply.attrs.body = escape(reply.attrs.body);
             reply.attrs.createTime = reply.attrs.updateTime = new Date();
         })
         .method("updateInfo", function (title, body) {

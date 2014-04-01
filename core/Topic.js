@@ -2,6 +2,7 @@ var Emit = require("events").EventEmitter,
     check = require('validator').check,
     Node = require("tree-node"),
     Model = require("model-brighthas"),
+    escape = require("./escape"),
     Q = require("q"),
     _ = require("underscore");
 
@@ -59,6 +60,7 @@ function wrap(my) {
             default:false
         })
         .on("creating", function (topic) {
+            topic.attrs.body = escape(topic.attrs.body);
             topic.attrs.replyTree = new Node();
             topic.attrs.createTime = topic.attrs.updateTime = new Date();
         })
@@ -66,6 +68,9 @@ function wrap(my) {
             attrs.updateTime = new Date();
         })
         .on("changed", function (topic, attrs) {
+                if(attrs.body){
+                    topic.oattrs.body = escape(topic.oattrs.body);
+                }
             var jsonObj = this.toJSON(topic, Object.keys(attrs));
             my.publish("*.*.update", "Topic", topic.id, jsonObj);
         })
