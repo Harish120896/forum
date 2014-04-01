@@ -57,8 +57,19 @@ app
         $scope.removeReply = function (rid) {
             var bool = window.confirm("是否删除这个回复？");
             if (bool) {
-                core.call("Topic.removeReply", topicId, [rid]);
+                core.call("Topic.removeReply", $scope.topicId, [rid]);
                 delete $scope.replys[rid];
+            }
+        }
+
+        // 删除一个主题帖
+        $scope.removeTopic = function () {
+            var bool = window.confirm("是否删除这个主题？");
+            if (bool) {
+                core.exec("remove a topic", {id:$scope.topicId});
+                setTimeout(function(){
+                    window.location.href = "/column?id="+$scope.topic.columnId;
+                },1000)
             }
         }
 

@@ -55,7 +55,8 @@ function wrap(my) {
             type: "date"
         })
         .attr("top", {
-            type: "boolean"
+            type: "boolean",
+            default:false
         })
         .on("creating", function (topic) {
             topic.attrs.replyTree = new Node();
@@ -65,7 +66,8 @@ function wrap(my) {
             attrs.updateTime = new Date();
         })
         .on("changed", function (topic, attrs) {
-            my.publish("*.*.update", "Topic", topic.id, this.toJSON(topic, Object.keys(attrs)));
+            var jsonObj = this.toJSON(topic, Object.keys(attrs));
+            my.publish("*.*.update", "Topic", topic.id, jsonObj);
         })
         .method("removeReply", function (replyId) {
             var tree = this.replyTree;

@@ -36,7 +36,7 @@ module.exports = function (query) {
         },
 
         validat_num: function (req, res, next) {
-            if (!(req.body.validat_num && req.session.validat_num.toLocaleLowerCase() === req.body.validat_num.toLocaleLowerCase())) {
+            if (!(req.body.validat_num && req.session.validat_num && req.session.validat_num.toLocaleLowerCase() === req.body.validat_num.toLocaleLowerCase())) {
                 req.result.error("validat_num", "验证码错误");
                 util.refreshValidatNum(req,res,function(){});
                 res.send(req.result.json());

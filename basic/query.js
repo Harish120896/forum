@@ -100,13 +100,31 @@ query.add("get all columns", function (args, callback) {
         var db = dbs.getDB("Topic");
         db
             .find({
-                columnId: args.id
+                columnId: args.id,
+                top:false
             })
             .limit(args.limit)
             .sort({
                 updateTime: -1
             })
             .skip((args.page - 1) * args.limit)
+            .exec(function (err, rs) {
+                callback(rs || []);
+            })
+    })
+
+    .add("get top topics by column's id",
+    option2,
+    function (args, callback) {
+        var db = dbs.getDB("Topic");
+        db
+            .find({
+                columnId: args.id,
+                top:true
+            })
+            .sort({
+                updateTime: -1
+            })
             .exec(function (err, rs) {
                 callback(rs || []);
             })
@@ -197,7 +215,7 @@ query.add("get all columns", function (args, callback) {
             }
         })
             .exec(function (err, num) {
-                callback({count:rs||0});
+                callback({count:num||0});
             })
     })
 

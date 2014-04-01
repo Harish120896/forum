@@ -1,6 +1,6 @@
 {
-  "name": "froum",
-  "version": "0.0.1",
+  "name": "forum",
+  "version": "0.0.3",
   "description": "init",
   "main": "index.js",
   "scripts": {
@@ -30,10 +30,8 @@
     "express": "3.4.4",
     "ejs": "*",
     "tree-node": "0.1.5",
-    "mongoose": "~3.8.3",
     "step": "0.0.5",
     "model-brighthas": "0.3.1",
-    "jsdm.middle": "0.0.7",
     "istype": "0.0.2",
     "png-word": "0.0.7",
     "random-word": "git://github.com/brighthas/random-word",
@@ -45,10 +43,13 @@
     "nedb": "~0.10.4",
     "shortid": "^2.0.0",
     "marked": "^0.3.2",
-    "query-brighthas": "0.0.9"
+    "query-brighthas": "0.1.0"
   },
   "devDependencies": {
     "should": "~2.1.0",
     "supertest": "~0.9.0"
+  },
+  "directories": {
+    "test": "test"
   }
 }

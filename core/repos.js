@@ -26,7 +26,8 @@ function wrap(my) {
     }
 
     topicRepo._aggre2data = function (aggre) {
-        return aggre.toJSON();
+        var jsonObj =  aggre.toJSON();
+        return jsonObj;
     }
 
 

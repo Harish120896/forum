@@ -37,35 +37,48 @@ module.exports = function (my) {
         share_data,
         function (req, res) {
 
-            Q.all([
-                    my.query("get topics by column's id", {id: req.query.id, page: req.query.page || 1}),
-                    my.query("get a column by id", {id: req.query.id}),
-                    my.query("get topic count by column's id", {id: req.query.id})
-                ]).spread(function (topics, column, count) {
 
-                    if (res.locals.column = column) {
+            var qs = [
+                my.query("get topics by column's id", {id: req.query.id, page: req.query.page || 1}),
+                my.query("get a column by id", {id: req.query.id}),
+                my.query("get topic count by column's id", {id: req.query.id})
+            ]
 
-                        res.locals.breadcrumb = "column";
-                        res.locals.title = column.name;
-                        res.locals.topics = topics;
+            var pg = parseInt(req.query.page) || 1;
 
-                        res.locals.pager = Pager(count, parseInt(req.query.page) || 1, 10);
+            if (pg === 1) {
+                qs.push(my.query("get top topics by column's id", {id: req.query.id}));
+            }
 
-                        var topicInfosArr = [];
+            Q.all(qs).spread(function (topics, column, count, top_topics) {
 
-                        topics.forEach(function (topic) {
-                            topicInfosArr.push(topicInfo(topic));
-                        });
+                top_topics = top_topics || [];
 
-                        Q.all(topicInfosArr).then(function (rs) {
-                            res.locals.topicsInfo = rs;
-                            res.render("column");
-                        })
+                topics = top_topics.concat(topics);
 
-                    } else {
-                        res.send(404);
-                    }
-                }).fail(function (err) {
+                if (res.locals.column = column) {
+
+                    res.locals.breadcrumb = "column";
+                    res.locals.title = column.name;
+                    res.locals.topics = topics;
+
+                    res.locals.pager = Pager(count, parseInt(req.query.page) || 1, 10);
+
+                    var topicInfosArr = [];
+
+                    topics.forEach(function (topic) {
+                        topicInfosArr.push(topicInfo(topic));
+                    });
+
+                    Q.all(topicInfosArr).then(function (rs) {
+                        res.locals.topicsInfo = rs;
+                        res.render("column");
+                    })
+
+                } else {
+                    res.send(404);
+                }
+            }).fail(function (err) {
                     console.log(err);
                 })
         })
