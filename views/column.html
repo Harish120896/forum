@@ -17,7 +17,7 @@
                 <div class="col-xs-4 col-md-3 col-lg-3">
                     <div style="font-size: 0.6em ; padding-left: 15px">
                         <p>
-                            <i class="small glyphicon glyphicon-user" style="opacity: .2"></i> <a usercode user-id="<%=topic.authorId%>" href="/user/<%=topics.authorId%>">
+                            <i class="small glyphicon glyphicon-user" style="opacity: .2"></i> <a usercode user-id="<%=topic.authorId%>" href="/user?id=<%=topic.authorId%>">
                                 <%=topicsInfo[index].topicAuthor.nickname %>
                             </a>
                         </p>
@@ -26,14 +26,14 @@
 
                             <%if(topicsInfo[index].newReply){%>
                                 <i style="opacity: .2" class="small glyphicon glyphicon-comment"></i>
-                                <a usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user/<%=topicsInfo[index].replyAuthor.id%>">
+                                <a usercode user-id="<%=topicsInfo[index].replyAuthor.id%>" href="/user?id=<%=topicsInfo[index].replyAuthor.id%>">
                                     <%=topicsInfo[index].replyAuthor.nickname%>
                                 </a>
                                 <span style="opacity: .5" class="pull-right">
                                     {{<%=topicsInfo[index].newReply.createTime%> | time}}
                                 </span>
                             <%}else{%>
-                               <i style="opacity: .2" class="small glyphicon glyphicon-user"></i><a  ng-init="DATA.user('<%=topic.authorId%>')" usercode user-id="<%=topic.authorId%>" href="/user/<%=topics.authorId%>">
+                               <i style="opacity: .2" class="small glyphicon glyphicon-user"></i><a  usercode user-id="<%=topic.authorId%>" href="/user?id=<%=topic.authorId%>">
                             <%=topicsInfo[index].topicAuthor.nickname %>
                                 </a>
                                  <span style="opacity: .5" class="pull-right">

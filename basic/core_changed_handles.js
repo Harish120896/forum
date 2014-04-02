@@ -3,6 +3,9 @@ var crypto = require("crypto");
 
 module.exports = {
     "*.*.create": function (className, data) {
+        if(className === "User"){
+            data.logo = crypto.createHash('md5').update(data.email).digest("hex");
+        }
         dbs.save(className, data, function () {});
     },
     "*.*.update": function (className, id, data) {

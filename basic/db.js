@@ -1,12 +1,12 @@
 var Datastore = require('nedb');
 
 var dbs = {
-    User: new Datastore({filename: 'dbs/users', autoload: true}),
-    Topic: new Datastore({filename: 'dbs/topics', autoload: true}),
-    Column: new Datastore({filename: 'dbs/columns', autoload: true}),
-    Info: new Datastore({filename: 'dbs/infos', autoload: true}),
-    Reply: new Datastore({filename: 'dbs/replies', autoload: true}),
-    Message: new Datastore({filename: 'dbs/messages', autoload: true})
+    User: new Datastore({filename: '../data/users', autoload: true}),
+    Topic: new Datastore({filename: '../data/topics', autoload: true}),
+    Column: new Datastore({filename: '../data/columns', autoload: true}),
+    Info: new Datastore({filename: '../data/infos', autoload: true}),
+    Reply: new Datastore({filename: '../data/replies', autoload: true}),
+    Message: new Datastore({filename: '../data/messages', autoload: true})
 }
 
 module.exports = {

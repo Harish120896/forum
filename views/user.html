@@ -182,7 +182,7 @@
         </tab>
         <%}%>
         <tab heading="关注" active="'follows'===targetTag">
-            <a usercode user-id="{{uid}}" href="/user/{{uid}}" ng-repeat="uid in user.follows">
+            <a usercode user-id="{{uid}}" href="/user?id={{uid}}" ng-repeat="uid in user.follows">
                 <img class="img-rounded" style="margin: 5px;" width="40" height="40"
                      ng-src='{{users[uid].isCustomLogo ? "/logo/"+users[uid].nickname : "http://www.gravatar.com/avatar/"+users[uid].logo}}'/>
             </a>

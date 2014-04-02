@@ -1,6 +1,6 @@
 {
   "name": "forum",
-  "version": "0.0.4",
+  "version": "0.1.1",
   "description": "init",
   "main": "index.js",
   "scripts": {
@@ -25,8 +25,8 @@
   "homepage": "https://github.com/brighthas/froum",
   "dependencies": {
     "jsdm": "0.3.7",
-    "node-uuid": "~1.4.1",
-    "validator": "~2.0.0",
+    "node-uuid": "1.4.1",
+    "validator": "2.0.0",
     "express": "3.4.4",
     "ejs": "*",
     "tree-node": "0.1.5",
@@ -35,19 +35,19 @@
     "istype": "0.0.2",
     "png-word": "0.0.7",
     "random-word": "git://github.com/brighthas/random-word",
-    "underscore": "^1.5.2",
-    "nodemailer": "~0.6.0",
-    "node-validator": "~0.1.4",
-    "q": "~1.0.0",
+    "underscore": "1.5.2",
+    "nodemailer": "0.6.0",
+    "node-validator": "0.1.4",
+    "q": "1.0.0",
     "result-brighthas": "0.0.7",
-    "nedb": "~0.10.4",
-    "shortid": "^2.0.0",
-    "marked": "^0.3.2",
+    "nedb": "0.10.4",
+    "shortid": "2.0.0",
+    "marked": "0.3.2",
     "query-brighthas": "0.1.0"
   },
   "devDependencies": {
-    "should": "~2.1.0",
-    "supertest": "~0.9.0"
+    "should": "2.1.0",
+    "supertest": "0.9.0"
   },
   "directories": {
     "test": "test"
