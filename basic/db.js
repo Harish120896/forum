@@ -6,7 +6,9 @@ var dbs = {
     Column: new Datastore({filename: '../data/columns', autoload: true}),
     Info: new Datastore({filename: '../data/infos', autoload: true}),
     Reply: new Datastore({filename: '../data/replies', autoload: true}),
-    Message: new Datastore({filename: '../data/messages', autoload: true})
+    Message: new Datastore({filename: '../data/messages', autoload: true}),
+    Photo: new Datastore({filename: '../data/photos', autoload: true})
+
 }
 
 module.exports = {

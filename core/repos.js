@@ -210,5 +210,20 @@ function wrap(my) {
         return my.Aggres.User.reborn(data);
     }
 
-    return [replyRepo, columnRepo, topicRepo, userRepo, messageRepo, infoRepo];
+    var photoRepo = new my.Repository("Photo");
+
+    photoRepo._create = function (args, callback) {
+        var photo = new my.Aggres.Photo(args);
+        callback(null,photo);
+    }
+
+    photoRepo._data2aggre = function (data) {
+        return my.Aggres.Photo.reborn(data);
+    }
+
+    photoRepo._aggre2data = function (aggre) {
+        return aggre.toJSON();
+    }
+
+    return [replyRepo, columnRepo, topicRepo, userRepo, messageRepo, infoRepo,photoRepo];
 }

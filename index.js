@@ -37,7 +37,7 @@ module.exports = function(conf) {
 
     app.use(express.favicon(__dirname + '/public/favicon.ico'));
     app.use(express.static(config.static_path));
-    app.set('views', path.join(config.view_path));
+    app.set('views', path.join(config.views_path));
     app.engine('.html', require('ejs').__express);
     app.set('view engine', 'html');
     app.use(express.favicon());
@@ -73,8 +73,8 @@ module.exports = function(conf) {
     })
 
     // 加载控制器
-    fs.readdirSync(config.contrller_path).forEach(function (filename) {
-        require(config.contrller_path + "/" + filename)(my);
+    fs.readdirSync(config.controller_path).forEach(function (filename) {
+        require(config.controller_path + "/" + filename)(my);
     });
 
     // 调用 监听core create/update/remove 事件，并更新数据库

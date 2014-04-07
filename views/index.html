@@ -12,7 +12,9 @@
            <% columnList.forEach(function(col,index){ %>
            <li class="list-group-item" ng-init="DATA.user('<%=col.managerId%>');topicCountByColumnId('<%=col.id%>')">
                 <h4><a href="/column?id=<%=col.id%>"><span style="font-size: 1.2em; font-weight: bold" columnid="<%=col.id%>"
-                                                        coledit="name"><i class="glyphicon glyphicon-new-window small"></i> <%=col.name%></span></a></h4>
+                                                        coledit="name"><i class="glyphicon glyphicon-new-window small">
+
+                                                        </i> <%=col.name%></span></a></h4>
                <p><%=col.des%></p>
                版主
                <a usercode user-id='<%=col.managerId%>' href='/user/<%=col.managerId%>'><%=managers[index] ? managers[index].nickname : ""%></a>

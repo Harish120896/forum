@@ -88,14 +88,16 @@ function wrap(my) {
         my.repos.User.create(args, function (err, rs) {
             var result = new Result();
             if (!err) {
-                result.data("user", rs.toJSON());
+                my.repos.Photo.create({authorId:rs.id},function(err,photo){
+                    result.data("user", rs.toJSON());
+                    callback(result);
+                })
             } else {
                 result.mix(err);
+                callback(result);
             }
-            callback(result);
         });
     }
-
 
     handle5.commandName = "remove a reply";
 
@@ -180,8 +182,14 @@ function wrap(my) {
     handle10.commandName = "remove a user";
 
     function handle10(args, callback) {
-
-        my.repos.Topic.remove(args.id, callback)
+        my.repos.Topic.remove(args.id, callback);
+        // 删除用户，顺便删除相册
+        var query = my.services.getQuery();
+        query("get a photo by user's id",{id:args.id}).then(function(photo){
+            if(photo){
+                my.repos.Photo.remove(photo.id, callback);
+            }
+        })
     }
 
 
@@ -197,6 +205,7 @@ function wrap(my) {
         })
         callback();
     }
+
 
     return [handle1, handle2, handle3, handle4, handle5, handle6, handle7, handle8, handle9, handle10, handle11];
 

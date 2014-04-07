@@ -9,12 +9,14 @@ domain.register(
         require("./Reply"),
         require("./Message"),
         require("./Info"),
+        require("./Photo"),
         "listener", require("./eventHandles"),
         "repository", require("./repos"),
         "commandHandle", require("./commandHandles"),
         "service", require("./services")
 
     ).openMethod(
+
         "User.plus",
         "User.updatePassword",
         "User.follow",
@@ -35,7 +37,10 @@ domain.register(
         "Topic.removeReply",
         "Topic.toseal",
         "Topic.unseal",
-        "Topic.access"
+        "Topic.access",
+
+        "Photo.addImage",
+        "Photo.delImage"
     )
 
 module.exports = domain;
