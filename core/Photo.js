@@ -14,7 +14,7 @@ function wrap(my) {
         })
         .method("addImage", function (imgId) {
             if(imgId){
-                my.publish("addImage", {authorId: this.authorId, photoId: this.id, imageId: imgId});
+                my.publish("addImage", {authorId: this.authorId, photoId: this.id, imageId: imgId,createTime:Date.now()});
             }
         })
         .method("delImage", function (imgId) {

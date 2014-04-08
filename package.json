@@ -1,6 +1,6 @@
 {
   "name": "forum",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "init",
   "main": "index.js",
   "scripts": {
