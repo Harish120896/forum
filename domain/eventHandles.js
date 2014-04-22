@@ -1,6 +1,7 @@
 module.exports = wrap;
 
 function wrap(my) {
+
     handle1.eventName = "Topic.*.create";
 
     function handle1(topic) {
@@ -39,5 +40,20 @@ function wrap(my) {
         })
     }
 
-    return [handle1, handle2];
+
+    createUser.eventName = "userDomain User.*.create";
+    function createUser(data) {
+        my.repos.User.create(data);
+    }
+
+    updateUser.eventName = "userDomain User.*.update";
+    function updateUser(data) {
+        my.repos.User.get(data.id).then(function (user) {
+            if (user) {
+                    user.updateInfoPrivate(data);
+            }
+        });
+    }
+
+    return [handle1, handle2, createUser, updateUser];
 }

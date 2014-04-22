@@ -138,6 +138,7 @@ function wrap(my) {
             this.seal = false;
         })
 
+
     Topic.className = "Topic";
 
     return Topic;
