@@ -1,10 +1,2 @@
 node_modules
 .idea
-dbs
-
-basic/config.json
-basic/db
-basic/dbs
-test/util/config.json
-config.json
-run.js
