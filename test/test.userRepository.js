@@ -1,5 +1,6 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
+var clearDB =require("./util/clearDB");
 
 describe("user repository", function () {
 
@@ -7,6 +8,10 @@ describe("user repository", function () {
     var createTime = Date.now();
 
     var user, data;
+
+    it("#clearDB",function(done){
+        clearDB().then(done);
+    });
 
     it("#_create", function () {
 

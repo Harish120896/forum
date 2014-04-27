@@ -1,49 +1,49 @@
 {
-  "name": "forum",
-  "version": "0.1.7",
-  "description": "init",
-  "main": "index.js",
-  "scripts": {
-    "test": "mocha"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/brighthas/froum.git"
-  },
-  "keywords": [
-    "froum",
-    "node.js",
-    "express",
-    "express.js",
-    "bbs"
-  ],
-  "author": "brighthas <brighthas@gmail.com>",
-  "license": "GPLv3",
-  "bugs": {
-    "url": "https://github.com/brighthas/froum/issues"
-  },
-  "homepage": "https://github.com/brighthas/froum",
-  "dependencies": {
-    "jsdm": "0.4.6",
-    "express": "4.0.0",
-    "ejs": "*",
-    "tree-node": "0.1.5",
-    "png-word": "0.0.7",
-    "random-word": "git://github.com/brighthas/random-word",
-    "underscore": "1.5.2",
-    "nodemailer": "0.6.0",
-    "q": "1.0.0",
-    "shortid": "2.0.0",
-    "marked": "0.3.2",
-    "identity": "git://github.com/brighthas/identity",
-    "validator": "^3.10.0"
-  },
-  "devDependencies": {
-    "should": "2.1.0",
-    "supertest": "0.9.0",
-    "nedb": "^0.10.5"
-  },
-  "directories": {
-    "test": "test"
-  }
+    "name": "forum",
+    "version": "0.1.7",
+    "description": "init",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/brighthas/froum.git"
+    },
+    "keywords": [
+        "froum",
+        "node.js",
+        "express",
+        "express.js",
+        "bbs"
+    ],
+    "author": "brighthas <brighthas@gmail.com>",
+    "license": "GPLv3",
+    "bugs": {
+        "url": "https://github.com/brighthas/froum/issues"
+    },
+    "homepage": "https://github.com/brighthas/froum",
+    "dependencies": {
+        "jsdm": "0.4.7",
+        "express": "4.0.0",
+        "tree-node": "0.1.5",
+        "underscore": "1.5.2",
+        "q": "1.0.0",
+        "shortid": "2.0.0",
+        "validator": "^3.10.0",
+        "mongojs": "^0.12.1"
+    },
+    "devDependencies": {
+        "cookie-parser": "^1.0.1",
+        "body-parser": "^1.0.2",
+        "express-session": "^1.0.3",
+        "should": "2.1.0",
+        "identity": "git://github.com/brighthas/identity",
+        "supertest": "0.9.0",
+        "ejs": "*",
+        "nedb": "^0.10.5"
+    },
+    "directories": {
+        "test": "test"
+    }
 }

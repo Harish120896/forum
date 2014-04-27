@@ -1,7 +1,11 @@
 var domain = require("jsdm")();
-var identity = require("identity");
+var query = require("../application/query");
+var crypto = require("crypto");
+var dbs = require("../application/dbs");
 
 domain.register(
+
+    "get", require("../application/dbs").get,
 
     "AggreClass",
     require("./User"),
@@ -9,14 +13,18 @@ domain.register(
     require("./Topic"),
     require("./Reply"),
     require("./Message"),
-    require(".//Info"),
-    "domain", {userDomain: identity.domain},
-    "repository", require("./repos")
+    require("./Info"),
+    "repository", require("./repos"),
+    "listener", require("./eventHandles"),
+    "service", require("./services"),
+    function (my) {
+        function getQuery() {
+            return query;
+        }
 
-//        "listener", require("./../old/core/eventHandles"),
-//
-//        "commandHandle", require("./../old/core/commandHandles"),
-//        "service", require("./../old/core/services")
+        getQuery.serviceName = "getQuery";
+        return getQuery;
+    }
 
 ).openMethod(
 
@@ -25,17 +33,34 @@ domain.register(
         "User.updateInfo",
 
         "Column.updateInfo",
-        "Column.setManager"
-//
-//        "Topic.updateInfo",
-//        "Topic.removeReply",
-//        "Topic.toseal",
-//        "Topic.unseal",
-//        "Topic.access",
-//
-//        "Photo.addImage",
-//        "Photo.delImage"
+        "Column.top",
+        "Column.setManager",
+
+        "Topic.updateInfo",
+        "Topic.removeReply",
+        "Topic.top",
+        "Topic.untop",
+        "Topic.fine",
+        "Topic.unfine",
+        "Topic.access"
     ).seal()
 
+
+domain.on("*.*.create", function (className, data) {
+    if (className === "User") {
+        data.logo = crypto.createHash('md5').update(data.email).digest("hex");
+    }
+    dbs.save(className, data, function () {
+    });
+});
+
+domain.on("*.*.update", function (className, id, data) {
+    dbs.update(className, id, data, function () {
+    })
+});
+
+domain.on("*.*.remove", function (className, id) {
+    dbs.remove(className, id);
+});
 
 module.exports = domain;

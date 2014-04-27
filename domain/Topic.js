@@ -36,6 +36,18 @@ function wrap(my) {
     Topic.mix = function (obj) {
         Object.defineProperties(obj, {
 
+            authorId:{
+                get:function(){
+                    return this._authorId;
+                }
+            },
+
+            columnId:{
+                get:function(){
+                    return this._columnId;
+                }
+            },
+
             top:{
                 value:function(){
                     if(!this._top){

@@ -13,14 +13,27 @@ function wrap(my) {
 
     }
 
+    Object.defineProperty(Column.prototype,"managerId",{
+        get:function(){
+            return this._managerId;
+        }
+    })
+
     Column.prototype.top = function(){
         this._updateTime = Date.now();
         my.publish("*.*.update","Column",this._id,{updateTime:this._updateTime});
     }
 
     Column.prototype.setManager = function(managerId){
-        this._managerId = managerId;
-        my.publish("*.*.update","Column",this._id,{managerId:managerId});
+        var self = this;
+        my.repos.User.get(managerId).then(function(u){
+            if(u){
+                self._managerId = managerId;
+                my.publish("*.*.update","Column",self._id,{managerId:managerId});
+                my.publish("*.*.update","Column",self._id,{managerId:managerId});
+            }
+        })
+
     }
 
     /**

@@ -1,10 +1,15 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
+var clearDB =require("./util/clearDB");
 
 describe("Column", function () {
 
     var Column = domain._my.Aggres.Column;
     var col;
+
+    it("#clearDB",function(done){
+        clearDB().then(done);
+    });
 
     it("#new", function () {
         col = new Column("id001", "node.js");
@@ -27,9 +32,18 @@ describe("Column", function () {
 
     })
 
-    it("#setManager",function(){
-        col.setManager("u001");
-        col._managerId.should.eql("u001");
+    it("#setManager",function(done){
+
+        domain.repos.User.create({id:"u001",username:"leo",email:"leo@q.q"},function(err,u){
+
+            col.setManager("u001");
+            setTimeout(function(){
+                col._managerId.should.eql("u001");
+                done();
+            })
+
+        });
+
     })
 
 })

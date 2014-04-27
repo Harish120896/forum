@@ -1,12 +1,17 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
 var identity = require("identity");
+var clearDB = require("./util/clearDB");
 
 var Q = require("q");
 
 describe("eventHandles", function () {
 
     var userId;
+
+    it("#removeDB",function(done){
+        clearDB().then(done);
+    })
 
     it("#userDomain User.*.create", function (done) {
 
@@ -27,7 +32,6 @@ describe("eventHandles", function () {
 
         domain.on("*.*.update",function(className,id,data){
             if(className === "User" && id===userId && data.activation === false){
-
                 done();
             }
         })

@@ -205,8 +205,7 @@ function wrap(my, domains) {
                         this._isCustomLogo = validator.toBoolean(data.isCustomLogo);
                     }
 
-                    my.publish("User.*.update", {
-                        id: this.id,
+                    my.publish("*.*.update", "User", this._id ,{
                         des: this.des,
                         isCustomLogo: this.isCustomLogo,
                         sex: this.sex,

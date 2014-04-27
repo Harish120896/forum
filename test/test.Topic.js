@@ -1,12 +1,17 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
 var Node = require("tree-node");
+var clearDB =require("./util/clearDB");
 
 describe("Topic", function () {
 
     var Topic = domain._my.Aggres.Topic;
 
     var topic;
+
+    it("#clearDB",function(done){
+        clearDB().then(done);
+    });
 
     it("#new", function () {
 

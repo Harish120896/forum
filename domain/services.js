@@ -9,7 +9,7 @@ module.exports = function wrap(my) {
     function postTopicCheck(userId, callback) {
         var query = my.services.getQuery();
         query["get a user's topic count in today"](userId).then(function(count){
-            if (count > 50) {
+            if (count >= 50) {
                 callback(false);
             } else {
                 callback(true);
@@ -26,13 +26,12 @@ module.exports = function wrap(my) {
         var query = my.services.getQuery();
 
         query["get a user's reply count in today"](userId).then(function(count){
-            if (count > 150) {
+            if (count >= 150) {
                 callback(false);
             } else {
                 callback(true);
             }
-        });
-
+        })
     }
 
     return [postReplyCheck,postTopicCheck];

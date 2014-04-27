@@ -1,5 +1,6 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
+var clearDB =require("./util/clearDB");
 
 var Q = require("q");
 
@@ -9,6 +10,10 @@ describe("services", function () {
     var services = domain._my.services;
 
     var author, column;
+
+    it("#clearDB",function(done){
+        clearDB().then(done);
+    });
 
     it("#init", function (done) {
 
@@ -46,10 +51,10 @@ describe("services", function () {
                             }));
 
                         Q.all(postTopics.concat(postReplys)).then(function () {
-                            done();
-                        }).fail(function (err) {
-                                console.log(err)
+                            setTimeout(function(){
+                                done();
                             })
+                        })
                     })
             })
     });
@@ -64,8 +69,9 @@ describe("services", function () {
         })
     });
 
-    it("#postReplyCheck", function () {
+    it("#postReplyCheck", function (done) {
         services.postReplyCheck("u001", function (bool) {
+
             bool.should.eql(true);
             services.postReplyCheck(author._id, function (bool) {
                 bool.should.eql(false);

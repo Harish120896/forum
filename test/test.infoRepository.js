@@ -1,6 +1,7 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
 var Q = require("q");
+var clearDB =require("./util/clearDB");
 
 
 describe("message repository", function () {
@@ -8,6 +9,10 @@ describe("message repository", function () {
     var repository = domain._my.repos.Info;
 
     var info;
+
+    it("#clearDB",function(done){
+        clearDB().then(done);
+    });
 
     it("#_create", function (done) {
 

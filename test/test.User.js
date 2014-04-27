@@ -1,11 +1,16 @@
-var domain = require("./util/domain");
+var domain = require("../domain");
 var should = require("should");
+var clearDB =require("./util/clearDB");
 
 describe("User", function () {
 
     var User = domain._my.Aggres.User;
 
     var user;
+
+    it("#clearDB",function(done){
+        clearDB().then(done);
+    });
 
     it("#new", function () {
 
