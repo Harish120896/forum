@@ -68,6 +68,7 @@ function wrap(my) {
 
             fine:{
                 value:function(){
+                    console.log("xxxxxxxxxxxxx fine xxxxxxx")
                     if(!this._fine){
                         this._fine = true;
                         my.publish("*.*.update", "Topic" , this._id,{ fine:this._fine});
@@ -124,12 +125,13 @@ function wrap(my) {
              */
             addReply: {
                 value: function (parentId, replyId) {
+                    console.log(arguments);
                     var tree = this._replyTree;
                     var parent = tree.getNode(parentId);
                     if (parent) {
                         parent.appendChild(new Node(replyId));
                         this._replyNum = tree.allChildIds.length;
-                        my.publish("*.*.update", "Topic" , this._id, { replyNum: this._replyNum, replyTree: this._replyTree.toJSON()})
+                        my.publish("*.*.update", "Topic" , this._id, { replyNum: this._replyNum, replyTree: this._replyTree.toJSON(),updateTime:Date.now()})
                     }
                 }
             },

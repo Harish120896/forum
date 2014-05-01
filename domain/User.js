@@ -111,11 +111,7 @@ function wrap(my, domains) {
                                 self._follows = follows;
                             }
 
-                            var watchers = user.watchers;
-                            if (watchers.indexOf(self.id) === -1) {
-                                watchers.push(self.id);
-                                user._watchers = watchers;
-                            }
+                            user.addWatcher(self.id);
 
                             my.publish("*.*.update", "User" ,self._id ,{ follows: self.follows, watchers: self.watchers})
 
@@ -138,18 +134,26 @@ function wrap(my, domains) {
                         }
 
                         if (user) {
-                            var watchers = user.watchers;
-                            var windex = watchers.indexOf(self.id);
-                            if (windex !== -1) {
-                                watchers.splice(windex, 1);
-                                user._watchers = watchers;
-                            }
-
+                            user.removeWatcher(self.id);
                         }
-                        my.publish("*.*.update","User",self._id, { follows: self.follows, watchers: self.watchers})
+
+                        my.publish("*.*.update","User",self._id, { follows: self.follows})
                     })
                 }
             },
+            addWatcher:{value:function(uid){
+                if (this._watchers.indexOf(uid) === -1) {
+                    this._watchers.push(uid);
+                    my.publish("*.*.update","User",this._id, { watchers: this._watchers})
+                }
+            }},
+            removeWatcher:{value:function(uid){
+                var windex = this._watchers.indexOf(uid);
+                if (windex !== -1) {
+                    this._watchers.splice(windex, 1);
+                    my.publish("*.*.update","User",this._id, { watchers: this._watchers})
+                }
+            }},
             plus: {
                 value: function (num) {
                     num = parseInt(num);

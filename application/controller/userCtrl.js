@@ -48,6 +48,7 @@ router.post("/:id/unfollow", function (req, res) {
 })
 
 router.post("/:id/updateInfo", function (req, res) {
+    console.log(req.params.id,req.body);
     domain.call("User.updateInfo", req.params.id, [req.body])
         .then(function () {
             res.send();

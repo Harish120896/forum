@@ -25,6 +25,9 @@ function wrap(my) {
 
         my.repos.Topic.get(reply.topicId, function (err, topic) {
             if (topic) {
+
+                topic.addReply(reply.parentId,reply.id);
+
                 var infoRepo = my.repos.Info;
                 infoRepo.create({
                     targetId: topic.authorId,

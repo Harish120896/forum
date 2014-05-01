@@ -53,8 +53,6 @@ describe("replyCtrl", function () {
     })
 
     it("#/create", function (done) {
-
-
         agent
             .post("/create")
             .send({
@@ -62,7 +60,7 @@ describe("replyCtrl", function () {
                 topicId: tid,
                 body: "hi uid1"
             }).end(function (err, res) {
-                domain.repos.Reply.get(res.body.replyId).then(function (r) {
+                domain.repos.Reply.get(res.body.reply.id).then(function (r) {
                     should.exist(r);
                     done();
 

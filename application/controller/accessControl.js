@@ -23,7 +23,7 @@ function isLogin(req, res,next) {
     }
 }
 router.post("/messages/send", isLogin);
-router.post("/replys/send", isLogin);
+router.post("/replys/create", isLogin);
 
 router.post("/topics/create", isLogin);
 router.post("/topics/:id/*", function (req, res, next) {

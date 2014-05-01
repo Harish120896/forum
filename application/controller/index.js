@@ -8,8 +8,4 @@ router.use("/messages",require("./messageCtrl"));
 router.use("/users",require("./userCtrl"));
 router.use("/replys",require("./replyCtrl"));
 
-router.use(function(err,req,res,next){
-    res.send("error");
-})
-
 module.exports = router;

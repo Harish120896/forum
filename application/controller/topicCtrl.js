@@ -2,9 +2,13 @@ var express = require('express');
 var router = express.Router();
 var domain = require("../../domain");
 
-router.post("/create", function (req, res) {
+router.post("/create", function (req, res,next) {
     domain.repos.Topic.create(req.body, function (err, topic) {
-        res.send({error: err, topicId: topic._id});
+        if(err){
+            next(err);
+        }else{
+            res.send({topicId: topic._id});
+        }
     });
 })
 
@@ -38,13 +42,13 @@ router.post("/:id/:replyId/remove", function (req, res) {
     res.send();
 })
 
-router.post("/:id/updateInfo", function (req, res) {
+router.post("/:id/updateInfo", function (req, res,next) {
     domain.call("Topic.updateInfo", req.params.id, [req.body.title, req.body.body, req.body.columnId])
         .then(function () {
             res.send();
         })
         .fail(function (err) {
-            res.send({error: err});
+            next(err);
         })
 })
 

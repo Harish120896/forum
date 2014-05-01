@@ -22,7 +22,7 @@ function wrap(my) {
             activation: aggre.activation,
             follows: aggre.follows,
             watchers: aggre.watchers,
-            fraction: aggre.fraction,
+            fraction: aggre._fraction,
             isCustomLogo: aggre.isCustomLogo,
             des: aggre.des,
             sex: aggre.sex,
@@ -121,6 +121,7 @@ function wrap(my) {
                         })
                 }
             } else {
+
                 callback({error: 500}); // 500 表示内部未知错误
             }
         })
