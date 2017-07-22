@@ -1,49 +1,25 @@
 {
   "name": "forum",
-  "version": "0.1.8",
-  "description": "init",
+  "version": "1.0.0-pre",
+  "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/brighthas/froum.git"
+    "url": "git+https://github.com/brighthas/forum.git"
   },
-  "keywords": [
-    "froum",
-    "node.js",
-    "express",
-    "express.js",
-    "bbs"
-  ],
-  "author": "brighthas <brighthas@gmail.com>",
-  "license": "GPLv3",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "bugs": {
-    "url": "https://github.com/brighthas/froum/issues"
+    "url": "https://github.com/brighthas/forum/issues"
   },
-  "homepage": "https://github.com/brighthas/froum",
+  "homepage": "https://github.com/brighthas/forum#readme",
   "dependencies": {
-    "jsdm": "0.4.7",
-    "express": "4.0.0",
-    "tree-node": "0.1.5",
-    "underscore": "1.5.2",
-    "q": "1.0.0",
-    "shortid": "2.0.0",
-    "validator": "^3.10.0",
-    "mongojs": "^0.12.1"
-  },
-  "devDependencies": {
-    "cookie-parser": "^1.0.1",
-    "body-parser": "^1.0.2",
-    "express-session": "^1.0.3",
-    "should": "2.1.0",
-    "identity": "git://github.com/brighthas/identity",
-    "supertest": "0.9.0",
-    "ejs": "*",
-    "nedb": "^0.10.5"
-  },
-  "directories": {
-    "test": "test"
+    "cqrs": "^2.0.6-pre",
+    "cqrs-mongo-eventstore": "^1.0.2-pre",
+    "validator": "^8.0.0"
   }
 }
