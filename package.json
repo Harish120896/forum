@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,8 @@
   "dependencies": {
     "cqrs": "^2.0.6-pre",
     "cqrs-mongo-eventstore": "^1.0.2-pre",
+    "mocha": "^3.4.2",
+    "should": "^11.2.1",
     "validator": "^8.0.0"
   }
 }
